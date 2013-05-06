@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 from classMesenchymal import Mesenchymal
 from classMaze import Maze, densityArray
 from classDataset import Dataset
-#from gradient import concentration
 import statutils
 import sim
 import utils

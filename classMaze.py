@@ -9,8 +9,6 @@ import scipy.weave as weave
 from scipy.ndimage.filters import gaussian_filter
 import utils
 import constants
-from logging import debug, info
-#from classCacheLayer import CacheLayer
 
 DIMiter = xrange(constants.DIM)
 sigma = 0.6
@@ -34,7 +32,6 @@ class Maze(object):
         self.original = utils.scaleToMax(wall, self.original)
         self.data = myFilter(self.original)
         assert len(self.data.shape)==2, "Maze data is not two-dimensional: %s. Are you sure it is grayscale and contains one layer and one canal only?" % str(self.data.shape)
-        #self.data_grad = utils.getGradient(-self.data)
         self.data_grad = utils.getOriginalGradient(filename, maze=-self.data)
         self.border = border
         self.density = densityArray(self.data.shape, fieldlimits)
@@ -46,17 +43,10 @@ class Maze(object):
         
         self.validgrad = sp.ones(self.data.shape, dtype=sp.bool_)
         
-#        self.cache = CacheLayer(self.data, self.getSingleGradient)
-        
         self.minidx = 0
         self.maxidx = self.data.shape[0]-1
         
-        #TODO: this probably only works well if the shape of self.data is made of multiples of 10
-        #self.pixelperblock = 10 
-        #self.blocksize = tuple( map(int, sp.array(self.data.shape)/self.pixelperblock) )
-        #self.blocks = sp.zeros(self.blocksize, dtype=sp.bool_)
-        
-    #@profile
+
     def degrade(self, pos, eat, energy, density, dt):
         Ax = 0
         Ay = 0
@@ -75,62 +65,27 @@ class Maze(object):
         if clippedRect is None:
             return
         a, b = clippedRect
-        #view = self.data[idx[0]:idx[0]+shape[0], idx[1]:idx[1]+shape[1]]
         view = self.data[ a[0]:b[0], a[1]:b[1] ]
         if view.shape==eat.shape:
             view -= eat
             self.validgrad[ a[0]:b[0], a[1]:b[1] ] = False
-            #view[view > 0] = 0
         else:
             dax, day, dbx, dby = self.diffRect(degradeRect, clippedRect)
             eat_idx = sp.s_[dax:dbx, day:dby]
             view -= eat[eat_idx]
             self.validgrad[ dax:dbx, day:dby ] = False
-            #view[view > 0] = 0
             
-        #view[eat > 0]=0
         limit = 0.1
         view[view<limit]=nowall
-        #view[view > nowall] = nowall
-    
-#    #@staticmethod
-#    def getSingleGradient(self, data, posidx):
-#        grads = sp.zeros(2)
-#        a = 1 #window length is 2a+1
-#        Ax = 0
-#        Ay = 0
-#        Bx = self.data.shape[0]-1
-#        By = self.data.shape[1]-1
-#        
-#        originalRect = self.buildRect(posidx[0]-a, posidx[0]+a+1, posidx[1]-a, posidx[1]+a+1)
-#        clippedRect = self.clipRect(originalRect, Ax, Ay, Bx, By)
-#        if clippedRect is not None:
-#            dax, day, dbx, dby = self.diffRect(originalRect, clippedRect)
-#            a, b = clippedRect
-#            grad = sp.gradient(data[a[0]:b[0], a[1]:b[1]])
-#            grads[0] = sp.mean(grad[0])
-#            grads[1] = sp.mean(grad[1]) 
-#        return grads
-    
-#    #@profile
-#    def getSingleGradient(self, posidx):
-#        """posidx should have shape (N, 2)"""
-#        grads = sp.zeros(2, dtype=sp.float_)
-#        a = 1 #window length is 2a+1
-#        window = sp.s_[ posidx[0]-a : posidx[0]+a+1, posidx[1]-a : posidx[1]+a+1 ]
-#        grad = sp.gradient(-self.data[window])
-#        grads[0] = sp.mean(grad[0])
-#        grads[1] = sp.mean(grad[1]) 
-#        return grads
     
     #@profile
     def getGradientsCpp(self, posidx):
         """posidx should have shape (N, 2)"""
-        validgrad = self.validgrad
-        data = self.data
-        data_grad = self.data_grad
+        validgrad = self.validgrad #@UnusedVariable
+        data = self.data #@UnusedVariable
+        data_grad = self.data_grad #@UnusedVariable
         grads = sp.empty_like(posidx, dtype=sp.float_)
-        mywin = sp.zeros((2,3,3))
+        mywin = sp.zeros((2,3,3)) #@UnusedVariable
         code_grad = \
         """
         #line 136 "classMaze.py"
@@ -177,22 +132,16 @@ class Maze(object):
         data = self.data
         data_grad = self.data_grad
         grads = sp.empty_like(posidx, dtype=sp.float_)
-        a = 1 #window length is 2a+1
-        #grad = sp.empty((2*a+1, 2*a+1))
         for i, pos in enumerate(posidx):
-            #pos = posidx[i]
             posx, posy = pos
             if validgrad[posx, posy]:
                 grads[i] = data_grad[:,posx, posy]
             else:
-                #window = sp.s_[ posx-a : posx+a+1, posy-a : posy+a+1 ]
-                #grad = sp.gradient(-self.data[window])
                 window = data[posx-1 : posx+2, posy-1 : posy+2]
                 grad = sp.gradient(-window)
                 grads[i] = sp.mean(grad[0]), sp.mean(grad[1])
                 data_grad[:, posx, posy] = grads[i]
-                validgrad[posx, posy] = True
-                #grads[i] = sp.mean(grad[1]) 
+                validgrad[posx, posy] = True 
         return grads
 
 
@@ -216,7 +165,6 @@ class Maze(object):
 
     #@profile            
     def update(self, updatePositions, rectangle, density, needGradient=True):
-        #self.blocks.flat[:] = False
         #Updates a little larger than rectangle to ensure continuity
         Ax = 0
         Ay = 0
@@ -224,12 +172,9 @@ class Maze(object):
         By = self.data.shape[1]-1
         
         for pos in updatePositions:
-            #block = self.getBlockFromPos(pos)
-            #if self.blocks[block]==False:
             if True:
                 windowsize = sp.array([constants.safety_factor * s for s in rectangle.shape], dtype=sp.int64)
                 
-                #shape = eat.shape
                 corner = [int((density[i] * pos[i]) - 0.5*windowsize[i]) for i in xrange(2)]
                 xmin = corner[0]
                 xmax = corner[0]+windowsize[0]
@@ -246,15 +191,10 @@ class Maze(object):
                 idx2 =  sp.s_[:, a[0]:b[0], a[1]:b[1]]
                 
                 if needGradient:
-                    #info("Updating window the size of %s in position %s" % (windowsize, pos))
                     temp_data = -gaussian_filter(self.data[idx], sigma)
                     self.data_grad[idx2] = sp.array( sp.gradient( temp_data ))
                 else:
                     self.data[idx] = gaussian_filter(self.data[idx], sigma)
-                #self.blocks[block]=True
-
-    def getBlockFromPos(self, pos):
-        return tuple(map(int, pos/self.pixelperblock))
     
     def myClip(self, pt, Ax, Ay, Bx, By):
         x = min( max(pt[0], Ax) , Bx)
@@ -324,13 +264,6 @@ def densityArray(shape, fieldlimits):
     for k in DIMiter:
         density[k] = shape[k]/sp.absolute(fieldlimits[2*k+1]-fieldlimits[2*k])
     return density
-        
-#def clamp(n, minn, maxn):
-#    return max(min(maxn, n), minn)
-#
-#def clamp2(n, minn, maxn):
-#    n = n if n>minn and n<maxn else minn if n<minn else maxn
-#    return int(n)
 
 def enclosingRect(positions):
     ll = (min(positions[:,0]), max(positions[:,0]))
@@ -360,9 +293,4 @@ def bisectCount(positions, rect):
 def arrayIndexFromPos(pos, density):
     """Returns the array index corresponding to pos as a tuple.
     pos should be a numpy array."""
-    #density = sp.array((0.0, 0.0))
-    #idx = sp.empty((2,))
-    #for k in DIMiter:
-    #    density[k] = shape[k]/sp.absolute(fieldlimits[2*k+1]-fieldlimits[2*k])
-    #idx = sp.array(density * pos, dtype=sp.int0)
     return tuple(sp.array(density * pos, dtype=sp.int0))

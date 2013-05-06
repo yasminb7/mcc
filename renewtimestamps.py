@@ -6,16 +6,7 @@ Created on 25.11.2012
 import utils, constants
 import os
 
-sims = [
-        #"amoeboids-compass-noise.py",
-        #"effect-of-mesenchymals2.py",
-        #"effect-of-q.py",
-        #"free-movement.py",
-        #"one-free.py",
-        #"onesim-test.py",
-        #"yay.py"
-        constants.currentsim
-        ] 
+sims = [constants.currentsim] 
 
 for currentsim in sims:    
     const = utils.readConst(constants.simdir, currentsim)

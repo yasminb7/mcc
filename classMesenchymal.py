@@ -25,7 +25,7 @@ class Mesenchymal():
         eatpath = os.path.join(basepath, constants.resourcespath, const["eatshape"])
         Mesenchymal.eat = utils.loadImage(eatpath)
         Mesenchymal.eat = utils.scaleToMax(constants.wallconst, Mesenchymal.eat)
-        Mesenchymal.degrad_rate = const["zeta"] #* sp.mean(Mesenchymal.eat)
+        Mesenchymal.degrad_rate = const["zeta"]
         Mesenchymal.safety_factor = const["safety_factor"]
         Mesenchymal.classInitialized = True
     

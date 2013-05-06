@@ -28,9 +28,6 @@ class ArrayFile(object):
         return filename
 
 class Dataset(object):
-    '''
-    classdocs
-    '''
     
     is_amoeboid = 0
     is_mesenchymal = 1
@@ -40,7 +37,6 @@ class Dataset(object):
               "positions" : ArrayFile("positions", "shapexDim", sp.float_, onDisk=True),
               "velocities" : ArrayFile("velocities", "shapexDim", sp.float_, onDisk=True),
               "energies" : ArrayFile("energies", "shapex1", sp.float_),
-              #"energy_changes" : ArrayFile("energy_changes", "shapexEdim", sp.float_, onDisk=True),
               "states" : ArrayFile("states", "shapex1", sp.character),
               "statechanges" : ArrayFile("statechanges", "N_agents", sp.float_),
               "periods" : ArrayFile("periods", "N_agents", sp.float_),

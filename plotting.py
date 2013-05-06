@@ -30,15 +30,12 @@ mymarkers = 'os>^+*'
 def plot(x, y, labels = None, xlabel = None, ylabel = None, xlabels=None, title=None, legend=None, showGrid=False, folder=None, savefile=None):
     assert len(x)==len(y), "x and y don't have the same length"
     assert len(x)>0 and type(x)==list
-    markers = itertools.cycle(mymarkers)
     fig = plt.figure()
     ax = fig.add_subplot(111)
     plt.grid(showGrid)
     handles = []
-    for i, m in enumerate(x):
+    for i, _ in enumerate(x):
         handles.append(ax.plot(x[i], y[i], linestyle=':', marker='s')[0])
-        #ax.set_xlim([-0.8,0.4])
-        #ax.set_ylim([-0.1,0.1])
         #That label stuff doesn't yet work as it should.
         if labels is not None:
             ax.text(x[i][0], y[i][0], labels[0], horizontalalignment='left', verticalalignment='top', transform=ax.transAxes)
@@ -64,7 +61,6 @@ def plot_histogram(data, xlabel = None, ylabel = None, title = None, folder=None
     ax = fig.add_subplot(111)
     
     # the histogram of the data
-    n, bins, patches = ax.hist(data, nbins, facecolor='green', alpha=0.75)
     if xlabel is not None:
         ax.set_xlabel(xlabel)
     if ylabel is not None:
@@ -93,16 +89,12 @@ def errorbars(x, y, y_bars=None, labels = None, xlabel = None, ylabel = None, xl
     assert len(x)==len(y)
     if y_bars is not None:
         assert len(y)==len(y_bars)
-    #assert len(x)<len(formats)
-    for i, m in enumerate(x):
+    for i, _ in enumerate(x):
         marker = markers.next()
-        #handles.append(ax.errorbar(x[i], y[i], fmt = formats[i], markersize = mymarkersize, yerr=y_bars[i])[0])
         if y_bars is None:
             handles.append(ax.errorbar(x[i], y[i], markersize = mymarkersize, fmt=':%s' % marker)[0])
         else:
             handles.append(ax.errorbar(x[i], y[i], yerr=y_bars[i], markersize = mymarkersize, fmt=':%s' % marker)[0])
-        #ax.set_xlim([-0.8,0.4])
-        #ax.set_ylim([-0.1,0.1])
         #That label stuff doesn't yet work as it should.
         if labels is not None:
             ax.text(x[i][0], y[i][0], labels[0], horizontalalignment='left', verticalalignment='top', transform=ax.transAxes)
@@ -117,15 +109,9 @@ def errorbars(x, y, y_bars=None, labels = None, xlabel = None, ylabel = None, xl
     if "xlim" in plotargs.keys():
         ax.set_xlim(plotargs["xlim"])
     if "ylim" in plotargs.keys():
-        #_ylim = plotargs["ylim"]
-        #if len(_ylim)==2:
         ax.set_ylim(plotargs["ylim"])
-        #else:
-            #ax.set_ylim(ymin)
     if folder is None:
         folder = ""
-#    if setBW is True:
-#    setFigLinesBW(fig)
     if savefile is not None:
         savefilepath = join(folder, savefile)
         plt.savefig(savefilepath)
@@ -160,8 +146,6 @@ def bars_stacked(y0, color0, y1, color1, left, width, y_bars=None, labels = None
         ax.set_ylim(plotargs["ylim"])
     if folder is None:
         folder = ""
-#    if setBW is True:
-#        setFigLinesBW(fig)
     if savefile is not None:
         savefilepath = join(folder, savefile)
         plt.savefig(savefilepath)
@@ -205,8 +189,6 @@ def scatter(xs, ys, amoeboids, mesenchymals, successful, labels = None, xlabel =
         ax.set_ylim(plotargs["ylim"])
     if folder is None:
         folder = ""
-#    if setBW is True:
-#        setFigLinesBW(fig)
     if savefile is not None:
         savefilepath = join(folder, savefile)
         plt.savefig(savefilepath)
@@ -241,8 +223,6 @@ def scattercisr(xs, ys, amoeboids, mesenchymals, labels = None, xlabel = None, y
         ax.set_ylim(plotargs["ylim"])
     if folder is None:
         folder = ""
-#    if setBW is True:
-#        setFigLinesBW(fig)
     if savefile is not None:
         savefilepath = join(folder, savefile)
         plt.savefig(savefilepath)
@@ -255,14 +235,12 @@ def scattercisr(xs, ys, amoeboids, mesenchymals, labels = None, xlabel = None, y
 def plotlines(x, y, labels = None, xlabel = None, ylabel = None, xlabels=None, ylimits=None, title=None, legend=None, showGrid=False, folder=None, savefile=None):
     assert len(x)==len(y), "x and y don't have the same length"
     assert len(x)>0 and type(x)==list
-    markers = itertools.cycle(mymarkers)
     fig = plt.figure()
     ax = fig.add_subplot(111)
     plt.grid(showGrid)
     handles = []
-    for i, m in enumerate(x):
+    for i, _ in enumerate(x):
         handles.append(ax.plot(x[i], y[i], linestyle='-', marker=None)[0])
-        #ax.set_xlim([-0.8,0.4])
         if ylimits is not None:
             ax.set_ylim(ylimits)
         #That label stuff doesn't yet work as it should.
@@ -298,7 +276,6 @@ def plotlines_vert_subplot(x, y, x2, y2, xlabel = None, ylabel = None, xlabel2 =
         if ylimits is not None:
             ax.set_ylim(ylimits)
     if legend is not None:
-        #ax.legend(handles, legend, loc=0)
         ax.legend(handles, legend)
     if xlabel is not None:
         ax.set_xlabel(xlabel)
@@ -312,7 +289,6 @@ def plotlines_vert_subplot(x, y, x2, y2, xlabel = None, ylabel = None, xlabel2 =
         if ylimits2 is not None:
             ax2.set_ylim(ylimits2)
     if legend2 is not None:
-        #ax2.legend(handles2, legend_twin, loc=0)
         ax2.legend(handles2, legend2)
     if xlabel2 is not None:
         ax2.set_xlabel(xlabel2)
@@ -351,10 +327,8 @@ def plotlines_twinaxes(x, y, y_twin, labels = None, xlabel = None, ylabel = None
         if ylimits_twin is not None:
             ax2.set_ylim(ylimits_twin)
     if legend is not None:
-        #ax.legend(handles, legend, loc=0)
         ax.legend(handles, legend)
     if legend_twin is not None:
-        #ax2.legend(handles2, legend_twin, loc=0)
         ax2.legend(handles2, legend_twin)
     if xlabel is not None:
         ax.set_xlabel(xlabel)
@@ -394,40 +368,7 @@ def createLegend(s, varnames):
     else:
         return legend
 
-def setAxLinesBW(ax):
-    """
-    Take each Line2D in the axes, ax, and convert the line style to be 
-    suitable for black and white viewing.
-    """
-    MARKERSIZE = 3
-
-    COLORMAP = {
-        'b': {'marker': None, 'dash': (None,None)},
-        'g': {'marker': None, 'dash': [5,5]},
-        'r': {'marker': None, 'dash': [5,3,1,3]},
-        'c': {'marker': None, 'dash': [1,3]},
-        'm': {'marker': None, 'dash': [5,2,5,2,5,10]},
-        'y': {'marker': None, 'dash': [5,3,1,2,1,10]},
-        'k': {'marker': 'o', 'dash': (None,None)} #[1,2,1,10]}
-        }
-
-    for line in ax.get_lines():
-        origColor = line.get_color()
-        line.set_color('black')
-        line.set_dashes(COLORMAP[origColor]['dash'])
-        line.set_marker(COLORMAP[origColor]['marker'])
-        line.set_markersize(MARKERSIZE)
-
-def setFigLinesBW(fig):
-    """
-    Take each axes in the figure, and for each line in the axes, make the
-    line viewable in black and white.
-    """
-    for ax in fig.get_axes():
-        setAxLinesBW(ax)
-
 if __name__ == "__main__":
-    import scipy as sp
     x = sp.arange(0, 2*sp.pi, 0.1)
     y = sp.cos(x)
     z = sp.sin(x)

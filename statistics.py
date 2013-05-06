@@ -70,20 +70,15 @@ def singleStats(filename, doFinalStats=False):
         sampled_agents = sample_m + sample_a 
         for i in sampled_agents:
             N = -1
-            #myylimits = [0, 10]
             myylimits = None
             vel = ds.velocities[:,i]
             v = sp.sqrt(sp.sum(vel*vel, axis=1))
-            typechar = 'm' if ds.types[i]==ds.is_mesenchymal else 'a'
-            #plotting.plotlines([ds.times[:N], ds.times[:N]], [ds.energies[:N,i], v[:N]], xlabel="Time", ylimits=myylimits, ylabel="Energy of single agent", folder=resultsfolder, savefile="energy_%s%s.png" % (i, typechar)) 
+            typechar = 'm' if ds.types[i]==ds.is_mesenchymal else 'a' 
             plotting.plotlines_vert_subplot([ds.times[:N]], [ds.energies[:N,i]], [ds.times[:N]], [v[:N]], xlabel="Time", ylabel="Energy", xlabel2="Time", ylabel2="Velocity", ylimits=myylimits, folder=resultsfolder, savefile="energy_%s%s%s" % (i, typechar, constants.graphics_ending))
-            #plotting.plotlines([ds.times[:N]], [v[:N]], xlabel="Time")
 
         #get average energy
         consider = sp.logical_or(ds.states==sim.States.MOVING, ds.states==sim.States.ORIENTING)
         energies = sp.ma.array(ds.energies, mask=~consider)
-#        for Aidx in range(ds.N_agents):
-#            en_averages[Aidx] = statutils.avgEnergyForAgent(ds.energies[:,Aidx], ds.states[:,Aidx])
         avg_energy_m = sp.mean(energies[:,mesenchymals], axis=1) if mesenchymals.any() else None
         avg_energy_a = sp.mean(energies[:,amoeboids], axis=1) if amoeboids.any() else None
         #get avg velocities
