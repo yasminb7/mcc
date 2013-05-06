@@ -8,10 +8,8 @@ import sys, os, traceback
 import utils, graphics
 from utils import getSimfiles, verifySimulationNecessary
 from classSimulation import Simulation
-from classDataset import Dataset
 import constants
 from utils import info, error
-import readdata
 
 #probably needs to be global
 items = list()
@@ -30,18 +28,6 @@ def getConstlist():
                 constlist.append(c)
     return constlist
 
-#def framesWorker():
-#    while True:
-#        const = None
-#        try:
-#            const = items.get(block=False)
-#        except Queue.Empty:
-#            pass
-#        if const is not None:
-#            info("Calling writeFrames()")
-#            graphics.writeFrames(const)
-#            items.task_done()
-
 def prepareSim():
     utils.setup_logging_base()
     constlist = getConstlist()
@@ -49,12 +35,8 @@ def prepareSim():
     for const in constlist:
         info(const["name"])
     
-    #doContinue = raw_input("continue?")
-    
     info("Running total of %s simulations" % len(constlist))
     count = 0
-    #worker = Process(target=framesWorker)
-    #worker.start()
     for const in constlist:
         try:
             count += 1
@@ -62,11 +44,6 @@ def prepareSim():
             #run the simulation
             mySim = Simulation(const)
             mySim.run()
-#            mySim = Simulation(const, noDelete=True)
-#            ds = readdata.getDataset(Dataset.AMOEBOID, mySim.resultsdir)
-#            setattr(mySim, "dsA", ds)
-            #mySim.dsA = readdata.getDataset(Dataset.AMOEBOID, mySim.resultsdir)
-            #utils.copyAnimScript(mySim.resultsdir)
             #run analysis algorithms
             mySim.analyse()
             if const["create_video_directly"] or const["create_path_plot"]:

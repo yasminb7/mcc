@@ -7,7 +7,6 @@ import os, datetime
 import scipy as sp
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
-#from classAmoeboid import Amoeboid
 from classMesenchymal import Mesenchymal
 from classMaze import Maze, densityArray
 from classDataset import Dataset
@@ -44,7 +43,7 @@ class Simulation:
     def plotmaze(self, maze, filename = "maze.png"):
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        imgplot = ax.imshow(maze.T, extent=self.const["fieldlimits"], cmap=cm.get_cmap("binary"))
+        ax.imshow(maze.T, extent=self.const["fieldlimits"], cmap=cm.get_cmap("binary"))
         plt.grid(True)
         plt.axis(self.const["fieldlimits"])
         mazefilepath = utils.getResultsFilepath(self.resultsdir, filename)
@@ -52,32 +51,13 @@ class Simulation:
         
     def plotcgrad(self, concentrationfield, filename = 'concentrationfield.png'):
         fig = plt.figure(figsize=(16,16), frameon=False)
-        #ax = fig.add_subplot(111)
         ax = plt.Axes(fig, [0., 0., 1., 1.], )
         ax.set_axis_off()
         fig.add_axes(ax)
-        #plt.grid(True)
-        #fieldnorm = concentrationfield[0]**2 + concentrationfield[1]**2
         img = utils.scaleToMax(1.0, -concentrationfield.T)
-        imgplot = ax.imshow(img, extent=self.const["fieldlimits"], origin='lower')
-        #plt.axis(self.const["fieldlimits"])
-        #imgplot = ax.imshow(fieldnorm.T)
-        #plt.colorbar(mappable=imgplot)
+        ax.imshow(img, extent=self.const["fieldlimits"], origin='lower')
         concentrationfilepath = utils.getResultsFilepath(self.resultsdir, filename)
         plt.savefig(concentrationfilepath, bbox_inches='tight', dpi=100)
-        
-#    def initMesenchymal(self, const, basepath=None):
-#        if basepath is None:
-#            basepath = os.getcwd()
-#        eatpath = os.path.join(basepath, constants.resourcespath, const["eatshape"])
-#        self.bite = utils.loadImage(eatpath)
-#        self.bite = utils.scaleToMax(constants.wallconst, self.bite)
-#        self.degradation_rate = const["zeta"] #* sp.mean(Mesenchymal.eat)
-#        self.safety_factor = const["safety_factor"]
-#    
-#    def getMaxEatingDistance(self, density):
-#        shape = tuple(map(round, (1/density) * self.bite.shape))
-#        return 0.5 * self.safety_factor * max(shape)
     
     #@profile
     def run(self):
@@ -92,7 +72,6 @@ class Simulation:
         NNN = self.NNN
         dt = self.const["dt"]
         goal = sp.array(self.const["gradientcenter"])
-        field = self.const["fieldlimits"]
         initial_position = sp.array(self.const["initial_position"])
         stray = sp.array(self.const["initial_position_stray"])
         assert stray>0, "Unfortunately you have to use a stray>0."
@@ -126,10 +105,8 @@ class Simulation:
         self.dsA.times[0] = 0.0
         self.dsA.statechanges = period * sp.random.random(N)
         
-        #agents = []
         Mesenchymal.classInit(self.const)
-        for agentIndex in range(N_mesenchymal+N_amoeboid):#enumerate(N_mesenchymal*[Mesenchymal]+N_amoeboid*[Amoeboid]):
-            #randomizePos = sp.random.normal(0, stray, 2)
+        for agentIndex in range(N_mesenchymal+N_amoeboid):
             tryToPlace = True
             nAttempts = 0
             while tryToPlace:
@@ -139,12 +116,11 @@ class Simulation:
                 sp.clip(posidx, myMaze.minidx, myMaze.maxidx, out=posidx)
                 onECM = (maze[posidx[0],posidx[1]] > 0.5 * constants.wallconst)
                 if not onECM:
-                    self.dsA.positions[0,agentIndex] = sp.array([initX, initY])#initial_position + randomizePos #stray*sp.rand(DIM)
+                    self.dsA.positions[0,agentIndex] = sp.array([initX, initY])
                     tryToPlace = False
                 else:
                     nAttempts += 1
                     assert nAttempts < 15, "Could not place agents outside of ECM for given parameters"
-            #agents.append( Constructor(agentIndex, self.dsA.positions[:,agentIndex,:], self.dsA.velocities[:,agentIndex,:], self.dsA.energies[:,agentIndex], self.dsA.states[:,agentIndex], self.dsA.statechanges[agentIndex], self.const, period=self.dsA.periods[agentIndex], delay=self.dsA.delays[agentIndex]) )
         
         posidx = sp.array(density * self.dsA.positions[0], dtype=sp.int0)
         
@@ -156,10 +132,6 @@ class Simulation:
         
         if isMesenchymal.any():
             assert Mesenchymal.getMaxEatingDistance(density)<=myMaze.border, "The area where Mesenchymal eat is too large compared to the border of the maze"
-        #if isAmoeboid.any():
-            #assert Amoeboid.getMaxFeelingDistance(density)<=myMaze.border, "The area where Mesenchymal eat is too large compared to the border of the maze"
-
-        #self.plotmaze(maze)
         
         #how often do we want to update the user about the progress (period)
         update_progress = 50
@@ -173,10 +145,8 @@ class Simulation:
         enable_interaction = self.const["enable_interaction"]
         notDiag = ~sp.eye(N, dtype=sp.bool_)
         r_coupling = self.const["repulsion_coupling"]
-        #a_coupling = self.const["alignment_coupling"]
         w = self.const["w"] * dt
         _w = (1-w) * dt
-        radius = self.const["radius"]
         interaction_radius = self.const["interaction_radius"]
         alignment_radius = self.const["alignment_radius"]
         q = self.const["q"]
@@ -198,8 +168,6 @@ class Simulation:
         degradation_radius = self.const["degradation_radius"]
         nodegradationlimit = self.const["nodegradationlimit"]
         #zeta = self.const["zeta"]
-        wallconst = constants.wallconst
-        wallgradconst = constants.wallgradconst
         
         
         
@@ -209,7 +177,6 @@ class Simulation:
         states = self.dsA.states
         statechanges = self.dsA.statechanges
         eating = self.dsA.eating
-        types = self.dsA.types
         periods = self.dsA.periods
         delays = self.dsA.delays
         times = self.dsA.times
@@ -237,37 +204,27 @@ class Simulation:
                 pos_h = pos_v.swapaxes(0,1)
                 pos_difference = pos_v-pos_h
                 d_squared = sp.sum(pos_difference*pos_difference, axis=2)
-                #d_squared = sp.triu(d_squared, k=1).real
                 
                 inRepulsionRadius = d_squared < 4*interaction_radius*interaction_radius
                 inAlignmentRadius = d_squared < 4*alignment_radius*alignment_radius
                 doRepulse = sp.logical_and(inRepulsionRadius, notDiag)
                 doAlign = sp.logical_and(~inRepulsionRadius, inAlignmentRadius)
                 doAlign = sp.logical_and(doAlign, notDiag)
-                #oldValues = direction_angles
-                #newValues = sp.zeros_like(direction_angles)
                 dir_x = directions[:,0]
                 dir_y = directions[:,1]
-                newdir_x = dir_x #sp.zeros_like(dir_x)
-                newdir_y = dir_y #sp.zeros_like(dir_y)
+                newdir_x = dir_x
+                newdir_y = dir_y
                 for i in xrange(N):
-                #for i, j in zip()
-                    #newValues[i] = 0.95*oldValues[i] + 0.05*sp.mean( oldValues[doInteract[i]])
-                    #_w is 1-w
                     interactionPartners = doAlign[i]
                     nInteractions = sp.count_nonzero(interactionPartners)
                     if nInteractions>0:
                         newdir_x[i] = _w*dir_x[i] + w*sp.mean( dir_x[interactionPartners] )
                         newdir_y[i] = _w*dir_y[i] + w*sp.mean( dir_y[interactionPartners] )
-                #differentVal = oldValues!=newValues
-                #states[iii][differentVal] = sim.States.BLOCKED
-                #direction_angles = newValues
                 dir_norms = sp.sqrt( newdir_x*newdir_x + newdir_y*newdir_y )
                 dir_norms[dir_norms==0.0] = 1.0
                 directions[:,0] = newdir_x/dir_norms
                 directions[:,1] = newdir_y/dir_norms
-                
-                #TOOD: interaction numpy style here (gangnam style also ok)
+
                 F_rep = sp.zeros_like(pos_difference)
                 interactionIndices = sp.nonzero(doRepulse)
                 for i, j in zip(interactionIndices[0], interactionIndices[1]):
@@ -277,12 +234,8 @@ class Simulation:
             posidx = sp.array(density * positions[iii-1], dtype=sp.int0)
             sp.clip(posidx, myMaze.minidx, myMaze.maxidx, out=posidx)
             wgrad = myMaze.getGradientsPython(posidx)
-#            mazegrad = myMaze.getMazeGradient()
-#            wgrad = mazegrad[:,posidx[:,0],posidx[:,1]]
-#            wgrad = wgrad.T
 
-            evolve_orientation = statechanges < simtime
-            #is_moving = sp.logical_or( states[iii-1]==sim.States.MOVING, states[iii-1]==sim.States.BLOCKED ) 
+            evolve_orientation = statechanges < simtime 
             is_moving = states[iii-1]==sim.States.MOVING
             is_orienting = states[iii-1]==sim.States.ORIENTING
             theta = sp.zeros(self.N)
@@ -308,15 +261,9 @@ class Simulation:
                 directions[switch_to_moving, 0] = sp.cos(direction_angles[switch_to_moving])
                 directions[switch_to_moving, 1] = sp.sin(direction_angles[switch_to_moving])
             
-            #hasEnoughEnergy = (theta == 1.0)
             propelFactor = eta * E * theta
             F_propulsion = propelFactor[:,sp.newaxis] * directions
-            
-            #tightness = sp.zeros(self.N)
-            #TODO: calculate tightness here
-            #eaters = sp.zeros(self.N)
-            #eaters[ eating[iii-1] ] = 1.0
-            #dragFactor = - (gamma + tightness*hasEnoughEnergy + gamma2*eaters) 
+             
             dragFactor[isAmoeboid] = - gamma_a
             dragFactor[isMesenchymal] = - gamma_m
             
@@ -326,8 +273,7 @@ class Simulation:
             
             F_total = F_propulsion + F_drag + F_stoch + F_repulsion
             
-            #Check if new position is allowed, otherwise move back
-            #outsidePlayingField = sp.array([myMaze.withinPlayingField(positions[iii][idxA])==False for idxA in range(N)]) 
+            #Check if new position is allowed, otherwise move back 
             ta = positions[iii-1,:,0]<fieldlimits[0]+margin
             tb = positions[iii-1,:,0]>fieldlimits[1]-margin
             tc = positions[iii-1,:,1]<fieldlimits[2]+margin
@@ -414,12 +360,9 @@ class Simulation:
 
         self.iii = iii-1
         self.simtime = simtime
-        #self.agents = agents
         t_stop = datetime.datetime.now()
         info( "Simulation ended ")
         info( "Simulation took %s and ended with a simulation time of %s" % (t_stop-t_start, simtime))
-        
-        #self.saveFinalGradient(myMaze)
         
         if self.dsA is not None:
             self.dsA.resizeTo(iii)
@@ -447,7 +390,6 @@ class Simulation:
         posidx = sp.array(density * line, dtype=sp.int_)
         mazepoints = mazegrad[:,posidx[:,0],posidx[:,1]]
         mazepoints = sp.sqrt(mazepoints[0]*mazepoints[0] + mazepoints[1]*mazepoints[1])
-        x = [times[iii-bk:iii]]
         y = [mazepoints]
         plotting.plot([range(len(mazepoints))] , y, folder=self.resultsdir, savefile="mazeline_%d.png" % number)
     
