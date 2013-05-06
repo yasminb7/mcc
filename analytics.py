@@ -5,7 +5,6 @@ Created on 27.01.2013
 '''
 import scipy as sp
 import math
-import os.path
 import utils, constants
 
 def estimateAvgEnergy(const, ECMDensity, N_a, N_m):
@@ -40,8 +39,6 @@ def equilSpeedPropulsing(const, q):
     return equilSpeed(const, const["gamma_a"], const["delta"], 0.0, q)
 
 def equilSpeed(const, gamma, delta, zeta, q, plus=True):
-    #q = const["q"]
-    #gamma = const["gamma"]
     eta = const["eta"]
     discr = (delta+zeta)**2 / (4*eta*eta) + q/gamma
     if plus:

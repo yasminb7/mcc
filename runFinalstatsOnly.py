@@ -3,16 +3,14 @@ Created on 09.10.2012
 
 @author: frederic
 '''
-import sys, os, traceback #, Queue
-#from multiprocessing import Process
+import sys, os, traceback
 import utils, graphics
 from utils import getSimfiles, verifySimulationNecessary
 from classSimulation import Simulation
+import classDataset
 from classDataset import Dataset
 import constants
-#from constants import resultspath, simdir
 from utils import info, error
-import readdata
 
 #probably needs to be global
 items = list()
@@ -62,7 +60,7 @@ def prepareSim():
             info("Running final statistics only for %s:\t %s out of %s" % (const["name"], count, len(constlist))) 
             #run the simulation
             mySim = Simulation(const, noDelete=True)
-            ds = readdata.getDataset(Dataset.AMOEBOID, mySim.resultsdir)
+            ds = classDataset.load(Dataset.AMOEBOID, mySim.resultsdir, fileprefix="A", dt=const["dt"])
             setattr(mySim, "dsA", ds)
             #run analysis algorithms
             mySim.analyse()
@@ -75,7 +73,6 @@ def prepareSim():
             error(traceback.format_exc())
     info("All simulations have been run.")
 
-    cwd = os.getcwd()
     for i, const in enumerate(items):
         functions = []
         if const["create_path_plot"]:

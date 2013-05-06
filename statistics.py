@@ -5,11 +5,12 @@ Created on 14.10.2012
 '''
 #TODO: remove const from arguments of functions that deal with pickles only
 
-import os, string, csv
-import utils, readdata, statutils, plotting
+import os, csv
+import utils, statutils, plotting
 import scipy as sp
 import constants
 import random
+import classDataset
 from classDataset import Dataset
 from constants import simdir, resultspath
 import sim
@@ -53,7 +54,7 @@ def singleStats(filename, doFinalStats=False):
         print "singleStats for %s" % results["name"]
         _resultspath = constants.resultspath[0:-1]
         resultsfolder = os.path.join(root, _resultspath, results["name"])
-        ds = readdata.getDataset(Dataset.AMOEBOID, resultsfolder, results["dt"])
+        ds = classDataset.load(Dataset.AMOEBOID, resultsfolder, fileprefix="A", dt=results["dt"])
         statutils.clearStatistics(resultsfolder)
         
         if doFinalStats:
@@ -275,7 +276,7 @@ def plotFitness2(xaxis, lines, const, savedir, filename, suffix=None):
             values = []
             for c in myconst:
                 datapath = os.path.join(constants.resultspath, c["name"])
-                ds = readdata.getDataset(Dataset.AMOEBOID, datapath, c["dt"])
+                ds = classDataset.load(Dataset.AMOEBOID, datapath, dt=c["dt"], fileprefix="A")
                 dist = statutils.getDistances(ds.positions, c["gradientcenter"])
                 amoeboids = ds.types==Dataset.is_amoeboid
                 mesenchymal = ds.types==Dataset.is_mesenchymal

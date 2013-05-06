@@ -118,21 +118,24 @@ class Dataset(object):
             self.__delattr__(name)
 
 def load(arrays, path, fileprefix, dt, readOnly=True):
-    loaded_arrays = dict()
-    for name, val in arrays.iteritems():
-        filepath = os.path.join(path, val.getFilename())
-        if val.onDisk==False:
-            loaded_arrays[name] = sp.load(filepath)
-        else:
-            with open(filepath + ".shape.pickle") as picklefile:
-                arrshape = cPickle.load(picklefile)
-                arrmode = "r" if readOnly else "w+"
-                arr = sp.memmap(filepath, dtype=val.dtype, mode=arrmode, shape=arrshape)
-                loaded_arrays[name] = arr
-
-    sample_arr = loaded_arrays["energies"]
+    try:
+        loaded_arrays = dict()
+        for name, val in arrays.iteritems():
+            filepath = os.path.join(path, val.getFilename())
+            if val.onDisk==False:
+                loaded_arrays[name] = sp.load(filepath)
+            else:
+                with open(filepath + ".shape.pickle") as picklefile:
+                    arrshape = cPickle.load(picklefile)
+                    arrmode = "r" if readOnly else "w+"
+                    arr = sp.memmap(filepath, dtype=val.dtype, mode=arrmode, shape=arrshape)
+                    loaded_arrays[name] = arr
     
-    ds = Dataset(arrays, sample_arr.shape[0], dt, sample_arr.shape[1], constants.DIM, path, doAllocate=False, fileprefix=fileprefix)
-    for name, val in arrays.iteritems():
-        ds.__setattr__(name, loaded_arrays[name])
+        sample_arr = loaded_arrays["energies"]
+        
+        ds = Dataset(arrays, sample_arr.shape[0], dt, sample_arr.shape[1], constants.DIM, path, doAllocate=False, fileprefix=fileprefix)
+        for name, val in arrays.iteritems():
+            ds.__setattr__(name, loaded_arrays[name])
+    except IOError:
+        return None
     return ds

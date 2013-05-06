@@ -10,8 +10,9 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 from classMesenchymal import Mesenchymal
 from classMaze import Maze, densityArray
+import classDataset
 from classDataset import Dataset
-import readdata, utils
+import utils
 import constants
 
 def main(name):
@@ -137,7 +138,7 @@ def writeFrames(myconst, output_func=[create_plots_ds]):
     savedir = os.path.join(path, resultsdir)
     logfilename = os.path.join(savedir, "logfile_create_video.txt")
     logging_filehandler = utils.setup_logging_sim(logfilename)
-    dsA = readdata.getDataset(Dataset.AMOEBOID, savedir, myconst["dt"], prefix="A")
+    dsA = classDataset.load(Dataset.AMOEBOID, savedir, dt=myconst["dt"], fileprefix="A")
     simfps = 1/myconst["dt"]
     vidfps = myconst["fps"]
     step = int(simfps/vidfps)
