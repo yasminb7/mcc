@@ -1,2 +1,4 @@
 extras/.svn/
 results/
+*.pyc
+*.grad

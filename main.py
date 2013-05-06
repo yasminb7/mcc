@@ -80,7 +80,6 @@ def prepareSim():
             error(traceback.format_exc())
     info("All simulations have been run.")
 
-    cwd = os.getcwd()
     for i, const in enumerate(items):
         functions = []
         if const["create_path_plot"]:

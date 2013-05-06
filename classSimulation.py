@@ -3,11 +3,11 @@ Created on Jul 18, 2012
 
 @author: frederic
 '''
-import os, datetime, cPickle
+import os, datetime
 import scipy as sp
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
-from classAmoeboid import Amoeboid
+#from classAmoeboid import Amoeboid
 from classMesenchymal import Mesenchymal
 from classMaze import Maze, densityArray
 from classDataset import Dataset
@@ -16,7 +16,7 @@ import statutils
 import sim
 import utils
 from scipy import random
-from utils import info, debug
+from utils import info
 import constants
 
 class Simulation:
@@ -113,8 +113,9 @@ class Simulation:
         self.dsA.times[0] = 0.0
         self.dsA.statechanges = period * sp.random.random(N)
         
-        agents = []
-        for agentIndex, Constructor in enumerate(N_mesenchymal*[Mesenchymal]+N_amoeboid*[Amoeboid]):
+        #agents = []
+        Mesenchymal.classInit(self.const)
+        for agentIndex in range(N_mesenchymal+N_amoeboid):#enumerate(N_mesenchymal*[Mesenchymal]+N_amoeboid*[Amoeboid]):
             #randomizePos = sp.random.normal(0, stray, 2)
             tryToPlace = True
             nAttempts = 0
@@ -130,7 +131,7 @@ class Simulation:
                 else:
                     nAttempts += 1
                     assert nAttempts < 15, "Could not place agents outside of ECM for given parameters"
-            agents.append( Constructor(agentIndex, self.dsA.positions[:,agentIndex,:], self.dsA.velocities[:,agentIndex,:], self.dsA.energies[:,agentIndex], self.dsA.states[:,agentIndex], self.dsA.statechanges[agentIndex], self.const, period=self.dsA.periods[agentIndex], delay=self.dsA.delays[agentIndex]) )
+            #agents.append( Constructor(agentIndex, self.dsA.positions[:,agentIndex,:], self.dsA.velocities[:,agentIndex,:], self.dsA.energies[:,agentIndex], self.dsA.states[:,agentIndex], self.dsA.statechanges[agentIndex], self.const, period=self.dsA.periods[agentIndex], delay=self.dsA.delays[agentIndex]) )
         
         #agents = sp.ascontiguousarray(agents)
         
@@ -334,12 +335,10 @@ class Simulation:
             
             wallnorm = sp.sum(wgrad * wgrad, axis=1)
             touchingECM = (wallnorm != 0.0)
-            #TODO remove hardcoded number
-            #touchingECM = (wallnorm > 1e-5)
+
             collidingWithWall = sp.logical_and(touchingECM, isAmoeboid)
             collidingWithWall = sp.logical_or(collidingWithWall, outsidePlayingField)
             collidingWithWall = sp.logical_or(collidingWithWall, sp.logical_and(isMesenchymal, noDegradation))
-            #collidingWithWall = (wallnorm != 0.0)
 
             if collidingWithWall.any():
                 dotF = sp.zeros((self.N))
@@ -370,7 +369,7 @@ class Simulation:
             inContactWithECM = sp.logical_or(touchingECM, inOriginalECM)
             isDegrading = sp.logical_and(isMesenchymal, inContactWithECM)
             isDegrading = sp.logical_and(isDegrading, ~noDegradation)
-            #isDegrading = sp.logical_and(isDegrading, hasEnoughEnergy)
+
             #if an agent is degrading now then he should be degrading during the next 'degrading_bias' steps
             vel = velocities[iii][:]
             v = sp.sqrt(sp.sum(vel*vel, axis=1))
@@ -402,11 +401,9 @@ class Simulation:
             iii += 1
             do_continue = iii<NNN
 
-        #self.should_continue(agents, goal, simtime, iii-1)
-
         self.iii = iii-1
         self.simtime = simtime
-        self.agents = agents
+        #self.agents = agents
         t_stop = datetime.datetime.now()
         info( "Simulation ended ")
         info( "Simulation took %s and ended with a simulation time of %s" % (t_stop-t_start, simtime))
@@ -429,7 +426,6 @@ class Simulation:
         imgdata = myMaze.getGradImageSquared()
         imgdata = utils.scaleToMax(255.0, imgdata.T)
         imgdata = sp.flipud(imgdata)
-        #imgdata = sp.array(imgdata, dtype=sp.int8)
         img = Image.fromarray(imgdata.astype('uint8'))
         img.save(os.path.join(self.resultsdir, "lastGradient.bmp"))
     
