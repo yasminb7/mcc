@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from classMesenchymal import Mesenchymal
 from classMaze import Maze, densityArray
 from classDataset import Dataset
-from gradient import concentration
+#from gradient import concentration
 import statutils
 import sim
 import utils
@@ -85,7 +85,7 @@ class Simulation:
         density = densityArray(maze.shape, self.const["fieldlimits"])
         #prepare gradient
         goal_px = sp.array(density * goal, dtype=sp.int_)
-        concentrationfield = sp.fromfunction(lambda x, y: concentration(x, y, goal_px), (maze.shape))        
+        concentrationfield = sp.fromfunction(lambda x, y: utils.concentration(x, y, goal_px), (maze.shape))        
         #or null field
         #concentrationfield = sp.ones((x_max, y_max))
         cgrad = utils.getGradient(concentrationfield)

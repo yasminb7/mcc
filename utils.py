@@ -335,3 +335,8 @@ def removeFilesByEnding(path, ending):
 def deleteFile(path):
     if os.path.exists(path):
         os.remove(path)
+
+def concentration(i, j, gradientcenter):
+    c = gradientcenter
+    field = (i-c[0]) * (i-c[0]) + (j-c[1]) * (j-c[1])
+    return -1.0 * field
