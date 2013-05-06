@@ -3,22 +3,16 @@ Created on Sep 19, 2012
 
 @author: frederic
 '''
-from sys import platform as _platform
 import os, string
 import scipy as sp
 import matplotlib.lines as lines
-#matplotlib.use('Agg')
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
-from classAmoeboid import Amoeboid
 from classMesenchymal import Mesenchymal
 from classMaze import Maze, densityArray
 from classDataset import Dataset
 import readdata, utils
-import statutils
 import constants
-
-representation = {Mesenchymal : 's', Amoeboid : 'o'}
 
 def main(name):
     utils.setup_logging_base() 
@@ -49,9 +43,6 @@ def create_path_plot(myconst, path, savedir, dataset, step, finalmaze=None):
     density = densityArray(myMaze.data.shape, field)
     
     isMesenchymal = dsA.types==Dataset.is_mesenchymal
-    isAmoeboid = dsA.types==Dataset.is_amoeboid
-    dist = statutils.getDistances(dsA.positions[-1], myconst["gradientcenter"])
-    successful = dist < myconst["success_radius"]
     
     times = dsA.times
     if finalmaze is None:
@@ -67,7 +58,6 @@ def create_path_plot(myconst, path, savedir, dataset, step, finalmaze=None):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     plt.axis(field)
-    #ax.cla()
     for i in reversed(range(dsA.N_agents)):
         xpos = dsA.positions[::constants.line_resolution_step,i,0]
         ypos = dsA.positions[::constants.line_resolution_step,i,1]
@@ -75,10 +65,8 @@ def create_path_plot(myconst, path, savedir, dataset, step, finalmaze=None):
         A_line = lines.Line2D(xpos, ypos, color=c, alpha=0.8)
         ax.add_line(A_line)
     plt.axis(field)
-    ax.set_xlabel(r'$x_1$')#, fontsize=20)
-    ax.set_ylabel(r'$x_2$')#, fontsize=20)
-    #ax.set_title('Paths of agents')
-    #ax.grid(True)
+    ax.set_xlabel(r'$x_1$')
+    ax.set_ylabel(r'$x_2$')
     plt.imshow(finalmaze.T, extent=field, cmap=cm.get_cmap("binary"), interpolation='nearest', alpha=1, origin='lower')
     filename = os.path.join(savedir, "paths.png")
     plt.savefig(filename, format="png")
@@ -98,7 +86,6 @@ def create_plots_ds(myconst, path, resultspath, dataset, step, finalmaze=None):
     
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    #ax = plt.axis(field)
     
     k = 0
     each_nth_image = 10
@@ -114,9 +101,7 @@ def create_plots_ds(myconst, path, resultspath, dataset, step, finalmaze=None):
             myMaze.update(update_positions, Mesenchymal.eat, density, needGradient=True)
             myMaze.buildBorders(myMaze.data)
         if count%step==0:
-        #if k>100 and k<150:
             img = myMaze.getMaze()
-            #img = myMaze.getGradImageSquared()
             plotFrame(plt, ax, dsA, img, t, field, framesdir, k)
             if k%each_nth_image==0:
                 utils.info("Time %s out of %s, image %s" % (round(times[t], 4), round(endtime, 4), k))
@@ -128,23 +113,18 @@ def plotFrame(plt, ax, dsA, maze, t, field, savedir, k):
     isAmoeboid = dsA.types==dsA.is_amoeboid
     isMesenchymal = dsA.types==dsA.is_mesenchymal 
     plt.cla()
-    #colors were originally given by dsA.states[t][isAmoeboid]
-#    plt.scatter(dsA.positions[t,isAmoeboid,0], dsA.positions[t,isAmoeboid,1], color=dsA.states[t][isAmoeboid], marker='.', hold='on')
-#    plt.scatter(dsA.positions[t,isMesenchymal,0], dsA.positions[t,isMesenchymal,1], color=dsA.states[t][isMesenchymal], marker='.')
+
     colors = sp.array(len(isMesenchymal) * ['k'])
     colors[isMesenchymal] = 'g'
     colors[isAmoeboid] = 'b'
-    #col_a = sp.count_nonzero(isAmoeboid) * ['b']
-    #col_m = sp.count_nonzero(isMesenchymal) * ['g']
+
     plt.scatter(dsA.positions[t,isAmoeboid,0], dsA.positions[t,isAmoeboid,1], color=colors[isAmoeboid], marker='.', hold='on')
     plt.scatter(dsA.positions[t,isMesenchymal,0], dsA.positions[t,isMesenchymal,1], color=colors[isMesenchymal], marker='.')
     plt.axis(field)
     ax.set_xlabel(r'$x$', fontsize=20)
     ax.set_ylabel(r'$y$', fontsize=20)
     ax.set_title('Positions of agents at t=%s' % dsA.times[t])
-    #ax.grid(True)
     plt.imshow(maze.T, extent=field, cmap=cm.get_cmap("binary"), interpolation='bilinear', alpha=1, origin='lower')
-    #plt.imshow(maze.T, extent=field, interpolation='bilinear', alpha=1, origin='lower')
     filename = os.path.join(savedir, 'frame_'+ string.zfill(str(k),5) +".png")
     plt.savefig(filename, format="png")
 
@@ -165,9 +145,6 @@ def writeFrames(myconst, output_func=[create_plots_ds]):
     if length<step or step==0:
         step = 1
     framesdir = os.path.join(savedir, constants.framesdir)
-    #os.chdir(framesdir)
-#    command = ('rm', '*.png')
-#    utils.exec_silent_command(command)
     with open(os.path.join(savedir, constants.finalmaze_filename), "rb") as finalmazefile:
         myfinalmaze = sp.load(finalmazefile)
     utils.ensure_dir(framesdir)
@@ -177,27 +154,10 @@ def writeFrames(myconst, output_func=[create_plots_ds]):
     os.chdir(path)
     utils.info("Done.")
     utils.remove_logging_sim(logging_filehandler)
-
-#TODO: make this look for the files in the right folder
-#def write_mpg(resultspath, framesdir, videoname):
-    #print os.getcwd()
-    #command = ('mencoder',
-           #'mf://%s' % os.path.join(framesdir, "frame_*.png"),
-           #'-mf',
-           #'type=png:fps=20',
-           #'-ovc',
-           #'lavc',
-           #'-lavcopts',
-           #'vcodec=mpeg4',
-           #'-oac',
-           #'copy',
-           #'-o',
-           #os.path.join(resultspath, videoname))
-    #utils.exec_silent_command(command)
     
 def write_mpg(resultspath, framesdir, videoname):
-    import os.platform
-    if os.platform.system()=='Windows':
+    import platform
+    if platform.system()=='Windows':
         command = ('tools/ffmpeg-1.2-win32/ffmpeg', '-f image2 -i frame_%d.png ' + os.path.join(resultspath, videoname))
         utils.exec_silent_command(command)
     else:
@@ -214,9 +174,6 @@ def write_mpg(resultspath, framesdir, videoname):
                    '-o',
                    os.path.join(resultspath, videoname))
         utils.exec_silent_command(command)
-        
-
-
 
 if __name__ == '__main__':
     main(constants.currentsim)

@@ -5,14 +5,14 @@ Created on 17.10.2012
 '''
 
 import os
-import scipy as sp
-from utils import normsq
-from classAgent import Agent
-from sim import States
-import classMaze
+#import scipy as sp
+#from utils import normsq
+#from classAgent import Agent
+#from sim import States
+#import classMaze
 import constants, utils
 
-class Mesenchymal(Agent):
+class Mesenchymal():
     '''
     Represents an agent that can use his energy to degrade walls. Inherits from Agent.
     '''
@@ -23,10 +23,10 @@ class Mesenchymal(Agent):
     degrad_rate = 0.0
     safety_factor = 1.0
     
-    def __init__(self, i, pos, vel, E, state, statechange, const, m = None, period = None, delay = None):
-        if Mesenchymal.classInitialized==False:
-            Mesenchymal.classInit(const)            
-        Agent.__init__(self, i, pos, vel, E, const, m, state, statechange=statechange, period=period, delay=delay)
+#    def __init__(self, i, pos, vel, E, state, statechange, const, m = None, period = None, delay = None):
+#        if Mesenchymal.classInitialized==False:
+#            Mesenchymal.classInit(const)            
+#        Agent.__init__(self, i, pos, vel, E, const, m, state, statechange=statechange, period=period, delay=delay)
         
     @staticmethod
     def classInit(const, basepath=None):

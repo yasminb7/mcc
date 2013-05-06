@@ -65,6 +65,19 @@ class Simulation:
         #plt.colorbar(mappable=imgplot)
         concentrationfilepath = utils.getResultsFilepath(self.resultsdir, filename)
         plt.savefig(concentrationfilepath, bbox_inches='tight', dpi=100)
+        
+#    def initMesenchymal(self, const, basepath=None):
+#        if basepath is None:
+#            basepath = os.getcwd()
+#        eatpath = os.path.join(basepath, constants.resourcespath, const["eatshape"])
+#        self.bite = utils.loadImage(eatpath)
+#        self.bite = utils.scaleToMax(constants.wallconst, self.bite)
+#        self.degradation_rate = const["zeta"] #* sp.mean(Mesenchymal.eat)
+#        self.safety_factor = const["safety_factor"]
+#    
+#    def getMaxEatingDistance(self, density):
+#        shape = tuple(map(round, (1/density) * self.bite.shape))
+#        return 0.5 * self.safety_factor * max(shape)
     
     #@profile
     def run(self):
@@ -132,8 +145,6 @@ class Simulation:
                     nAttempts += 1
                     assert nAttempts < 15, "Could not place agents outside of ECM for given parameters"
             #agents.append( Constructor(agentIndex, self.dsA.positions[:,agentIndex,:], self.dsA.velocities[:,agentIndex,:], self.dsA.energies[:,agentIndex], self.dsA.states[:,agentIndex], self.dsA.statechanges[agentIndex], self.const, period=self.dsA.periods[agentIndex], delay=self.dsA.delays[agentIndex]) )
-        
-        #agents = sp.ascontiguousarray(agents)
         
         posidx = sp.array(density * self.dsA.positions[0], dtype=sp.int0)
         

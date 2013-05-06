@@ -5,13 +5,11 @@ Created on 09.10.2012
 '''
 import sys, os, traceback
 
-
 import utils, graphics
 from utils import getSimfiles, verifySimulationNecessary
 from classSimulation import Simulation
 from classDataset import Dataset
 import constants
-#from constants import resultspath, simdir
 from utils import info, error
 import readdata
 
@@ -89,9 +87,6 @@ def prepareSim():
             
         info("Creating graphic output for %s, %s out of %s" % (const["name"], i+1, len(items)))
         graphics.writeFrames(const, output_func=functions)
-        #videoname = "animation_%s.mpg" % const["name"]
-        #path = os.path.join(cwd, constants.resultspath, const["name"])
-        #graphics.write_mpg(path, videoname)
     
 if __name__ == "__main__":
     prepareSim()
