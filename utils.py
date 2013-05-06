@@ -7,16 +7,9 @@ from sys import platform as _platform
 import scipy as sp
 import math
 import matplotlib.pyplot as plt
-import logging, os.path, shutil, re, itertools, copy, importlib, time, string
+import logging, os.path, shutil, re, itertools, importlib, time, string
 from constants import confpackage, resourcespath, videoshellscript, ignore
 import subprocess
-
-def getNullFile():
-    if _platform == "linux" or _platform == "linux2" or _platform == "linux3":
-        nulfile = "/dev/null"
-    elif _platform == "win32" or "win64":
-        nulfile = "\\Device\\Null"
-	return nulfile
 
 def debug(*args, **kwargs):
     """Log a string or several at DEBUG level."""
@@ -99,8 +92,6 @@ def validSimfile(filename):
 def getSimfiles(simdir):
     """Get all valid simfiles in simdir."""
     #list files
-    #root = os.getcwd()
-    #os.chdir(root)
     files = os.listdir(simdir)
     filestocheck = []
     for f in files:
@@ -145,7 +136,6 @@ def savetimestamp(folder):
 def deleteTimestamp(folder):
     timestamp = getDirTimestamp(folder)
     if timestamp is not None:
-        stampfile = None
         files = os.listdir(folder)
         for filename in files:
             if re.match("[0-9]+\-[0-9]+\-[0-9]+", filename):
@@ -170,8 +160,8 @@ def natsort(list_, separator="_", lastisint=False):
     """Function not used as of now."""
     splitlist = sorted([map(floatifpossible, s.split(separator)) for s in list_])
     if lastisint:
-        for k, val in enumerate(splitlist):
-            splitlist[k][-1] = int(splitlist[k][-1])
+        for item in splitlist:
+            item[-1] = int(item[-1])
     newlist = [separator.join(map(str, el)) for el in splitlist]
     return newlist
 
@@ -251,11 +241,6 @@ def unravel_fixedaxis(const, axis, exclude=None):
         name = const["name"] % "#"
         return [(unravel(const), name)]
     constlist = []
-#    if "init" in const:
-#        const_initialized = const["init"]()
-#    else:
-#        const_initialized = [const]
-#    for const_i in const_initialized:
     factors = [const[key] if (key!=axis and key!=exclude) else [None] for key in const["factors"]]
     a_values = const[axis]
     prod = itertools.product(*factors)
@@ -265,7 +250,6 @@ def unravel_fixedaxis(const, axis, exclude=None):
         for a_ in a_values:
             p = [factor if factor is not None else a_ for factor in p_]
             p = tuple(p)
-            #newconst = createConst(const, p)
             newconst = const["get"](p, exclude="repetitions")
             axislist.append(newconst)
         specP = [factor if factor is not None else "#" for factor in p_]
@@ -296,7 +280,6 @@ def ensure_dir(f):
     if not os.path.exists(d):
         os.makedirs(d)
 
-#@profile
 def getGradient(a):
     """Return the gradient as given by the NumPy gradient function."""
     old_err_state = sp.seterr(divide='ignore', invalid='ignore')
@@ -327,9 +310,16 @@ def copyAnimScript(destination):
     
 def exec_silent_command(command):
     """Execute a given command, suppressing all output."""
-    #print getNullFile()
-    with open("disregard.txt", "w") as fh:
+    nullfile = getNullFile()
+    with open(nullfile, "w") as fh:
         subprocess.Popen(command, stdout=fh, stderr=fh)
+
+def getNullFile():
+    if _platform == "linux" or _platform == "linux2" or _platform == "linux3":
+        nulfile = "/dev/null"
+    elif _platform == "win32" or "win64":
+        nulfile = "\\Device\\Null"
+    return nulfile
 
 def removeFilesByEnding(path, ending):
     """Delete all files in a folder that have a given ending."""

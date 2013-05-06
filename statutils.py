@@ -7,9 +7,7 @@ Created on 14.10.2012
 import scipy as sp
 import scipy.stats as stats
 import cPickle, os
-#from scipy.linalg import norm
 import utils
-from utils import norm, exec_silent_command
 import constants
 import sim
 
@@ -17,8 +15,6 @@ import sim
 def hist(values, bins=10, limits=None):
     hist = stats.histogram(values, numbins=bins, defaultlimits=limits)
     return hist
-
-#plotlabels = { "successful" : "successful", "success_ratio" : "success ratio", "distance_from_goal" : "distance from goal", "time" : "time"}
 
 def avg_vel(velocities):
     """Returns velocity averaged over agents AND time"""
@@ -125,8 +121,6 @@ def finalstats(ds, goal, success_radius):
     stats = doCombinations(stats, "avg_en", energies, amoeboids, mesenchymals, successful, axis=1)
     
     displacement = ds.positions[-1] - ds.positions[0]
-    #displacement_n = sp.sqrt( sp.sum(displacement*displacement, axis=1))
-    #displacement_u = displacement / displacement_n
     straightPath = goal-ds.positions[0]
     straightPath_n = sp.sqrt( sp.sum(straightPath*straightPath, axis=1))
     straightPath_u = sp.zeros_like(straightPath)
@@ -169,12 +163,8 @@ def clearStatistics(folder):
     """Remove some files created by statistics.py in a given folder."""
     currentcwd = os.getcwd()
     os.chdir(folder)
-    #exec_silent_command( ("rm", "energy_*.png") )
-    #exec_silent_command( ("rm", "avg_energy.png") )
     files = ["avg_energy.png", constants.avg_en_vel_filename, constants.avg_dist_filename]
     for f in files:
-		path = os.path.join(folder, f)
-		utils.deleteFile(path)
-    #exec_silent_command( ("rm", constants.avg_en_vel_filename) )
-    #exec_silent_command( ("rm", constants.avg_dist_filename) )
+        path = os.path.join(folder, f)
+        utils.deleteFile(path)
     os.chdir(currentcwd)

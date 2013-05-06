@@ -293,7 +293,7 @@ class Maze(object):
         """
         Returns the maze and its gradient.
         """
-        return self.data, self.data_grad
+        return self.data
     
     def buildBorders(self, arr, arr_gr=None):
         b_v, b_h = ( int(self.border * self.density[i]) for i in xrange(2))

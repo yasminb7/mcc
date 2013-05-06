@@ -81,7 +81,7 @@ class Simulation:
         #prepare landscape
         mazepath = os.path.join(self.path, self.const["maze"])
         myMaze = Maze(mazepath, self.const["fieldlimits"], self.const["border"])
-        maze, mazegrad = myMaze.getData()
+        maze = myMaze.getData()
         density = densityArray(maze.shape, self.const["fieldlimits"])
         #prepare gradient
         goal_px = sp.array(density * goal, dtype=sp.int_)
@@ -163,13 +163,8 @@ class Simulation:
         directions[:,0] = sp.cos(self.dsA.direction_angles)
         directions[:,1] = sp.sin(self.dsA.direction_angles)
         degradation = sp.zeros(N)
-        #steps_between_updates = self.const["steps_between_updates"]
-        #degradation_radius = Mesenchymal.getDegradationRadius()
         degradation_radius = self.const["degradation_radius"]
         nodegradationlimit = self.const["nodegradationlimit"]
-        #zeta = self.const["zeta"]
-        
-        
         
         positions = self.dsA.positions
         velocities = self.dsA.velocities
