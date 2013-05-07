@@ -358,7 +358,7 @@ class Simulation:
         info( "Simulation ended ")
         info( "Simulation took %s and ended with a simulation time of %s" % (t_stop-t_start, simtime))
         
-        if self.dsA is not None:
+        if self.dsA is not None and not self.const["save_finalstats_only"]:
             self.dsA.resizeTo(iii)
             self.dsA.saveTo(self.resultsdir)
         

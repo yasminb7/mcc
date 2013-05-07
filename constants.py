@@ -91,4 +91,4 @@ def symbol(name):
 ignore = []
 #ignore.append("yay.py")
 
-currentsim = "prototype.py"
+currentsim = "maze-easy-ar.py"

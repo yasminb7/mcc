@@ -221,11 +221,8 @@ def plotGlobal(xaxis, lines, const, statvar, savedir, filename, disableVarInLege
                 csvfile.writerow(line["xs"])
                 csvfile.writerow(line["ys"])
                 csvfile.writerow(line["yerrs"])
-            
-            
-    
-    #temporarily disabled    
-    #plotting.errorbars(myxaxes, myyaxes, y_bars=myerrors, legend=mylegend, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename, **plotargs)
+        
+    plotting.errorbars(myxaxes, myyaxes, y_bars=myerrors, legend=mylegend, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename, **plotargs)
     
 def plotFitness(xaxis, lines, const, savedir, filename, suffix=None):
     mylines = []
@@ -318,8 +315,9 @@ def getFinalstats(constlist, statvar):
         error = sp.std(statistics)
     return value, error
 
-def plotCombinations(xaxis, lines, const, statvar, savedir, filename, **plotargs):
-    suffixes = ["", "_m", "_a", "_m_s", "_m_us", "_a_s", "_a_us"]
+def plotCombinations(xaxis, lines, const, statvar, savedir, filename, suffixes=None, **plotargs):
+    if suffixes is None:
+        suffixes = ["", "_m", "_a", "_m_s", "_m_us", "_a_s", "_a_us"]
     for suff in suffixes:
         plotGlobal(xaxis, lines, const, statvar+suff, savedir, filename+suff+constants.graphics_ending, **plotargs)
   
@@ -328,7 +326,7 @@ if __name__=="__main__":
     print "Creating statistics for %s" % simfile
     
     #create plots for individual simulations
-    singleStats(simfile, doFinalStats=False)
+    #singleStats(simfile, doFinalStats=False)
     
     #create plots containing data from the entire set of simulations described by currentsim
     cwd = os.getcwd()
@@ -348,9 +346,9 @@ if __name__=="__main__":
     maxSpeed = analytics.equilSpeedPropulsing(const, q=_q)
     plotCombinations(xaxis, lines, const, "avg_vel", savedir, "avg_vel", ylim=(0,maxSpeed))
     minLength = analytics.minPathLength(const)
-    plotCombinations(xaxis, lines, const, "distance_from_goal", savedir, "distance_from_goal", ylim=(0,minLength))
-    plotCombinations(xaxis, lines, const, "avg_path_length", savedir, "avg_path_length", ylim=(0,2100))
-    plotCombinations(xaxis, lines, const, "avg_path_length_err", savedir, "avg_path_length_err", ylim=(0,None))
+    #plotCombinations(xaxis, lines, const, "distance_from_goal", savedir, "distance_from_goal", ylim=(0,minLength))
+    #plotCombinations(xaxis, lines, const, "avg_path_length", savedir, "avg_path_length", ylim=(0,2100))
+    #plotCombinations(xaxis, lines, const, "avg_path_length_err", savedir, "avg_path_length_err", ylim=(0,None))
     plotCombinations(xaxis, lines, const, "avg_ci", savedir, "avg_ci", ylim=(0,None))
     plotGlobal(xaxis, lines, const, "success_ratio", savedir, "success_ratio"+constants.graphics_ending, ylim=(0,1))
     plotGlobal(xaxis, lines, const, "success_ratio_a", savedir, "success_ratio_a"+constants.graphics_ending, ylim=(0,1))

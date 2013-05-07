@@ -145,6 +145,9 @@ def updateTimestamp(folder):
     if os.path.exists(folder):
         deleteTimestamp(folder)
         savetimestamp(folder)
+        return True
+    else:
+        return False
 
 def getResultsDir(filename):
     """From a given simfile, create a name for a folder in results that is obtained by removing the file ending."""
