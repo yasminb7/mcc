@@ -157,9 +157,13 @@ def writeFrames(myconst, output_func=[create_plots_ds]):
     utils.remove_logging_sim(logging_filehandler)
     
 def write_mpg(resultspath, framesdir, videoname):
+    pattern = 'frame_%05d.png'
+    framespattern = os.path.join(resultspath,  framesdir, pattern)
+    videopath = os.path.join(resultspath, videoname)
     import platform
     if platform.system()=='Windows':
-        command = ('tools/ffmpeg-1.2-win32/ffmpeg', '-f image2 -i frame_%d.png ' + os.path.join(resultspath, videoname))
+        cmdPath = os.path.join(os.getcwd(), 'tools', 'ffmpeg-1.2-win32', 'bin', 'ffmpeg.exe')
+        command = (cmdPath, '-y', '-i', framespattern, videopath)
         utils.exec_silent_command(command)
     else:
         command = ('mencoder',

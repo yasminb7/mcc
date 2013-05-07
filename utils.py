@@ -310,16 +310,8 @@ def copyAnimScript(destination):
     
 def exec_silent_command(command):
     """Execute a given command, suppressing all output."""
-    nullfile = getNullFile()
-    with open(nullfile, "w") as fh:
+    with open(os.devnull, "wb") as fh:
         subprocess.Popen(command, stdout=fh, stderr=fh)
-
-def getNullFile():
-    if _platform == "linux" or _platform == "linux2" or _platform == "linux3":
-        nulfile = "/dev/null"
-    elif _platform == "win32" or "win64":
-        nulfile = "\\Device\\Null"
-    return nulfile
 
 def removeFilesByEnding(path, ending):
     """Delete all files in a folder that have a given ending."""
