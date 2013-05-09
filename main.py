@@ -32,9 +32,6 @@ def prepareSim():
     utils.setup_logging_base()
     constlist = getConstlist()
     
-    for const in constlist:
-        info(const["name"])
-    
     info("Running total of %s simulations" % len(constlist))
     count = 0
     for const in constlist:
@@ -49,8 +46,11 @@ def prepareSim():
             if (const["create_video_directly"] or const["create_path_plot"]) and not const["save_finalstats_only"]:
                 info("Item added: %s" % const["name"])
                 items.append(const)
+        except KeyboardInterrupt:
+            info("Aborting by user request.")
+            mySim.cleanUp()
+            sys.exit(1)
         except:
-            error(sys.exc_info()[0])
             error("Problems with simulation %s" % const["name"])
             error(traceback.format_exc())
     info("All simulations have been run.")

@@ -3,7 +3,7 @@ Created on Jul 18, 2012
 
 @author: frederic
 '''
-import os, datetime
+import os, datetime, shutil
 import scipy as sp
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
@@ -362,7 +362,7 @@ class Simulation:
             self.dsA.resizeTo(iii)
             self.dsA.saveTo(self.resultsdir)
         elif self.dsA is not None and self.const["save_finalstats_only"]:
-            self.dsA.saveMinimal(self.resultsdir)
+            self.dsA.erase()
         
         saved_constants = utils.getResultsFilepath(constants.resultspath, self.const["name"], constants.saved_constants_filename)
         statutils.saveConst(self.const, saved_constants)
@@ -397,6 +397,12 @@ class Simulation:
         picklepath = utils.getResultsFilepath(self.resultsdir, constants.finalstats_pickle)
         textpath = utils.getResultsFilepath(self.resultsdir, constants.finalstats_text)
         statutils.savefinalstats(picklepath, textpath, self.const, self.dsA)
+    
+    def cleanUp(self):
+        if self.dsA is not None:
+            self.dsA.erase()
+        shutil.rmtree(self.resultsdir)
+        utils.info("Cleaned up results directory.")
 
 def prepareSim(const):
     utils.setup_logging_base() 

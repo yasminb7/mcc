@@ -91,8 +91,8 @@ def symbol(name):
 #If you have files in the sim/ directory that you want to ignore, you can add them to the ignore list.
 #Alternatively, you can just add a single _ in front of the filename.
 ignore = []
-ignore.append("maze-easy-ar.py")
-ignore.append("with-without-i.py")
+#ignore.append("maze-easy-ar.py")
+#ignore.append("with-without-i.py")
 
-#currentsim = "maze-easy-ar.py"
-currentsim = "prototype.py"
+currentsim = "with-without-i.py"
+#currentsim = "prototype.py"

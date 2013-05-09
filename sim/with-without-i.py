@@ -104,5 +104,5 @@ const = {
 "create_path_plot" : True,
 "create_video_directly" : False,
 
-"save_finalstats_only" : False,
+"save_finalstats_only" : True,
 }

@@ -110,7 +110,7 @@ class Dataset(object):
                 filepath = os.path.join(path, val.getFilename())
                 sp.save(filepath, arr)
     
-    def saveMinimal(self, path):
+    def erase(self):
         mmapfiles = []
         for name in self.arrays:
             arr = self.__getattribute__(name)
