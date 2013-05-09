@@ -29,11 +29,13 @@ framesdir = "frames/"
 logfilename = "sim.log"
 videoshellscript = "anim.sh"
 
-graphics_ending = ".png"
+#graphics_ending = ".png"
+graphics_ending = ".tiff"
 
 simpickle_filename = "simdata.pickle"
 finalstats_pickle = "finalstats.pickle"
 finalstats_text = "finalstats.txt"
+saved_constants_filename = "constants.txt"
 avg_en_vel_filename = "avg_en_vel" + graphics_ending
 avg_dist_filename = "avg_dist_from_goal" + graphics_ending
 succ_rate_filename = "success_rate" + graphics_ending
@@ -91,4 +93,5 @@ def symbol(name):
 ignore = []
 #ignore.append("yay.py")
 
-currentsim = "maze-easy-ar.py"
+#currentsim = "maze-easy-ar.py"
+currentsim = "with-without-i.py"

@@ -362,6 +362,9 @@ class Simulation:
             self.dsA.resizeTo(iii)
             self.dsA.saveTo(self.resultsdir)
         
+        saved_constants = utils.getResultsFilepath(constants.resultspath, constants.saved_constants_filename)
+        statutils.saveConst(self.const, saved_constants)
+        
         #save the maze of the last time step so we can reuse it for the path plots
         with open(os.path.join(self.resultsdir, constants.finalmaze_filename), "w") as finalmaze:
             sp.save(finalmaze, myMaze.data)

@@ -147,6 +147,10 @@ def savefinalstats(picklepath, textpath, const, dataset):
     with open(textpath, "w") as statfile:
         statfile.write(dicAsText(stats))
 
+def saveConst(const, filename):
+    with open(filename, "w") as constfile:
+        constfile.write( dicAsText(const) )
+
 def readfinalstats(finalstatspath):
     with open(finalstatspath, "r") as statfile:
         stats = cPickle.load(statfile)

@@ -15,6 +15,7 @@ from classDataset import Dataset
 from constants import simdir, resultspath
 import sim
 import analytics
+import itertools
 
 def prepareStats(filename):
     """Return const and savefolder for a given simfile."""
@@ -223,6 +224,62 @@ def plotGlobal(xaxis, lines, const, statvar, savedir, filename, disableVarInLege
                 csvfile.writerow(line["yerrs"])
         
     plotting.errorbars(myxaxes, myyaxes, y_bars=myerrors, legend=mylegend, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename, **plotargs)
+
+def plotGlobal2factors(xaxis, lines, const, statvar, savedir, filename, disableVarInLegend=False, **plotargs):
+    """Same as plotGlobal, but here lines is a list. We will take the cartesion product
+    of the factors in the list and plot a line for each combination.
+    """
+    #If I can't access lines as a list, there's nothing to do.
+    assert not isinstance(lines, basestring), "Cannot create this kind of plot: lines is not a list."
+    
+    print "Plotting %s" % (statvar,)
+    mylines = []
+    possiblePlot = xaxis in const["factors"]
+    
+    allInFactors = True
+    for l in lines:
+        if l not in const["factors"]:
+            allInFactors = False
+            break
+        
+    if not possiblePlot or not allInFactors:
+        print "Cannot create this kind of plot given the arguments %s and %s" % (xaxis, lines)
+        return None
+    
+    unraveled = utils.unravel(const)
+    
+    linesiter = itertools.product( const[lines[0]], const[lines[1]]) 
+    
+    for line in linesiter:
+        linedata = {"xs" : const[xaxis]}
+        ys = []
+        yerrs = []
+        for x in const[xaxis]:
+            myconst = utils.applyFilter(unraveled, xaxis, [x])
+            myconst = utils.applyFilter(myconst, lines[0], [line[0]])
+            myconst = utils.applyFilter(myconst, lines[1], [line[1]])
+            value, err = getFinalstats(myconst, statvar)
+            ys.append(value)
+            yerrs.append(err)
+        linedata["ys"] = ys
+        linedata["yerrs"] = yerrs
+        interaction = line[1]
+        if interaction==True:
+            interaction='+'
+        elif interaction==False:
+            interaction='-'
+        label = "q = %s, %s" % (line[0], interaction)
+        linedata["label"] = label if disableVarInLegend==False else constants.symbol(line)
+        mylines.append(linedata)
+    
+    myxaxes = [line["xs"] for line in mylines]
+    myyaxes = [line["ys"] for line in mylines]
+    myerrors = [line["yerrs"] for line in mylines]
+    mylegend = [line["label"] for line in mylines]
+    myxlabel = constants.symbol(xaxis)
+    myylabel = constants.symbol(statvar)
+        
+    plotting.errorbars(myxaxes, myyaxes, y_bars=myerrors, legend=mylegend, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename, **plotargs)
     
 def plotFitness(xaxis, lines, const, savedir, filename, suffix=None):
     mylines = []
@@ -317,7 +374,8 @@ def getFinalstats(constlist, statvar):
 
 def plotCombinations(xaxis, lines, const, statvar, savedir, filename, suffixes=None, **plotargs):
     if suffixes is None:
-        suffixes = ["", "_m", "_a", "_m_s", "_m_us", "_a_s", "_a_us"]
+        #suffixes = ["", "_m", "_a", "_m_s", "_m_us", "_a_s", "_a_us"]
+        suffixes = ["", "_m", "_a"]
     for suff in suffixes:
         plotGlobal(xaxis, lines, const, statvar+suff, savedir, filename+suff+constants.graphics_ending, **plotargs)
   
@@ -353,6 +411,13 @@ if __name__=="__main__":
     plotGlobal(xaxis, lines, const, "success_ratio", savedir, "success_ratio"+constants.graphics_ending, ylim=(0,1))
     plotGlobal(xaxis, lines, const, "success_ratio_a", savedir, "success_ratio_a"+constants.graphics_ending, ylim=(0,1))
     plotGlobal(xaxis, lines, const, "success_ratio_m", savedir, "success_ratio_m"+constants.graphics_ending, ylim=(0,1))
+    
+    plotFitness(xaxis, lines, const, savedir, "fitness"+constants.graphics_ending)
+    
+    if simfile=="with-without-i.py":
+        plotGlobal2factors(xaxis, ["q", "enable_interaction"], const, "success_ratio", savedir, "success_ratio"+constants.graphics_ending, ylim=(0,1))
+        plotGlobal2factors(xaxis, ["q", "enable_interaction"], const, "success_ratio_a", savedir, "success_ratio_a"+constants.graphics_ending, ylim=(0,1))
+    
     
     if simfile=="densities-all.py":
         plotGlobal(xaxis, "maze", const, "success_ratio", savedir, "success_ratio2"+constants.graphics_ending, ylim=(0,1), disableVarInLegend=True)

@@ -15,12 +15,32 @@ from utils import info
 mydpi = 300
 
 colors = ['r', 'g', 'b', 'y']
-#matplotlib.rcParams['font.size']=12.0
+matplotlib.rcParams['figure.figsize'] = 6.83, 5.1225
+#matplotlib.rcParams['figure.dpi'] = mydpi
+matplotlib.rcParams['savefig.dpi'] = mydpi
+
+matplotlib.rcParams['font.size']=12
+matplotlib.rcParams['font.family']="sans-serif"
+matplotlib.rcParams['font.serif']=["Arial"]
 #matplotlib.rcParams['font.family']="serif"
-#matplotlib.rcParams['font.family']="serif"
-matplotlib.rcParams['font.serif']=["Latin Modern", "Computer Modern Roman", "Times"]
+#matplotlib.rcParams['font.serif']=["Latin Modern", "Computer Modern Roman", "Times"]
 #matplotlib.rcParams['text.usetex']=True
-#matplotlib.rcParams['savefig.dpi']=100.
+#matplotlib.rcParams['savefig.dpi']=300.
+# set tick width
+
+matplotlib.rcParams['lines.linewidth'] = 1
+matplotlib.rcParams['axes.linewidth'] = 1.5
+matplotlib.rcParams['axes.labelsize'] = "x-large"
+matplotlib.rcParams['xtick.major.size'] = 5
+matplotlib.rcParams['xtick.major.width'] = 1
+matplotlib.rcParams['xtick.minor.size'] = 2
+matplotlib.rcParams['xtick.minor.width'] = 0.5
+#matplotlib.rcParams['xtick.direction'] = "inout"
+matplotlib.rcParams['ytick.major.size'] = 5
+matplotlib.rcParams['ytick.major.width'] = 1
+matplotlib.rcParams['ytick.minor.size'] = 2
+matplotlib.rcParams['ytick.minor.width'] = 0.5
+##matplotlib.rcParams['ytick.direction'] = "inout"
 
 mymarkersize = 7
 #formats = ["bo", "gs", "r^", "yo", "ks", ""]
@@ -92,12 +112,13 @@ def errorbars(x, y, y_bars=None, labels = None, xlabel = None, ylabel = None, xl
     for i, _ in enumerate(x):
         marker = markers.next()
         if y_bars is None:
-            handles.append(ax.errorbar(x[i], y[i], markersize = mymarkersize, fmt=':%s' % marker)[0])
+            handles.append(ax.errorbar(x[i], y[i], markersize = mymarkersize, fmt='-%s' % marker)[0])
         else:
-            handles.append(ax.errorbar(x[i], y[i], yerr=y_bars[i], markersize = mymarkersize, fmt=':%s' % marker)[0])
+            handles.append(ax.errorbar(x[i], y[i], yerr=y_bars[i], markersize = mymarkersize, fmt='-%s' % marker)[0])
         #That label stuff doesn't yet work as it should.
         if labels is not None:
             ax.text(x[i][0], y[i][0], labels[0], horizontalalignment='left', verticalalignment='top', transform=ax.transAxes)
+    #ax.tick_params(axis='both', which='both', direction='inout')
     if legend is not None:
         ax.legend(handles, legend, loc=0)
     if xlabel is not None:
@@ -114,7 +135,7 @@ def errorbars(x, y, y_bars=None, labels = None, xlabel = None, ylabel = None, xl
         folder = ""
     if savefile is not None:
         savefilepath = join(folder, savefile)
-        plt.savefig(savefilepath)
+        plt.savefig(savefilepath, bbox_inches='tight')
         info(savefile + " written.")
     if savefile is None:
         plt.show()
