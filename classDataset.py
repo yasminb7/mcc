@@ -7,6 +7,7 @@ Created on 05.12.2012
 import scipy as sp
 import os
 import constants
+import utils
 from utils import info
 import cPickle
 
@@ -109,9 +110,19 @@ class Dataset(object):
                 filepath = os.path.join(path, val.getFilename())
                 sp.save(filepath, arr)
     
-    def release(self):
+    def saveMinimal(self, path):
+        mmapfiles = []
         for name in self.arrays:
-            self.__delattr__(name)
+            arr = self.__getattribute__(name)
+            if type(arr) == sp.memmap:
+                mmapfiles.append(arr.filename)
+                del arr
+        for delfile in mmapfiles:
+            utils.deleteFile(delfile)
+    
+#    def release(self):
+#        for name in self.arrays:
+#            self.__delattr__(name)
 
 def load(arrays, path, fileprefix, dt, readOnly=True):
     try:

@@ -32,7 +32,10 @@ def main(name):
     if len(constlist)==0:
         utils.info("No simulations fit the filter criteria given.")
     for myconst in constlist:
-        writeFrames(myconst, output_func=funcs)
+        if myconst["save_finalstats_only"]:
+            utils.info("Cannot create graphics because save_finalstats_only is True (sim/%s)." % name)
+        else:
+            writeFrames(myconst, output_func=funcs)
 
 def create_path_plot(myconst, path, savedir, dataset, step, finalmaze=None):
     dsA = dataset
@@ -74,6 +77,9 @@ def create_path_plot(myconst, path, savedir, dataset, step, finalmaze=None):
     plt.close()
 
 def create_plots_ds(myconst, path, resultspath, dataset, step, finalmaze=None):
+    if dataset is None:
+        utils.info("dataset is None. Are you sure all the simulation data was saved? Check the relevant file in \"sim/\" for \"save\_finalstats\_only\"")
+        return None
     dsA = dataset
     mazepath = os.path.join(path, myconst["maze"])
     myMaze = Maze(mazepath, myconst["fieldlimits"], myconst["border"])

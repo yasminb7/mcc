@@ -272,9 +272,9 @@ def applyFilter(constlist, name, valuelist):
     r = [c for c in constlist if c[name] in valuelist]
     return r
 
-def getResultsFilepath(folder, filename):
-    """Given a folder and a filename return the complete path."""
-    path = os.path.join(folder, filename)
+def getResultsFilepath(*pathelements):
+    """Given one or several folders and possibly a filename return the complete path."""
+    path = os.path.join(*pathelements)
     return path
 
 def ensure_dir(f):

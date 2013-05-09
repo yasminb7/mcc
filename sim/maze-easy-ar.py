@@ -6,8 +6,15 @@ Created on 09.10.2012
 import scipy as sp
 import string
 
-N=20
-percentage = sp.arange(0.0, 1.01, 0.2)
+#same as eom8 but half the orientation time
+
+#N = 100
+N = 50
+#percentage = list(percentage) + [0.8+9.0/8.0, 0.8+2*9.0/8.0]
+
+#percentage = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+#percentage = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6]
+percentage = sp.arange(0.0, 1.01, 0.1)
 #percentage = [0.0, 0.05, 0.1, 0.15, 0.2]
 
 
@@ -29,53 +36,34 @@ def getConst(vartuple, exclude=None):
     newconst["name"] = newname
     return newconst
 
-#parameters that control the simulation in general
 const = {
-#name of the function that returns const in the right form
+#parameters that control the simulation in general
 "get" : getConst,
-#name of folder including %s for variables to be replaced according to "factors"
-"name" : "prototype_pM%s_q%s_r%s",
-#Which of the variables in const should be interpreted as a range of values to simulate?
+"name" : "maze-easy-ar_pM%s_q%s_r%s", #name of folder including %s for variables to be replaced according to "factors"
 "factors" : ["percentage", "q", "repetitions"],
-#What to do when calculating values (from finalstats) from many repetitions: mean or median?
 "handle_repetitions_with" : "mean",
-#How many times this simulation will be repeated
-"repetitions" : range(1),
-#maximum simulation time
-"max_time" : 500.0,
-#timestep
+"repetitions" : range(10),
+"max_time" : 2500.0,
 "dt" : 0.1,
-#number of amoeboid agents
-"N_amoeboid" : 10,
-#number of mesenchymal agents
-"N_mesenchymal" : 10,
-#percentage of mesenchymal agents (of the total population)
-"percentage" : percentage, #this value doesn't matter as long as getConst doesn't need it 
+"N_amoeboid" : 1,
+"N_mesenchymal" : 1,
+"percentage" : percentage, 
 
 #initial conditions
-#the cercle inside of which agents are considered successful has radius:
 "success_radius" : 100,
-#the agents' initial positions follow a Gaussian distribution around:
 "initial_position" : [110, 40],
-#with standard deviation:
 "initial_position_stray" : 10,
 
 #parameters that apply to every agent
-#energy intake
-"q" : [0.5],
-#energy dissipation
+"q" : [0.4, 0.65, 0.7, 1.0,],
+#"q" : [0.8],
 "delta" : 0.3,
 "mass" : 1,#5e-4,
-#Stokes' friction = gamma * v
-#for amoeboids
-"gamma_a" : 0.1,
-#for mesenchymals                  
+"gamma_a" : 0.1,                  #Stokes' friction = gamma * v
 "gamma_m" : 1.0,
-#eta is a constant characterizing propulsion
-"eta" : 0.5,
-#radius of agents
+"eta" : 0.5,                      #d is a constant characterizing propulsion
+"E0" : 0.0,
 "radius" : 5,
-#period and standard deviation of the two steps of chemotaxis
 "orientationperiod" : 200,      #each #? time units the agents reorient themselves according to the gradient
 "periodsigma" : 20,             #describes the variation in the above quantity
 "orientationdelay" : 10,        #it takes them #? time units to do so
@@ -84,18 +72,13 @@ const = {
 "compass_noise_m" : 2.0/3 * round(0.225*sp.pi, 5),    #when the agent reorients, the new direction is the one given by the concentration gradient + gaussian noise with sigma given by this value
 
 #parameters that govern forces and interactions
-#factor of the stochastic force
-"r" : 0.0 * sp.sqrt(2),
-#enable interaction, True or False
+"r" : 0.0 * sp.sqrt(2),         #randomness scaling factor (when normal: sigma)
 "enable_interaction" : False,
-#for distances smaller than this, agents experience repulsion
-"interaction_radius" : 3,
-#for distances between interaction_radius and this, there is alignment
-"alignment_radius" : 6,
-#constant governing repulsion
+"interaction_radius" : 3, #for distances smaller than this, agents experience repulsion
+"alignment_radius" : 6, #for distances between interaction_radius and this, there is alignment
+"interaction_cutoff" : 5,
 "repulsion_coupling" : 10,
-#the weight that describes the alignment weight (but alignment happens at each step, so it is multiplied by dt later to compensate)
-"w" : 0.05,
+"w" : 0.05, # the weight that describes the alignment weight (but alignment happens at each step, so it is multiplied by dt later to compensate)
 
 #parameters that apply to the maze and the environment
 "fieldlimits" : (0, 800, 0, 800),
@@ -121,5 +104,5 @@ const = {
 "create_path_plot" : True,
 "create_video_directly" : False,
 
-"save_finalstats_only" : True,
+"save_finalstats_only" : False,
 }

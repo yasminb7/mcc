@@ -361,13 +361,16 @@ class Simulation:
         if self.dsA is not None and not self.const["save_finalstats_only"]:
             self.dsA.resizeTo(iii)
             self.dsA.saveTo(self.resultsdir)
+        elif self.dsA is not None and self.const["save_finalstats_only"]:
+            self.dsA.saveMinimal(self.resultsdir)
         
-        saved_constants = utils.getResultsFilepath(constants.resultspath, constants.saved_constants_filename)
+        saved_constants = utils.getResultsFilepath(constants.resultspath, self.const["name"], constants.saved_constants_filename)
         statutils.saveConst(self.const, saved_constants)
         
-        #save the maze of the last time step so we can reuse it for the path plots
-        with open(os.path.join(self.resultsdir, constants.finalmaze_filename), "w") as finalmaze:
-            sp.save(finalmaze, myMaze.data)
+        if not self.const["save_finalstats_only"]:
+            #save the maze of the last time step so we can reuse it for the path plots
+            with open(os.path.join(self.resultsdir, constants.finalmaze_filename), "w") as finalmaze:
+                sp.save(finalmaze, myMaze.data)
         
         utils.savetimestamp(self.resultsdir)
         utils.remove_logging_sim(logging_handler)
