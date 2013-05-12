@@ -42,7 +42,7 @@ const = {
 "name" : "with-without-i_pM%s_q%s_i%s_r%s", #name of folder including %s for variables to be replaced according to "factors"
 "factors" : ["percentage", "q", "enable_interaction", "repetitions"],
 "handle_repetitions_with" : "mean",
-"repetitions" : range(7),
+"repetitions" : range(10),
 "max_time" : 2500.0,
 "dt" : 0.1,
 "N_amoeboid" : 1,
