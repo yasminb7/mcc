@@ -4,7 +4,7 @@ Created on 15.10.2012
 @author: frederic
 '''
 
-import scipy as sp
+import numpy as np
 import string
 from os.path import join
 import matplotlib
@@ -182,10 +182,10 @@ def scatter(xs, ys, amoeboids, mesenchymals, successful, labels = None, xlabel =
     plt.grid(showGrid)
     handles = []
     
-    s_m = sp.logical_and(successful, mesenchymals)
-    u_m = sp.logical_and(~successful, mesenchymals)
-    s_a = sp.logical_and(successful, amoeboids)
-    u_a = sp.logical_and(~successful, amoeboids)
+    s_m = np.logical_and(successful, mesenchymals)
+    u_m = np.logical_and(~successful, mesenchymals)
+    s_a = np.logical_and(successful, amoeboids)
+    u_a = np.logical_and(~successful, amoeboids)
     
     h0 = ax.scatter(xs[s_m], ys[s_m], color='g', marker='o', s=7, label="successful mesenchymals")
     h1 = ax.scatter(xs[u_m], ys[u_m], color='g', marker='^', s=7, label="unsuccessful mesenchymals")
@@ -390,8 +390,8 @@ def createLegend(s, varnames):
         return legend
 
 if __name__ == "__main__":
-    x = sp.arange(0, 2*sp.pi, 0.1)
-    y = sp.cos(x)
-    z = sp.sin(x)
+    x = np.arange(0, 2*np.pi, 0.1)
+    y = np.cos(x)
+    z = np.sin(x)
     plot([x, x], [y, z])
     

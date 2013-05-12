@@ -3,7 +3,7 @@ Created on 27.01.2013
 
 @author: frederic
 '''
-import scipy as sp
+import numpy as sp
 import math
 import utils, constants
 

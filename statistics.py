@@ -7,7 +7,7 @@ Created on 14.10.2012
 
 import os, csv
 import utils, statutils, plotting
-import scipy as sp
+import numpy as sp
 import constants
 import random
 import classDataset

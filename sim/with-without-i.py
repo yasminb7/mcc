@@ -3,7 +3,7 @@ Created on 09.10.2012
 
 @author: frederic
 '''
-import scipy as sp
+import numpy as np
 import string
 
 #same as eom8 but half the orientation time
@@ -14,7 +14,7 @@ N = 50
 
 #percentage = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 #percentage = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6]
-percentage = sp.arange(0.0, 1.01, 0.1)
+percentage = np.arange(0.0, 1.01, 0.1)
 #percentage = [0.0, 0.05, 0.1, 0.15, 0.2]
 
 
@@ -68,11 +68,11 @@ const = {
 "periodsigma" : 20,             #describes the variation in the above quantity
 "orientationdelay" : 10,        #it takes them #? time units to do so
 "delaysigma" : 2,               #describes the variation in the above quantity
-"compass_noise_a" : round(0.225*sp.pi, 5),    #when the agent reorients, the new direction is the one given by the concentration gradient + gaussian noise with sigma given by this value
-"compass_noise_m" : 2.0/3 * round(0.225*sp.pi, 5),    #when the agent reorients, the new direction is the one given by the concentration gradient + gaussian noise with sigma given by this value
+"compass_noise_a" : round(0.225*np.pi, 5),    #when the agent reorients, the new direction is the one given by the concentration gradient + gaussian noise with sigma given by this value
+"compass_noise_m" : 2.0/3 * round(0.225*np.pi, 5),    #when the agent reorients, the new direction is the one given by the concentration gradient + gaussian noise with sigma given by this value
 
 #parameters that govern forces and interactions
-"r" : 0.0 * sp.sqrt(2),         #randomness scaling factor (when normal: sigma)
+"r" : 0.0 * np.sqrt(2),         #randomness scaling factor (when normal: sigma)
 "enable_interaction" : [False, True],
 "interaction_radius" : 3, #for distances smaller than this, agents experience repulsion
 "alignment_radius" : 6, #for distances between interaction_radius and this, there is alignment

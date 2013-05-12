@@ -3,8 +3,7 @@ Created on Jul 29, 2012
 
 @author: frederic
 '''
-from sys import platform as _platform
-import scipy as sp
+import numpy as np
 import math
 import matplotlib.pyplot as plt
 import logging, os.path, shutil, re, itertools, importlib, time, string
@@ -34,12 +33,12 @@ def error(*args, **kwargs):
 
 def norm(v):
     """Calculate the Euclidean norm of a two-dimensional vector."""
-    return math.sqrt(sp.sum(v*v))
+    return math.sqrt(np.sum(v*v))
 
 def normsq(v):
     """Calculate the squared norm."""
-    v = sp.asarray(v)
-    return sp.sum(v*v)
+    v = np.asarray(v)
+    return np.sum(v*v)
     
 def setup_logging_base():
     logger = logging.getLogger()
@@ -191,16 +190,16 @@ def getFolders(searchpath, pattern):
 def loadImage(path):
     """Load an image (for a maze) from a given path and do some transformations on it."""
     data = plt.imread(path)
-    data = sp.flipud(data)
-    data = sp.swapaxes(data, 0, 1)
-    assert sp.amax(data)<=1.0, "Array maximum should be 1.0"
-    assert sp.amin(data)>=0.0, "Array minimum should be >=0.0"
-    data = sp.ones_like(data) - data
+    data = np.flipud(data)
+    data = np.swapaxes(data, 0, 1)
+    assert np.amax(data)<=1.0, "Array maximum should be 1.0"
+    assert np.amin(data)>=0.0, "Array minimum should be >=0.0"
+    data = np.ones_like(data) - data
     return data
 
 def scaleToMax(newmax, arr):
     """Make sure the maximum value of all the pixel in an array is newmax."""
-    currentmax = sp.amax(arr)
+    currentmax = np.amax(arr)
     return (newmax/currentmax) * arr
 
 def reduceFolderToRegexp(folder):
@@ -285,10 +284,10 @@ def ensure_dir(f):
 
 def getGradient(a):
     """Return the gradient as given by the NumPy gradient function."""
-    old_err_state = sp.seterr(divide='ignore', invalid='ignore')
-    gx, gy = sp.gradient(a)
-    sp.seterr(**old_err_state)
-    return sp.array((gx, gy))
+    old_err_state = np.seterr(divide='ignore', invalid='ignore')
+    gx, gy = np.gradient(a)
+    np.seterr(**old_err_state)
+    return np.array((gx, gy))
 
 def getOriginalGradient(mazefilename, maze=None):
     """At the beginning of the simulation, read the gradient for a maze from a file
@@ -298,11 +297,11 @@ def getOriginalGradient(mazefilename, maze=None):
     mazegradfilename = "%s.grad" % mazefilename
     if os.path.exists(mazegradfilename):
         with open(mazegradfilename, "rb") as grfile:
-            gradient = sp.load(grfile)
+            gradient = np.load(grfile)
     elif maze is not None:
         gradient = getGradient(maze)
         with open(mazegradfilename, "wb") as grfile:
-            sp.save(grfile, gradient)
+            np.save(grfile, gradient)
     return gradient
 
 def copyAnimScript(destination):

@@ -4,7 +4,7 @@ Created on 05.12.2012
 @author: frederic
 '''
 
-import scipy as sp
+import numpy as np
 import os
 import constants
 import utils
@@ -33,17 +33,17 @@ class Dataset(object):
     is_amoeboid = 0
     is_mesenchymal = 1
     
-    AMOEBOID = {"times" : ArrayFile("times", "NNN", sp.float_),
-                "types" : ArrayFile("types", "N_agents", sp.int_),
-              "positions" : ArrayFile("positions", "shapexDim", sp.float_, onDisk=True),
-              "velocities" : ArrayFile("velocities", "shapexDim", sp.float_, onDisk=True),
-              "energies" : ArrayFile("energies", "shapex1", sp.float_),
-              "states" : ArrayFile("states", "shapex1", sp.character),
-              "statechanges" : ArrayFile("statechanges", "N_agents", sp.float_),
-              "periods" : ArrayFile("periods", "N_agents", sp.float_),
-              "delays" : ArrayFile("delays", "N_agents", sp.float_),
-              "eating" : ArrayFile("eating", "shapex1", sp.bool_),
-              "direction_angles" : ArrayFile("direction_angles", "N_agents", sp.float_)}
+    AMOEBOID = {"times" : ArrayFile("times", "NNN", np.float_),
+                "types" : ArrayFile("types", "N_agents", np.int_),
+              "positions" : ArrayFile("positions", "shapexDim", np.float_, onDisk=True),
+              "velocities" : ArrayFile("velocities", "shapexDim", np.float_, onDisk=True),
+              "energies" : ArrayFile("energies", "shapex1", np.float_),
+              "states" : ArrayFile("states", "shapex1", np.character),
+              "statechanges" : ArrayFile("statechanges", "N_agents", np.float_),
+              "periods" : ArrayFile("periods", "N_agents", np.float_),
+              "delays" : ArrayFile("delays", "N_agents", np.float_),
+              "eating" : ArrayFile("eating", "shapex1", np.bool_),
+              "direction_angles" : ArrayFile("direction_angles", "N_agents", np.float_)}
 
     def __init__(self, arrays, max_time, dt, N_agents, N_dim, path, doAllocate=True, fileprefix=None):
         '''
@@ -63,13 +63,13 @@ class Dataset(object):
             for name, val in self.arrays.iteritems():
                 if val.onDisk:
                     filename = os.path.join(self.path, val.getFilename())
-                    arr = sp.memmap(filename, dtype=val.dtype, mode='w+', shape=self.__getattribute__(val.dim))
+                    arr = np.memmap(filename, dtype=val.dtype, mode='w+', shape=self.__getattribute__(val.dim))
                     setattr(self, name, arr)
                 else:
-                    setattr(self, name, sp.zeros(self.__getattribute__(val.dim), dtype=val.dtype))
+                    setattr(self, name, np.zeros(self.__getattribute__(val.dim), dtype=val.dtype))
         else:
             for name, val in self.arrays.iteritems():
-                setattr(self, name, sp.empty(self.__getattribute__(val.dim), dtype=val.dtype))
+                setattr(self, name, np.empty(self.__getattribute__(val.dim), dtype=val.dtype))
     
     def getTotalSize(self):
         return self.getSize(False)+self.getSize(True)
@@ -100,7 +100,7 @@ class Dataset(object):
     def saveTo(self, path):
         for name, val in self.arrays.iteritems():
             arr = self.__getattribute__(name)
-            if type(arr) == sp.memmap:
+            if type(arr) == np.memmap:
                 filename = os.path.join(path, val.getFilename() + ".shape.pickle")
                 with open(filename, "w") as picklefile:
                     cPickle.dump(arr.shape, picklefile)
@@ -108,13 +108,13 @@ class Dataset(object):
                 del arr
             else:
                 filepath = os.path.join(path, val.getFilename())
-                sp.save(filepath, arr)
+                np.save(filepath, arr)
     
     def erase(self):
         mmapfiles = []
         for name in self.arrays:
             arr = self.__getattribute__(name)
-            if type(arr) == sp.memmap:
+            if type(arr) == np.memmap:
                 mmapfiles.append(arr.filename)
                 del arr
         for delfile in mmapfiles:
@@ -130,12 +130,12 @@ def load(arrays, path, fileprefix, dt, readOnly=True):
         for name, val in arrays.iteritems():
             filepath = os.path.join(path, val.getFilename())
             if val.onDisk==False:
-                loaded_arrays[name] = sp.load(filepath)
+                loaded_arrays[name] = np.load(filepath)
             else:
                 with open(filepath + ".shape.pickle") as picklefile:
                     arrshape = cPickle.load(picklefile)
                     arrmode = "r" if readOnly else "w+"
-                    arr = sp.memmap(filepath, dtype=val.dtype, mode=arrmode, shape=arrshape)
+                    arr = np.memmap(filepath, dtype=val.dtype, mode=arrmode, shape=arrshape)
                     loaded_arrays[name] = arr
     
         sample_arr = loaded_arrays["energies"]

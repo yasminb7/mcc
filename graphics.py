@@ -4,7 +4,7 @@ Created on Sep 19, 2012
 @author: frederic
 '''
 import os, string
-import scipy as sp
+import numpy as np
 import matplotlib.lines as lines
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
@@ -121,7 +121,7 @@ def plotFrame(plt, ax, dsA, maze, t, field, savedir, k):
     isMesenchymal = dsA.types==dsA.is_mesenchymal 
     plt.cla()
 
-    colors = sp.array(len(isMesenchymal) * ['k'])
+    colors = np.array(len(isMesenchymal) * ['k'])
     colors[isMesenchymal] = 'g'
     colors[isAmoeboid] = 'b'
 
@@ -153,7 +153,7 @@ def writeFrames(myconst, output_func=[create_plots_ds]):
         step = 1
     framesdir = os.path.join(savedir, constants.framesdir)
     with open(os.path.join(savedir, constants.finalmaze_filename), "rb") as finalmazefile:
-        myfinalmaze = sp.load(finalmazefile)
+        myfinalmaze = np.load(finalmazefile)
     utils.ensure_dir(framesdir)
     utils.removeFilesByEnding(framesdir, ".png")
     for f in output_func:

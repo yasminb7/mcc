@@ -4,7 +4,7 @@ Created on Jul 29, 2012
 @author: frederic
 '''
 
-import scipy as sp
+import numpy as np
 import scipy.weave as weave
 from scipy.ndimage.filters import gaussian_filter
 import utils
@@ -37,11 +37,11 @@ class Maze(object):
         self.density = densityArray(self.data.shape, fieldlimits)
         self.buildBorders(self.original)
         self.fieldlimits = fieldlimits
-        self.walls_only = sp.zeros_like(self.data)
+        self.walls_only = np.zeros_like(self.data)
         self.buildBorders(self.walls_only)
-        self.walls_only_gr = sp.gradient(self.walls_only)
+        self.walls_only_gr = np.gradient(self.walls_only)
         
-        self.validgrad = sp.ones(self.data.shape, dtype=sp.bool_)
+        self.validgrad = np.ones(self.data.shape, dtype=np.bool_)
         
         self.minidx = 0
         self.maxidx = self.data.shape[0]-1
@@ -71,7 +71,7 @@ class Maze(object):
             self.validgrad[ a[0]:b[0], a[1]:b[1] ] = False
         else:
             dax, day, dbx, dby = self.diffRect(degradeRect, clippedRect)
-            eat_idx = sp.s_[dax:dbx, day:dby]
+            eat_idx = np.s_[dax:dbx, day:dby]
             view -= eat[eat_idx]
             self.validgrad[ dax:dbx, day:dby ] = False
             
@@ -84,8 +84,8 @@ class Maze(object):
         validgrad = self.validgrad #@UnusedVariable
         data = self.data #@UnusedVariable
         data_grad = self.data_grad #@UnusedVariable
-        grads = sp.empty_like(posidx, dtype=sp.float_)
-        mywin = sp.zeros((2,3,3)) #@UnusedVariable
+        grads = np.empty_like(posidx, dtype=np.float_)
+        mywin = np.zeros((2,3,3)) #@UnusedVariable
         code_grad = \
         """
         #line 136 "classMaze.py"
@@ -131,15 +131,15 @@ class Maze(object):
         validgrad = self.validgrad
         data = self.data
         data_grad = self.data_grad
-        grads = sp.empty_like(posidx, dtype=sp.float_)
+        grads = np.empty_like(posidx, dtype=np.float_)
         for i, pos in enumerate(posidx):
             posx, posy = pos
             if validgrad[posx, posy]:
                 grads[i] = data_grad[:,posx, posy]
             else:
                 window = data[posx-1 : posx+2, posy-1 : posy+2]
-                grad = sp.gradient(-window)
-                grads[i] = sp.mean(grad[0]), sp.mean(grad[1])
+                grad = np.gradient(-window)
+                grads[i] = np.mean(grad[0]), np.mean(grad[1])
                 data_grad[:, posx, posy] = grads[i]
                 validgrad[posx, posy] = True 
         return grads
@@ -173,7 +173,7 @@ class Maze(object):
         
         for pos in updatePositions:
             if True:
-                windowsize = sp.array([constants.safety_factor * s for s in rectangle.shape], dtype=sp.int64)
+                windowsize = np.array([constants.safety_factor * s for s in rectangle.shape], dtype=np.int64)
                 
                 corner = [int((density[i] * pos[i]) - 0.5*windowsize[i]) for i in xrange(2)]
                 xmin = corner[0]
@@ -187,12 +187,12 @@ class Maze(object):
                     continue
                 a, b = clippedRect
                 
-                idx = sp.s_[a[0]:b[0], a[1]:b[1]]
-                idx2 =  sp.s_[:, a[0]:b[0], a[1]:b[1]]
+                idx = np.s_[a[0]:b[0], a[1]:b[1]]
+                idx2 =  np.s_[:, a[0]:b[0], a[1]:b[1]]
                 
                 if needGradient:
                     temp_data = -gaussian_filter(self.data[idx], sigma)
-                    self.data_grad[idx2] = sp.array( sp.gradient( temp_data ))
+                    self.data_grad[idx2] = np.array( np.gradient( temp_data ))
                 else:
                     self.data[idx] = gaussian_filter(self.data[idx], sigma)
     
@@ -260,9 +260,9 @@ class Maze(object):
             return True
 
 def densityArray(shape, fieldlimits):
-    density = sp.empty((2,))
+    density = np.empty((2,))
     for k in DIMiter:
-        density[k] = shape[k]/sp.absolute(fieldlimits[2*k+1]-fieldlimits[2*k])
+        density[k] = shape[k]/np.absolute(fieldlimits[2*k+1]-fieldlimits[2*k])
     return density
 
 def enclosingRect(positions):
@@ -279,18 +279,18 @@ def bisectCount(positions, rect):
     lower = positions[:,1]<yhalf
     upper = ~lower
     
-    LL = sp.logical_and(lower, left)
-    LR = sp.logical_and(lower, right)
-    UL = sp.logical_and(upper, left)
-    UR = sp.logical_and(upper, right)
+    LL = np.logical_and(lower, left)
+    LR = np.logical_and(lower, right)
+    UL = np.logical_and(upper, left)
+    UR = np.logical_and(upper, right)
     
-    LL_ = sp.count_nonzero(LL)
-    LR_ = sp.count_nonzero(LR)
-    UL_ = sp.count_nonzero(UL)
-    UR_ = sp.count_nonzero(UR)
+    LL_ = np.count_nonzero(LL)
+    LR_ = np.count_nonzero(LR)
+    UL_ = np.count_nonzero(UL)
+    UR_ = np.count_nonzero(UR)
     return ([LL_, LR_, UL_, UR_], [LL, LR, UL, UR])
 
 def arrayIndexFromPos(pos, density):
     """Returns the array index corresponding to pos as a tuple.
     pos should be a numpy array."""
-    return tuple(sp.array(density * pos, dtype=sp.int0))
+    return tuple(np.array(density * pos, dtype=np.int0))
