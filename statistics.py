@@ -5,17 +5,15 @@ Created on 14.10.2012
 '''
 #TODO: remove const from arguments of functions that deal with pickles only
 
-import os, csv
-import utils, statutils, plotting
+import os, csv, itertools, random
+
 import numpy as sp
-import constants
-import random
-import classDataset
-from classDataset import Dataset
-from constants import simdir, resultspath
+
+from mcclib import utils, statutils, plotting, constants, classDataset
+from mcclib.classDataset import Dataset
+from mcclib.constants import simdir, resultspath
 import sim
 import analytics
-import itertools
 
 def prepareStats(filename):
     """Return const and savefolder for a given simfile."""

@@ -5,7 +5,8 @@ Created on 27.01.2013
 '''
 import numpy as sp
 import math
-import utils, constants
+import mcclib.utils as utils
+import mcclib.constants as constants
 
 def estimateAvgEnergy(const, ECMDensity, N_a, N_m):
     e_d = equilEnergyDegrading(const)

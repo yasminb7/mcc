@@ -5,11 +5,12 @@ Created on 09.10.2012
 '''
 import sys, os, traceback
 
-import utils, graphics
-from utils import getSimfiles, verifySimulationNecessary
-from classSimulation import Simulation
-import constants
-from utils import info, error
+import graphics
+import mcclib.utils as utils
+import mcclib.constants as constants
+from mcclib.utils import getSimfiles, verifySimulationNecessary
+from mcclib.classSimulation import Simulation
+from mcclib.utils import info, error
 
 #probably needs to be global
 items = list()

@@ -4,13 +4,16 @@ Created on 09.10.2012
 @author: frederic
 '''
 import sys, os, traceback
-import utils, graphics
-from utils import getSimfiles, verifySimulationNecessary
-from classSimulation import Simulation
-import classDataset
-from classDataset import Dataset
-import constants
-from utils import info, error
+import graphics
+from mcclib import utils, constants, classDataset
+from mcclib.utils import getSimfiles, verifySimulationNecessary
+#from utils import getSimfiles, verifySimulationNecessary
+from mcclib.classSimulation import Simulation
+#import mcclib.classDataset as classDataset
+from mcclib.classDataset import Dataset
+#import constants
+from mcclib.utils import info, error
+#from utils import info, error
 
 #probably needs to be global
 items = list()

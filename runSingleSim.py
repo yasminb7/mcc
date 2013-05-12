@@ -3,8 +3,9 @@ Created on 09.10.2012
 
 @author: frederic
 '''
-import utils, graphics
-from classSimulation import Simulation
+from mcclib import utils
+import graphics
+from mcclib.classSimulation import Simulation
 
 def prepareSim(const):
     utils.setup_logging_base() 

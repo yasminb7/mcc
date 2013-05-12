@@ -8,12 +8,12 @@ import numpy as np
 import matplotlib.lines as lines
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
-from classMesenchymal import Mesenchymal
-from classMaze import Maze, densityArray
-import classDataset
-from classDataset import Dataset
-import utils
-import constants
+from mcclib.classMesenchymal import Mesenchymal 
+from mcclib.classMaze import Maze, densityArray
+import mcclib.classDataset as classDataset
+from mcclib.classDataset import Dataset
+import mcclib.utils as utils
+import mcclib.constants as constants
 
 def main(name):
     utils.setup_logging_base() 

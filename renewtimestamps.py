@@ -3,7 +3,7 @@ Created on 25.11.2012
 
 @author: frederic
 '''
-import utils, constants
+from mcclib import utils, constants
 import os
 
 sims = [constants.currentsim] 
