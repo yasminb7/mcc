@@ -413,11 +413,12 @@ if __name__=="__main__":
     plotGlobal(xaxis, lines, const, "success_ratio_m", savedir, "success_ratio_m"+constants.graphics_ending, ylim=(0,1))
     
     
-    #plotFitness(xaxis, lines, const, savedir, "fitness"+constants.graphics_ending)
+    plotFitness(xaxis, lines, const, savedir, "fitness"+constants.graphics_ending)
     
     if simfile=="with-without-i.py":
         plotGlobal2factors(xaxis, ["q", "enable_interaction"], const, "success_ratio", savedir, "success_ratio"+constants.graphics_ending, ylim=(0,1))
         plotGlobal2factors(xaxis, ["q", "enable_interaction"], const, "success_ratio_a", savedir, "success_ratio_a"+constants.graphics_ending, ylim=(0,1))
+        plotGlobal2factors(xaxis, ["q", "enable_interaction"], const, "success_ratio_m", savedir, "success_ratio_m"+constants.graphics_ending, ylim=(0,1))
     
     
     if simfile=="densities-all.py":
