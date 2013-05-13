@@ -1,9 +1,3 @@
-'''
-Created on 15.10.2012
-
-@author: frederic
-'''
-
 import numpy as np
 import string
 from os.path import join

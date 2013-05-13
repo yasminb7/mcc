@@ -1,9 +1,3 @@
-'''
-Created on 05.12.2012
-
-@author: frederic
-'''
-
 import numpy as np
 import os
 import constants
@@ -125,6 +119,7 @@ class Dataset(object):
 #            self.__delattr__(name)
 
 def load(arrays, path, fileprefix, dt, readOnly=True):
+    """Loads a *dataset* with the specified *array* configuration from path, using a certain *fileprefix*."""
     try:
         loaded_arrays = dict()
         for name, val in arrays.iteritems():

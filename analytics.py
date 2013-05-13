@@ -1,8 +1,3 @@
-'''
-Created on 27.01.2013
-
-@author: frederic
-'''
 import numpy as sp
 import math
 import mcclib.utils as utils

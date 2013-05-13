@@ -1,8 +1,3 @@
-'''
-Created on 09.10.2012
-
-@author: frederic
-'''
 import string
 
 #standard values are

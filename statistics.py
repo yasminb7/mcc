@@ -1,8 +1,3 @@
-'''
-Created on 14.10.2012
-
-@author: frederic
-'''
 #TODO: remove const from arguments of functions that deal with pickles only
 
 import os, csv, itertools, random

@@ -1,9 +1,3 @@
-'''
-Created on 17.10.2012
-
-@author: frederic
-'''
-
 import os
 import constants, utils
 

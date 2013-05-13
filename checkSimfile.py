@@ -1,8 +1,3 @@
-'''
-Created on 28.01.2013
-
-@author: frederic
-'''
 import mcclib.constants as constants
 import mcclib.utils as utils
 import analytics

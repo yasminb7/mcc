@@ -1,8 +1,3 @@
-'''
-Created on 09.10.2012
-
-@author: frederic
-'''
 from mcclib import utils
 import graphics
 from mcclib.classSimulation import Simulation

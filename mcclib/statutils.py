@@ -1,9 +1,3 @@
-'''
-Created on 14.10.2012
-
-@author: frederic
-'''
-
 import numpy as np
 import cPickle, os
 import utils

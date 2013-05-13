@@ -11,6 +11,34 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+.. automodule:: main
+   :members:
+
+.. automodule:: statistics
+
+.. automodule:: graphics
+   :members:
+
+.. automodule:: mcclib.classSimulation
+   :members:
+
+.. automodule:: mcclib.classDataset
+   :members:
+
+.. automodule:: mcclib.classMaze
+   :members:
+
+.. automodule:: mcclib.classMesenchymal
+   :members:
+
+.. automodule:: mcclib.constants
+   :members:
+
+.. automodule:: mcclib.statutils
+   :members:
+
+.. automodule:: mcclib.utils
+   :members:
 
 
 Indices and tables

@@ -1,9 +1,3 @@
-'''
-Created on Jul 29, 2012
-
-@author: frederic
-'''
-
 import numpy as np
 import scipy.weave as weave
 from scipy.ndimage.filters import gaussian_filter

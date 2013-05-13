@@ -1,8 +1,3 @@
-'''
-Created on Sep 19, 2012
-
-@author: frederic
-'''
 import os, string
 import numpy as np
 import matplotlib.lines as lines

@@ -1,8 +1,3 @@
-'''
-Created on 25.11.2012
-
-@author: frederic
-'''
 from mcclib import utils, constants
 import os
 

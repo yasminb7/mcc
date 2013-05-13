@@ -1,8 +1,3 @@
-'''
-Created on Jul 18, 2012
-
-@author: frederic
-'''
 import os, datetime, shutil
 import numpy as np
 import matplotlib.cm as cm
