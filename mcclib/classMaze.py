@@ -47,13 +47,13 @@ class Maze(object):
         self.maxidx = self.data.shape[0]-1
         
 
-    def degrade(self, pos, eat, energy, density, dt):
+    def degrade(self, pos, bite, energy, density, dt):
         Ax = 0
         Ay = 0
         Bx = self.data.shape[0]-1
         By = self.data.shape[1]-1
         
-        shape = eat.shape
+        shape = bite.shape
         corner = [int((density[i] * pos[i]) - 0.5 * shape[i]) for i in xrange(2)]
         
         xmin = corner[0]
@@ -66,13 +66,13 @@ class Maze(object):
             return
         a, b = clippedRect
         view = self.data[ a[0]:b[0], a[1]:b[1] ]
-        if view.shape==eat.shape:
-            view -= eat
+        if view.shape==bite.shape:
+            view -= bite
             self.validgrad[ a[0]:b[0], a[1]:b[1] ] = False
         else:
             dax, day, dbx, dby = self.diffRect(degradeRect, clippedRect)
             eat_idx = np.s_[dax:dbx, day:dby]
-            view -= eat[eat_idx]
+            view -= bite[eat_idx]
             self.validgrad[ dax:dbx, day:dby ] = False
             
         limit = 0.1

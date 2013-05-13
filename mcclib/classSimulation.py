@@ -226,7 +226,8 @@ class Simulation:
 
             posidx = np.array(density * positions[iii-1], dtype=np.int0)
             np.clip(posidx, myMaze.minidx, myMaze.maxidx, out=posidx)
-            wgrad = myMaze.getGradientsPython(posidx)
+            #wgrad = myMaze.getGradientsPython(posidx)
+            wgrad = myMaze.getGradientsCpp(posidx)
 
             evolve_orientation = statechanges < simtime 
             is_moving = states[iii-1]==sim.States.MOVING
