@@ -53,7 +53,7 @@ class Simulation:
         #prepare landscape
         mazepath = os.path.join(self.path, self.const["maze"])
         myMaze = Maze(mazepath, self.const["fieldlimits"], self.const["border"])
-        maze = myMaze.getData()
+        maze = myMaze.data
         density = densityArray(maze.shape, self.const["fieldlimits"])
         #prepare gradient
         goal_px = np.array(density * goal, dtype=np.int_)

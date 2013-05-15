@@ -1,6 +1,7 @@
 import numpy as np
+import math
 #import scipy.weave as weave
-from scipy.ndimage.filters import gaussian_filter
+#from scipy.ndimage.filters import gaussian_filter
 import utils
 import graphutils
 import constants
@@ -16,9 +17,34 @@ class PositionError(Exception):
         self.value = value
     def __str__(self):
         return repr(self.value)
+
+def gaussian1D(mu, sigma, x):
+    print x
+    sigmasq = sigma*sigma
+    return sigmasq
+    #return 1.0/math.sqrt(2*np.pi*sigmasq) * math.exp((-x**2)/(2*sigmasq))
+    
+
+def gaussianArray(arrayLength, sigma, datatype=np.float_):
+    if arrayLength%2==0:
+        arrayLength += 1
+    a = np.fromfunction(lambda x: gaussian1D(arrayLength/2+1, sigma, x), (arrayLength,), dtype=datatype)
+    return a
+
+def gaussianBlur2D(image, sigma):
+    blurred = np.zeros_like(image)
+    gauss = gaussianArray(int(4*sigma), sigma)
+    for i, row in enumerate(blurred):
+        blurred[i] = np.convolve(gauss, row, mode='same')
+    for j, col in enumerate(blurred.T):
+        blurred.T[j] = np.convolve(gauss, col, mode='same')
+    return blurred
+    
     
 def myFilter(data, mysigma=sigma):
-    return gaussian_filter(data, mysigma)
+    #return gaussian_filter(data, mysigma)
+    #return gaussianBlur2D(data, mysigma)
+    return data
 
 class Maze(object):
     
@@ -186,10 +212,10 @@ class Maze(object):
                 idx2 =  np.s_[:, a[0]:b[0], a[1]:b[1]]
                 
                 if needGradient:
-                    temp_data = -gaussian_filter(self.data[idx], sigma)
+                    temp_data = -myFilter(self.data[idx], sigma)
                     self.data_grad[idx2] = np.array( np.gradient( temp_data ))
                 else:
-                    self.data[idx] = gaussian_filter(self.data[idx], sigma)
+                    self.data[idx] = myFilter(self.data[idx], sigma)
     
     def myClip(self, pt, Ax, Ay, Bx, By):
         x = min( max(pt[0], Ax) , Bx)
@@ -224,12 +250,6 @@ class Maze(object):
     def getGradImageSquared(self):
         return self.data_grad[0]*self.data_grad[0] + self.data_grad[1]*self.data_grad[1]
     
-    def getData(self):
-        """
-        Returns the maze and its gradient.
-        """
-        return self.data
-    
     def buildBorders(self, arr, arr_gr=None):
         b_v, b_h = ( int(self.border * self.density[i]) for i in xrange(2))
         #We probably need to use a higher gradient for the wall at the border of the maze
@@ -260,30 +280,6 @@ def densityArray(shape, fieldlimits):
         density[k] = shape[k]/np.absolute(fieldlimits[2*k+1]-fieldlimits[2*k])
     return density
 
-def enclosingRect(positions):
-    ll = (min(positions[:,0]), max(positions[:,0]))
-    ur = (min(positions[:,1]), max(positions[:,1]))
-    return (ll, ur)
-
-def bisectCount(positions, rect):
-    
-    xhalf = rect[0]/2
-    yhalf = rect[1]/2
-    left = positions[:,0]<xhalf
-    right = ~left
-    lower = positions[:,1]<yhalf
-    upper = ~lower
-    
-    LL = np.logical_and(lower, left)
-    LR = np.logical_and(lower, right)
-    UL = np.logical_and(upper, left)
-    UR = np.logical_and(upper, right)
-    
-    LL_ = np.count_nonzero(LL)
-    LR_ = np.count_nonzero(LR)
-    UL_ = np.count_nonzero(UL)
-    UR_ = np.count_nonzero(UR)
-    return ([LL_, LR_, UL_, UR_], [LL, LR, UL, UR])
 
 def arrayIndexFromPos(pos, density):
     """Returns the array index corresponding to pos as a tuple.

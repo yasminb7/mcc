@@ -3,11 +3,11 @@ Created on 09.10.2012
 
 @author: frederic
 '''
-import scipy as sp
+import numpy as np
 import string
 
 N=20
-percentage = sp.arange(0.0, 1.01, 0.2)
+percentage = np.arange(0.0, 1.01, 0.2)
 #percentage = [0.0, 0.05, 0.1, 0.15, 0.2]
 
 def getConst(vartuple, exclude=None):
@@ -79,12 +79,12 @@ const = {
 "periodsigma" : 20,             #describes the variation in the above quantity
 "orientationdelay" : 10,        #it takes them #? time units to do so
 "delaysigma" : 2,               #describes the variation in the above quantity
-"compass_noise_a" : round(0.225*sp.pi, 5),    #when the agent reorients, the new direction is the one given by the concentration gradient + gaussian noise with sigma given by this value
-"compass_noise_m" : 2.0/3 * round(0.225*sp.pi, 5),    #when the agent reorients, the new direction is the one given by the concentration gradient + gaussian noise with sigma given by this value
+"compass_noise_a" : round(0.225*np.pi, 5),    #when the agent reorients, the new direction is the one given by the concentration gradient + gaussian noise with sigma given by this value
+"compass_noise_m" : 2.0/3 * round(0.225*np.pi, 5),    #when the agent reorients, the new direction is the one given by the concentration gradient + gaussian noise with sigma given by this value
 
 #parameters that govern forces and interactions
 #factor of the stochastic force
-"r" : 0.0 * sp.sqrt(2),
+"r" : 0.0 * np.sqrt(2),
 #enable interaction, True or False
 "enable_interaction" : False,
 #for distances smaller than this, agents experience repulsion
@@ -120,5 +120,5 @@ const = {
 "create_path_plot" : True,
 "create_video_directly" : False,
 
-"save_finalstats_only" : True,
+"save_finalstats_only" : False,
 }
