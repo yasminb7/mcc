@@ -1,6 +1,6 @@
 import numpy as np
-import math
-#import scipy.weave as weave
+#import math
+import scipy.weave as weave
 #from scipy.ndimage.filters import gaussian_filter
 import utils
 import graphutils
@@ -100,52 +100,52 @@ class Maze(object):
         view[view<limit]=nowall
     
 #    #@profile
-#    def getGradientsCpp(self, posidx):
-#        """posidx should have shape (N, 2)"""
-#        validgrad = self.validgrad #@UnusedVariable
-#        data = self.data #@UnusedVariable
-#        data_grad = self.data_grad #@UnusedVariable
-#        grads = np.empty_like(posidx, dtype=np.float_)
-#        mywin = np.zeros((2,3,3)) #@UnusedVariable
-#        code_grad = \
-#        """
-#        #line 136 "classMaze.py"
-#        for (uint ai=0; ai<Nposidx[0]; ai++)
-#        {
-#            int px = POSIDX2(ai,0);
-#            int py = POSIDX2(ai,1);
-#            //int valid = VALIDGRAD2(px, py);
-#            if (VALIDGRAD2(px, py)!=0)
-#            {
-#                GRADS2(ai, 0) = DATA_GRAD3(0, px, py);
-#                GRADS2(ai, 1) = DATA_GRAD3(1, px, py);
-#            }
-#            else
-#            {
-#                for (int m=-1; m<=1; m++){
-#                    for (int n=-1; n<=1; n++){
-#                        MYWIN3(0, m+1,n+1) = 0.5 * (DATA2(px+m+1,py+n  ) - DATA2(px+m-1,py+n  ));
-#                        MYWIN3(1, m+1,n+1) = 0.5 * (DATA2(px+m  ,py+n+1) - DATA2(px+m  ,py+n-1));
-#                    }
-#                }
-#                float sum0 = 0.0;
-#                float sum1 = 0.0;
-#                for (int m=0; m<=2; m++){
-#                    for (int n=0; n<=2; n++){
-#                        sum0 -= MYWIN3(0, m,n);
-#                        sum1 -= MYWIN3(1, m,n);
-#                    }
-#                }
-#                GRADS2(ai,0) = sum0/9.0;
-#                GRADS2(ai,1) = sum1/9.0;
-#                DATA_GRAD3(0, px, py) = GRADS2(ai,0);
-#                DATA_GRAD3(1, px, py) = GRADS2(ai,1);
-#                VALIDGRAD2(px, py) = Py_True;
-#            }
-#        }
-#        """
-#        weave.inline(code_grad, ["data", "mywin", "grads", "data_grad", "validgrad", "posidx"])
-#        return grads
+    def getGradientsCpp(self, posidx):
+        """posidx should have shape (N, 2)"""
+        validgrad = self.validgrad #@UnusedVariable
+        data = self.data #@UnusedVariable
+        data_grad = self.data_grad #@UnusedVariable
+        grads = np.empty_like(posidx, dtype=np.float_)
+        mywin = np.zeros((2,3,3)) #@UnusedVariable
+        code_grad = \
+        """
+        #line 136 "classMaze.py"
+        for (uint ai=0; ai<Nposidx[0]; ai++)
+        {
+            int px = POSIDX2(ai,0);
+            int py = POSIDX2(ai,1);
+            //int valid = VALIDGRAD2(px, py);
+            if (VALIDGRAD2(px, py)!=0)
+            {
+                GRADS2(ai, 0) = DATA_GRAD3(0, px, py);
+                GRADS2(ai, 1) = DATA_GRAD3(1, px, py);
+            }
+            else
+            {
+                for (int m=-1; m<=1; m++){
+                    for (int n=-1; n<=1; n++){
+                        MYWIN3(0, m+1,n+1) = 0.5 * (DATA2(px+m+1,py+n  ) - DATA2(px+m-1,py+n  ));
+                        MYWIN3(1, m+1,n+1) = 0.5 * (DATA2(px+m  ,py+n+1) - DATA2(px+m  ,py+n-1));
+                    }
+                }
+                float sum0 = 0.0;
+                float sum1 = 0.0;
+                for (int m=0; m<=2; m++){
+                    for (int n=0; n<=2; n++){
+                        sum0 -= MYWIN3(0, m,n);
+                        sum1 -= MYWIN3(1, m,n);
+                    }
+                }
+                GRADS2(ai,0) = sum0/9.0;
+                GRADS2(ai,1) = sum1/9.0;
+                DATA_GRAD3(0, px, py) = GRADS2(ai,0);
+                DATA_GRAD3(1, px, py) = GRADS2(ai,1);
+                VALIDGRAD2(px, py) = Py_True;
+            }
+        }
+        """
+        weave.inline(code_grad, ["data", "mywin", "grads", "data_grad", "validgrad", "posidx"])
+        return grads
     
     def getGradientsPython(self, posidx):
         """posidx should have shape (N, 2)"""

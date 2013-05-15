@@ -167,7 +167,7 @@ class Simulation:
                 #calculate distances between agents
                 #we create an array containing in N times the array containing the agents' positions
                 #and we substract from that array its transpose (of some sort)
-                pos_v = np.array(N*[positions[iii-1]])
+                pos_v = np.repeat([positions[iii-1]], N, axis=0)
                 pos_h = pos_v.swapaxes(0,1)
                 pos_difference = pos_v-pos_h
                 d_squared = np.sum(pos_difference*pos_difference, axis=2)
@@ -177,20 +177,15 @@ class Simulation:
                 doRepulse = np.logical_and(inRepulsionRadius, notDiag)
                 doAlign = np.logical_and(~inRepulsionRadius, inAlignmentRadius)
                 doAlign = np.logical_and(doAlign, notDiag)
-                dir_x = directions[:,0]
-                dir_y = directions[:,1]
-                newdir_x = dir_x
-                newdir_y = dir_y
                 for i in xrange(N):
-                    interactionPartners = doAlign[i]
-                    nInteractions = np.count_nonzero(interactionPartners)
-                    if nInteractions>0:
-                        newdir_x[i] = _w*dir_x[i] + w*np.mean( dir_x[interactionPartners] )
-                        newdir_y[i] = _w*dir_y[i] + w*np.mean( dir_y[interactionPartners] )
-                dir_norms = np.sqrt( newdir_x*newdir_x + newdir_y*newdir_y )
+                    if doAlign[i].any():
+                        means = np.mean( directions[doAlign[i]], axis=0)
+                        directions[i] = _w*directions[i] + w*means
+                dir_norms = np.sqrt( directions[:,0]*directions[:,0] + directions[:,1]*directions[:,1] )
                 dir_norms[dir_norms==0.0] = 1.0
-                directions[:,0] = newdir_x/dir_norms
-                directions[:,1] = newdir_y/dir_norms
+                directions = directions/dir_norms[:, np.newaxis]
+                #directions[:,0] = directions[:,0]/dir_norms
+                #directions[:,1] = directions[:,1]/dir_norms
 
                 F_rep = np.zeros_like(pos_difference)
                 interactionIndices = np.nonzero(doRepulse)
@@ -200,8 +195,8 @@ class Simulation:
 
             posidx = np.array(density * positions[iii-1], dtype=np.int0)
             np.clip(posidx, myMaze.minidx, myMaze.maxidx, out=posidx)
-            wgrad = myMaze.getGradientsPython(posidx)
-            #wgrad = myMaze.getGradientsCpp(posidx)
+            #wgrad = myMaze.getGradientsPython(posidx)
+            wgrad = myMaze.getGradientsCpp(posidx)
 
             evolve_orientation = statechanges < simtime 
             is_moving = states[iii-1]==sim.States.MOVING

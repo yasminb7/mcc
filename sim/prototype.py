@@ -6,8 +6,9 @@ Created on 09.10.2012
 import numpy as np
 import string
 
-N=20
-percentage = np.arange(0.0, 1.01, 0.2)
+N=50
+#percentage = np.arange(0.0, 1.01, 0.3)
+percentage = [0.5]
 #percentage = [0.0, 0.05, 0.1, 0.15, 0.2]
 
 def getConst(vartuple, exclude=None):
@@ -86,7 +87,7 @@ const = {
 #factor of the stochastic force
 "r" : 0.0 * np.sqrt(2),
 #enable interaction, True or False
-"enable_interaction" : False,
+"enable_interaction" : True,
 #for distances smaller than this, agents experience repulsion
 "interaction_radius" : 3,
 #for distances between interaction_radius and this, there is alignment
