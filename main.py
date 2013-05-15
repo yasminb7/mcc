@@ -1,6 +1,5 @@
 import sys, os, traceback
-
-import graphics
+#import graphics
 import mcclib.utils as utils
 import mcclib.constants as constants
 from mcclib.utils import getSimfiles, verifySimulationNecessary
@@ -51,15 +50,15 @@ def prepareSim():
             error(traceback.format_exc())
     info("All simulations have been run.")
 
-    for i, const in enumerate(items):
-        functions = []
-        if const["create_path_plot"]:
-            functions.append(graphics.create_path_plot)
-        if const["create_video_directly"]:
-            functions.append(graphics.create_plots_ds)
-            
-        info("Creating graphic output for %s, %s out of %s" % (const["name"], i+1, len(items)))
-        graphics.writeFrames(const, output_func=functions)
+#    for i, const in enumerate(items):
+#        functions = []
+#        if const["create_path_plot"]:
+#            functions.append(graphics.create_path_plot)
+#        if const["create_video_directly"]:
+#            functions.append(graphics.create_plots_ds)
+#            
+#        info("Creating graphic output for %s, %s out of %s" % (const["name"], i+1, len(items)))
+#        graphics.writeFrames(const, output_func=functions)
     
 if __name__ == "__main__":
     prepareSim()

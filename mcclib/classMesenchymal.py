@@ -1,5 +1,5 @@
 import os
-import constants, utils
+import constants, utils, graphutils
 
 class Mesenchymal():
     '''
@@ -17,7 +17,7 @@ class Mesenchymal():
         if basepath is None:
             basepath = os.getcwd()
         eatpath = os.path.join(basepath, constants.resourcespath, const["eatshape"])
-        Mesenchymal.eat = utils.loadImage(eatpath)
+        Mesenchymal.eat = graphutils.loadImage(eatpath)
         Mesenchymal.eat = utils.scaleToMax(constants.wallconst, Mesenchymal.eat)
         Mesenchymal.degrad_rate = const["zeta"]
         Mesenchymal.safety_factor = const["safety_factor"]

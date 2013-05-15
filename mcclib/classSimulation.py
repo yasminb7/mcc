@@ -1,7 +1,5 @@
 import os, datetime, shutil
 import numpy as np
-import matplotlib.cm as cm
-import matplotlib.pyplot as plt
 from classMesenchymal import Mesenchymal
 from classMaze import Maze, densityArray
 from classDataset import Dataset
@@ -32,25 +30,6 @@ class Simulation:
         if noDelete==False:
             self.dsA = Dataset(Dataset.AMOEBOID, const["max_time"], const["dt"], self.N, constants.DIM, self.resultsdir, fileprefix=None)
             info("Created dataset of size %s" % self.dsA.getHumanReadableSize())
-    
-    def plotmaze(self, maze, filename = "maze.png"):
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        ax.imshow(maze.T, extent=self.const["fieldlimits"], cmap=cm.get_cmap("binary"))
-        plt.grid(True)
-        plt.axis(self.const["fieldlimits"])
-        mazefilepath = utils.getResultsFilepath(self.resultsdir, filename)
-        plt.savefig(mazefilepath)
-        
-    def plotcgrad(self, concentrationfield, filename = 'concentrationfield.png'):
-        fig = plt.figure(figsize=(16,16), frameon=False)
-        ax = plt.Axes(fig, [0., 0., 1., 1.], )
-        ax.set_axis_off()
-        fig.add_axes(ax)
-        img = utils.scaleToMax(1.0, -concentrationfield.T)
-        ax.imshow(img, extent=self.const["fieldlimits"], origin='lower')
-        concentrationfilepath = utils.getResultsFilepath(self.resultsdir, filename)
-        plt.savefig(concentrationfilepath, bbox_inches='tight', dpi=100)
     
     #@profile
     def run(self):
@@ -221,8 +200,8 @@ class Simulation:
 
             posidx = np.array(density * positions[iii-1], dtype=np.int0)
             np.clip(posidx, myMaze.minidx, myMaze.maxidx, out=posidx)
-            #wgrad = myMaze.getGradientsPython(posidx)
-            wgrad = myMaze.getGradientsCpp(posidx)
+            wgrad = myMaze.getGradientsPython(posidx)
+            #wgrad = myMaze.getGradientsCpp(posidx)
 
             evolve_orientation = statechanges < simtime 
             is_moving = states[iii-1]==sim.States.MOVING

@@ -10,7 +10,6 @@ N=20
 percentage = sp.arange(0.0, 1.01, 0.2)
 #percentage = [0.0, 0.05, 0.1, 0.15, 0.2]
 
-
 def getConst(vartuple, exclude=None):
     factors = const["factors"]
     assert len(vartuple)==len(factors)

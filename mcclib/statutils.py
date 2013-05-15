@@ -95,9 +95,9 @@ def finalstats(ds, goal, success_radius):
     successful = dist < success_radius
     stats = doCombinations(stats, "distance_from_goal", dist, amoeboids, mesenchymals, successful)
     
-    stats["success_ratio"] = np.mean( getSuccessrates(dist, success_radius) )
-    stats["success_ratio_a"] = np.mean( getSuccessrates(dist[amoeboids], success_radius) ) if amoeboids.any()==True else None
-    stats["success_ratio_m"] = np.mean( getSuccessrates(dist[mesenchymals], success_radius) ) if mesenchymals.any()==True else None
+    stats["success_ratio"] = float( np.mean( getSuccessrates(dist, success_radius) ) )
+    stats["success_ratio_a"] = float ( np.mean( getSuccessrates(dist[amoeboids], success_radius) ) ) if amoeboids.any()==True else None
+    stats["success_ratio_m"] = float ( np.mean( getSuccessrates(dist[mesenchymals], success_radius) ) ) if mesenchymals.any()==True else None
     
     consider = np.logical_or(ds.states==sim.States.MOVING, ds.states==sim.States.ORIENTING)
     velocities = np.ma.empty_like(ds.velocities)
@@ -135,10 +135,10 @@ def dicAsText(dic):
 def savefinalstats(picklepath, textpath, const, dataset):
     """Calculate the finalstats and save them once as a pickle file and once as a text file."""
     stats = finalstats(dataset, const["gradientcenter"], const["success_radius"])
-    with open(picklepath, "w") as statfile:
-        cPickle.dump(stats, statfile)
-    with open(textpath, "w") as statfile:
-        statfile.write(dicAsText(stats))
+    with open(picklepath, "w") as statfilepickle:
+        cPickle.dump(stats, statfilepickle)
+    with open(textpath, "w") as statfiletext:
+        statfiletext.write(dicAsText(stats))
 
 def saveConst(const, filename):
     with open(filename, "w") as constfile:

@@ -353,8 +353,11 @@ def getFinalstats(constlist, statvar):
     for i, c in enumerate(constlist):
         f = c["name"]
         finalstatspath = os.path.join(resultspath, f, constants.finalstats_pickle)
-        finalstats = statutils.readfinalstats(finalstatspath)
-        statistics[i] = finalstats[statvar]
+        try:
+            finalstats = statutils.readfinalstats(finalstatspath)
+            statistics[i] = finalstats[statvar]
+        except:
+            print "what? why?"
     value = None
     error = None
     if c["handle_repetitions_with"]=="mean":

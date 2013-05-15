@@ -1,6 +1,5 @@
 import numpy as np
 import math
-import matplotlib.pyplot as plt
 import logging, os.path, shutil, re, itertools, importlib, time, string
 from constants import confpackage, resourcespath, videoshellscript, ignore
 import subprocess
@@ -181,16 +180,6 @@ def getFolders(searchpath, pattern):
         if p.search(directory):
             sweepdirs.append(searchpath + directory)
     return sweepdirs
-
-def loadImage(path):
-    """Load an image (for a maze) from a given path and do some transformations on it."""
-    data = plt.imread(path)
-    data = np.flipud(data)
-    data = np.swapaxes(data, 0, 1)
-    assert np.amax(data)<=1.0, "Array maximum should be 1.0"
-    assert np.amin(data)>=0.0, "Array minimum should be >=0.0"
-    data = np.ones_like(data) - data
-    return data
 
 def scaleToMax(newmax, arr):
     """Make sure the maximum value of all the pixel in an array is newmax."""
