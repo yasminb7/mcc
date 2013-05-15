@@ -1,0 +1,7 @@
+layout.tiff
+layout.xcf
+layout.zip
+*.tiff
+*.xcf
+*.zip
+*.npy

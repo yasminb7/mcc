@@ -32,7 +32,7 @@ class Dataset(object):
               "positions" : ArrayFile("positions", "shapexDim", np.float_, onDisk=True),
               "velocities" : ArrayFile("velocities", "shapexDim", np.float_, onDisk=True),
               "energies" : ArrayFile("energies", "shapex1", np.float_),
-              "states" : ArrayFile("states", "shapex1", np.character),
+              "states" : ArrayFile("states", "shapex1", np.int8),
               "statechanges" : ArrayFile("statechanges", "N_agents", np.float_),
               "periods" : ArrayFile("periods", "N_agents", np.float_),
               "delays" : ArrayFile("delays", "N_agents", np.float_),
