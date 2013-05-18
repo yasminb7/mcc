@@ -1,5 +1,7 @@
 import os, datetime, shutil
 import numpy as np
+import scipy.weave as weave
+import scipy.weave.converters as converters
 from classMesenchymal import Mesenchymal
 from classMaze import Maze, densityArray
 from classDataset import Dataset
@@ -115,7 +117,7 @@ class Simulation:
         fieldlimits = self.const["fieldlimits"]
         iii = 1
         enable_interaction = self.const["enable_interaction"]
-        notDiag = ~np.eye(N, dtype=np.bool_)
+        #notDiag = ~np.eye(N, dtype=np.bool_)
         r_coupling = self.const["repulsion_coupling"]
         w = self.const["w"] * dt
         _w = (1-w) * dt
@@ -173,14 +175,37 @@ class Simulation:
                 d_squared = np.sum(pos_difference*pos_difference, axis=2)
                 
                 inRepulsionRadius = d_squared < 4*interaction_radius*interaction_radius
+                #do not let agents interact with themselves (i.e. the diagonal has to be False)
+                np.fill_diagonal(inRepulsionRadius, False)
                 inAlignmentRadius = d_squared < 4*alignment_radius*alignment_radius
-                doRepulse = np.logical_and(inRepulsionRadius, notDiag)
-                doAlign = np.logical_and(~inRepulsionRadius, inAlignmentRadius)
-                doAlign = np.logical_and(doAlign, notDiag)
-                for i in xrange(N):
-                    if doAlign[i].any():
-                        means = np.mean( directions[doAlign[i]], axis=0)
-                        directions[i] = _w*directions[i] + w*means
+                #do not let agents interact with themselves (i.e. the diagonal has to be False)
+                np.fill_diagonal(inAlignmentRadius, False)
+                doRepulse = inRepulsionRadius
+                doAlign = np.logical_and(~inRepulsionRadius, inAlignmentRadius) #@UnusedVariable
+                code = """
+                #line 186 "classSimulation.py"
+                int nInteract;
+                double meanX, meanY;
+                for (int i=0; i < N; i++) {
+                    nInteract = 0;
+                    meanX = 0.0;
+                    meanY = 0.0;
+                    for (int j=0; j < N; j++) {
+                        if (doAlign(i, j) == 1) {
+                            nInteract++;
+                            meanX += directions(j,0);
+                            meanY += directions(j,1);
+                        }
+                    }
+                    if (nInteract != 0) {;
+                        meanX /= nInteract;
+                        meanY /= nInteract;
+                        directions(i,0) = _w*directions(i,0) + w*meanX;
+                        directions(i,1) = _w*directions(i,1) + w*meanY;
+                    }        
+                }
+                """
+                weave.inline(code, ["N", "doAlign", "directions", "_w", "w"], type_converters=converters.blitz)
                 dir_norms = np.sqrt( directions[:,0]*directions[:,0] + directions[:,1]*directions[:,1] )
                 dir_norms[dir_norms==0.0] = 1.0
                 directions = directions/dir_norms[:, np.newaxis]

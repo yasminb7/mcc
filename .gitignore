@@ -3,4 +3,6 @@ results/
 *.pyc
 *.grad
 **/*.pyc
+*.lprof
+.settings/
 

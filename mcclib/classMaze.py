@@ -67,7 +67,7 @@ class Maze(object):
         self.minidx = 0
         self.maxidx = self.data.shape[0]-1
         
-
+    #@profile
     def degrade(self, pos, bite, energy, density, dt):
         Ax = 0
         Ay = 0
@@ -109,7 +109,7 @@ class Maze(object):
         mywin = np.zeros((2,3,3)) #@UnusedVariable
         code_grad = \
         """
-        #line 136 "classMaze.py"
+        #line 112 "classMaze.py"
         for (uint ai=0; ai<Nposidx[0]; ai++)
         {
             int px = POSIDX2(ai,0);

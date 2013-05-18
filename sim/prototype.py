@@ -42,7 +42,7 @@ const = {
 #How many times this simulation will be repeated
 "repetitions" : range(1),
 #maximum simulation time
-"max_time" : 500.0,
+"max_time" : 1500.0,
 #timestep
 "dt" : 0.1,
 #number of amoeboid agents
