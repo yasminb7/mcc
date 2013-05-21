@@ -91,4 +91,7 @@ ignore = []
 
 #currentsim = "with-without-i.py"
 #currentsim = "maze-easy-ar.py"
-currentsim = "prototype.py"
+#currentsim = "prototype.py"
+#currentsim = "wexplore.py"
+#currentsim = "free-ci.py"
+currentsim = "varying-w.py"

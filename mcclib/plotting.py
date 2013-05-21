@@ -39,7 +39,7 @@ matplotlib.rcParams['ytick.minor.width'] = 0.5
 mymarkersize = 7
 #formats = ["bo", "gs", "r^", "yo", "ks", ""]
 #formats = itertools.cycle(formats)
-mymarkers = 'os>^+*'
+mymarkers = 'os>^d*'
 
 def plot(x, y, labels = None, xlabel = None, ylabel = None, xlabels=None, title=None, legend=None, showGrid=False, folder=None, savefile=None):
     assert len(x)==len(y), "x and y don't have the same length"
@@ -93,7 +93,7 @@ def plot_histogram(data, xlabel = None, ylabel = None, title = None, folder=None
         info(savefile + " written.")
     plt.close()
 
-def errorbars(x, y, y_bars=None, labels = None, xlabel = None, ylabel = None, xlabels=None, title=None, legend=None, showGrid=False, folder=None, savefile=None, **plotargs):
+def errorbars(x, y, y_bars=None, labels = None, xlabel = None, ylabel = None, xlabels=None, title=None, legend=None, legendTextOnly=False, showGrid=False, folder=None, savefile=None, **plotargs):
     assert len(x)==len(y), "x and y don't have the same length"
     markers = itertools.cycle(mymarkers)
     fig = plt.figure()
@@ -113,7 +113,7 @@ def errorbars(x, y, y_bars=None, labels = None, xlabel = None, ylabel = None, xl
         if labels is not None:
             ax.text(x[i][0], y[i][0], labels[0], horizontalalignment='left', verticalalignment='top', transform=ax.transAxes)
     #ax.tick_params(axis='both', which='both', direction='inout')
-    if legend is not None:
+    if legend is not None and not legendTextOnly:
         ax.legend(handles, legend, loc=0)
     if xlabel is not None:
         ax.set_xlabel(xlabel)
@@ -133,7 +133,13 @@ def errorbars(x, y, y_bars=None, labels = None, xlabel = None, ylabel = None, xl
         info(savefile + " written.")
     if savefile is None:
         plt.show()
-    plt.close()
+        plt.close()
+    if legend is not None and legendTextOnly:
+        legnd = plt.figure(figsize=(3,2))
+        plt.figlegend(handles, legend, loc='upper left')
+        savefilepath = join(folder, savefile + ".legend.png")
+        legnd.savefig(savefilepath)
+        plt.close()        
 
 def bars_stacked(y0, color0, y1, color1, left, width, y_bars=None, labels = None, xlabel = None, ylabel = None, xlabels=None, title=None, legend=None, showGrid=False, folder=None, savefile=None, **plotargs):
     assert len(y0)==len(y1), "y0 and y1 don't have the same length"

@@ -18,7 +18,7 @@ def main(name):
     
     #If you have a sim-file causing a large number of simulations, but you want to
     #create graphics for only a few of them, you can use utils.applyFilter() as in this example:
-    #constlist = utils.applyFilter(constlist, "q", [0.7])
+    constlist = utils.applyFilter(constlist, "r", [0])
     
     funcs = [
              create_path_plot,
@@ -170,7 +170,7 @@ def write_mpg(resultspath, framesdir, videoname):
         command = ('mencoder',
                    'mf://%s' % os.path.join(framesdir, "frame_*.png"),
                    '-mf',
-                   'type=png:fps=20',
+                   'type=png:fps=10',
                    '-ovc',
                    'lavc',
                    '-lavcopts',

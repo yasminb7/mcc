@@ -4,7 +4,9 @@ import os, csv, itertools, random
 
 import numpy as sp
 
-from mcclib import utils, statutils, plotting, constants, classDataset
+from mcclib import statutils, plotting, constants, classDataset
+import mcclib.utils as utils
+from mcclib.utils import debug
 from mcclib.classDataset import Dataset
 from mcclib.constants import simdir, resultspath
 import sim
@@ -49,6 +51,9 @@ def singleStats(filename, doFinalStats=False):
         _resultspath = constants.resultspath[0:-1]
         resultsfolder = os.path.join(root, _resultspath, results["name"])
         ds = classDataset.load(Dataset.AMOEBOID, resultsfolder, fileprefix="A", dt=results["dt"])
+        if ds is None:
+            print "%s does not have a dataset, or could not load it.\nAborting.\n" % results["name"]
+            return None
         statutils.clearStatistics(resultsfolder)
         
         if doFinalStats:
@@ -160,14 +165,14 @@ def singleStats(filename, doFinalStats=False):
         
         plotting.scattercisr(ci, successful, amoeboids, mesenchymals, xlabel="CI", ylabel="success", folder=resultsfolder, savefile=constants.cisr_filename)
                 
-        speedDegrading = analytics.equilSpeedDegrading(results, results["q"])
-        print "Speed while degrading %s" % (speedDegrading,)
-        speedPropulsing = analytics.equilSpeedPropulsing(results, results["q"])
-        print "Speed while propulsing %s" % (speedPropulsing,)
-        print "Ratio between the two %s" % (speedPropulsing/speedDegrading,)
+#        speedDegrading = analytics.equilSpeedDegrading(results, results["q"])
+#        print "Speed while degrading %s" % (speedDegrading,)
+#        speedPropulsing = analytics.equilSpeedPropulsing(results, results["q"])
+#        print "Speed while propulsing %s" % (speedPropulsing,)
+#        print "Ratio between the two %s" % (speedPropulsing/speedDegrading,)
         
 
-def plotGlobal(xaxis, lines, const, statvar, savedir, filename, disableVarInLegend=False, **plotargs):
+def plotGlobal(xaxis, lines, const, statvar, savedir, filename, disableVarInLegend=False, legendTextOnly=True, **plotargs):
     print "Plotting %s" % (statvar,)
     mylines = []
     possiblePlot = xaxis in const["factors"]
@@ -189,7 +194,11 @@ def plotGlobal(xaxis, lines, const, statvar, savedir, filename, disableVarInLege
         for x in const[xaxis]:
             myconst = utils.applyFilter(unraveled, xaxis, [x])
             myconst = utils.applyFilter(myconst, lines, [line])
-            value, err = getFinalstats(myconst, statvar)
+            try:
+                value, err = getFinalstats(myconst, statvar)
+            except:
+                debug(const["name"])
+                continue
             ys.append(value)
             yerrs.append(err)
         linedata["ys"] = ys
@@ -216,10 +225,10 @@ def plotGlobal(xaxis, lines, const, statvar, savedir, filename, disableVarInLege
                 csvfile.writerow(line["ys"])
                 csvfile.writerow(line["yerrs"])
         
-    plotting.errorbars(myxaxes, myyaxes, y_bars=myerrors, legend=mylegend, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename, **plotargs)
+    plotting.errorbars(myxaxes, myyaxes, y_bars=myerrors, legend=mylegend, legendTextOnly=legendTextOnly, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename, **plotargs)
 
-def plotGlobal2factors(xaxis, lines, const, statvar, savedir, filename, disableVarInLegend=False, **plotargs):
-    """Same as plotGlobal, but here lines is a list. We will take the cartesion product
+def plotGlobal2factors(xaxis, lines, const, statvar, savedir, filename, disableVarInLegend=False, legendTextOnly=True, **plotargs):
+    """Same as plotGlobal, but here lines is a list. We will take the cartesian product
     of the factors in the list and plot a line for each combination.
     """
     #If I can't access lines as a list, there's nothing to do.
@@ -272,7 +281,7 @@ def plotGlobal2factors(xaxis, lines, const, statvar, savedir, filename, disableV
     myxlabel = constants.symbol(xaxis)
     myylabel = constants.symbol(statvar)
         
-    plotting.errorbars(myxaxes, myyaxes, y_bars=myerrors, legend=mylegend, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename, **plotargs)
+    plotting.errorbars(myxaxes, myyaxes, y_bars=myerrors, legend=mylegend, legendTextOnly=legendTextOnly, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename, **plotargs)
     
 def plotFitness(xaxis, lines, const, savedir, filename, suffix=None):
     mylines = []
@@ -300,7 +309,49 @@ def plotFitness(xaxis, lines, const, savedir, filename, suffix=None):
     myxlabel = constants.symbol(xaxis)
     myylabel = constants.symbol("fitness")
     
-    plotting.errorbars(myxaxes, myyaxes, legend=mylegend, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename)
+    plotting.errorbars(myxaxes, myyaxes, legend=mylegend, legendTextOnly=True, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename)
+    
+def plotFitness2factors(xaxis, lines, const, savedir, filename, disableVarInLegend=False, suffix=None):
+    mylines = []
+    #If I can't access lines as a list, there's nothing to do.
+    assert not isinstance(lines, basestring), "Cannot create this kind of plot: lines is not a list."
+    
+    assert xaxis in const["factors"]
+    
+    unraveled = utils.unravel(const)
+    
+    linesiter = itertools.product( const[lines[0]], const[lines[1]]) 
+    
+    for line in linesiter:
+        linedata = {"xs" : const[xaxis]}
+        ys = []
+        for x in const[xaxis]:
+            myconst = utils.applyFilter(unraveled, xaxis, [x])
+            myconst = utils.applyFilter(myconst, lines[0], [line[0]])
+            myconst = utils.applyFilter(myconst, lines[1], [line[1]])
+            success_ratio, sr_err = getFinalstats(myconst, "success_ratio") if suffix is None else getFinalstats(myconst, "success_ratio_%s" % suffix) 
+            avg_en, ae_err = getFinalstats(myconst, "avg_en") if suffix is None else getFinalstats(myconst, "avg_en_%s" % suffix)
+            value = success_ratio * avg_en
+            ys.append(value)
+        linedata["ys"] = ys
+        #linedata["label"] = "%s = %s" % (lines, line)
+        #mylines.append(linedata)
+        interaction = line[1]
+        if interaction==True:
+            interaction='+'
+        elif interaction==False:
+            interaction='-'
+        label = "q = %s, %s" % (line[0], interaction)
+        linedata["label"] = label if disableVarInLegend==False else constants.symbol(line)
+        mylines.append(linedata)
+    
+    myxaxes = [line["xs"] for line in mylines]
+    myyaxes = [line["ys"] for line in mylines]
+    mylegend = [line["label"] for line in mylines]
+    myxlabel = constants.symbol(xaxis)
+    myylabel = constants.symbol("fitness")
+    
+    plotting.errorbars(myxaxes, myyaxes, legend=mylegend, legendTextOnly=True, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename)
     
 def plotFitness2(xaxis, lines, const, savedir, filename, suffix=None):
     """Success ratio times avg energy of those who where successful"""
@@ -353,11 +404,8 @@ def getFinalstats(constlist, statvar):
     for i, c in enumerate(constlist):
         f = c["name"]
         finalstatspath = os.path.join(resultspath, f, constants.finalstats_pickle)
-        try:
-            finalstats = statutils.readfinalstats(finalstatspath)
-            statistics[i] = finalstats[statvar]
-        except:
-            print "what? why?"
+        finalstats = statutils.readfinalstats(finalstatspath)
+        statistics[i] = finalstats[statvar]
     value = None
     error = None
     if c["handle_repetitions_with"]=="mean":
@@ -390,7 +438,11 @@ if __name__=="__main__":
     savedir = os.path.join(cwd, constants.resultspath, savedir)
     utils.ensure_dir(savedir)
     
-    xaxis = "percentage"
+    xaxis = None
+    if simfile=="wexplore.py":
+        xaxis = "w"
+    else:
+        xaxis = "percentage"
     lines = "q"
     plotCombinations(xaxis, lines, const, "avg_en", savedir, "avg_en", ylim=(0,None))
     try:
@@ -403,18 +455,34 @@ if __name__=="__main__":
     #plotCombinations(xaxis, lines, const, "distance_from_goal", savedir, "distance_from_goal", ylim=(0,minLength))
     #plotCombinations(xaxis, lines, const, "avg_path_length", savedir, "avg_path_length", ylim=(0,2100))
     #plotCombinations(xaxis, lines, const, "avg_path_length_err", savedir, "avg_path_length_err", ylim=(0,None))
-    plotCombinations(xaxis, lines, const, "avg_ci", savedir, "avg_ci", ylim=(0,None))
+    if simfile!="with-without-i.py":
+        plotCombinations(xaxis, lines, const, "avg_ci", savedir, "avg_ci", ylim=(0.4,0.65))
+    if simfile=="free-ci.py":
+        plotCombinations(xaxis, lines, const, "avg_ci", savedir, "avg_ci", ylim=(0, None))
     plotGlobal(xaxis, lines, const, "success_ratio", savedir, "success_ratio"+constants.graphics_ending, ylim=(0,1))
     plotGlobal(xaxis, lines, const, "success_ratio_a", savedir, "success_ratio_a"+constants.graphics_ending, ylim=(0,1))
     plotGlobal(xaxis, lines, const, "success_ratio_m", savedir, "success_ratio_m"+constants.graphics_ending, ylim=(0,1))
     
-    
-    plotFitness(xaxis, lines, const, savedir, "fitness"+constants.graphics_ending)
+    if simfile=="maze-easy-ar.py":
+        plotFitness(xaxis, lines, const, savedir, "fitness"+constants.graphics_ending)
     
     if simfile=="with-without-i.py":
         plotGlobal2factors(xaxis, ["q", "enable_interaction"], const, "success_ratio", savedir, "success_ratio"+constants.graphics_ending, ylim=(0,1))
         plotGlobal2factors(xaxis, ["q", "enable_interaction"], const, "success_ratio_a", savedir, "success_ratio_a"+constants.graphics_ending, ylim=(0,1))
         plotGlobal2factors(xaxis, ["q", "enable_interaction"], const, "success_ratio_m", savedir, "success_ratio_m"+constants.graphics_ending, ylim=(0,1))
+        plotFitness2factors(xaxis, ["q", "enable_interaction"], const, savedir, "fitness"+constants.graphics_ending)
+        plotGlobal2factors(xaxis, ["q", "enable_interaction"], const, "avg_ci", savedir, "avg_ci"+constants.graphics_ending, ylim=(0,1))
+        plotGlobal2factors(xaxis, ["q", "enable_interaction"], const, "avg_ci_a", savedir, "avg_ci_a"+constants.graphics_ending, ylim=(0.4,0.65))
+        plotGlobal2factors(xaxis, ["q", "enable_interaction"], const, "avg_ci_m", savedir, "avg_ci_m"+constants.graphics_ending, ylim=(0,1))
+        
+    if simfile=="varying-w.py":
+        plotGlobal2factors(xaxis, ["q", "w"], const, "success_ratio", savedir, "success_ratio"+constants.graphics_ending, ylim=(0,1))
+        plotGlobal2factors(xaxis, ["q", "w"], const, "success_ratio_a", savedir, "success_ratio_a"+constants.graphics_ending, ylim=(0,1))
+        plotGlobal2factors(xaxis, ["q", "w"], const, "success_ratio_m", savedir, "success_ratio_m"+constants.graphics_ending, ylim=(0,1))
+        plotFitness2factors(xaxis, ["q", "w"], const, savedir, "fitness"+constants.graphics_ending)
+        plotGlobal2factors(xaxis, ["q", "w"], const, "avg_ci", savedir, "avg_ci"+constants.graphics_ending, ylim=(0,1))
+        plotGlobal2factors(xaxis, ["q", "w"], const, "avg_ci_a", savedir, "avg_ci_a"+constants.graphics_ending, ylim=(0.4,0.65))
+        plotGlobal2factors(xaxis, ["q", "w"], const, "avg_ci_m", savedir, "avg_ci_m"+constants.graphics_ending, ylim=(0,1))
     
     
     if simfile=="densities-all.py":
