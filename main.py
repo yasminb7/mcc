@@ -38,7 +38,7 @@ def prepareSim():
             mySim.run()
             #run analysis algorithms
             mySim.analyse()
-            if (const["create_video_directly"] or const["create_path_plot"]) and not const["save_finalstats_only"]:
+            if (const["create_video_directly"] or const["create_path_plot"]) and mySim.retainCompleteDataset:
                 info("Item added: %s" % const["name"])
                 items.append(const)
         except KeyboardInterrupt:

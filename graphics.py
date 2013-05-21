@@ -27,8 +27,8 @@ def main(name):
     if len(constlist)==0:
         utils.info("No simulations fit the filter criteria given.")
     for myconst in constlist:
-        if myconst["save_finalstats_only"]:
-            utils.info("Cannot create graphics because save_finalstats_only is True (sim/%s)." % name)
+        if not utils.retainCompleteDataset(myconst):
+            utils.info("Cannot create graphics because the simulation %s did not retain the complete dataset. Check (sim/%s)." % (name, name) )
         else:
             writeFrames(myconst, output_func=funcs)
 

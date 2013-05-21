@@ -29,6 +29,8 @@ class Simulation:
         self.N = self.N_amoeboid + self.N_mesenchymal
         self.NNN = int(const["max_time"] / const["dt"])
         
+        self.retainCompleteDataset = utils.retainCompleteDataset(const)
+        
         if noDelete==False:
             self.dsA = Dataset(Dataset.AMOEBOID, const["max_time"], const["dt"], self.N, constants.DIM, self.resultsdir, fileprefix=None)
             info("Created dataset of size %s" % self.dsA.getHumanReadableSize())
@@ -352,20 +354,19 @@ class Simulation:
         info( "Simulation ended ")
         info( "Simulation took %s and ended with a simulation time of %s" % (t_stop-t_start, simtime))
         
-        if self.dsA is not None and not self.const["save_finalstats_only"]:
-            self.dsA.resizeTo(iii)
-            self.dsA.saveTo(self.resultsdir)
-        elif self.dsA is not None and self.const["save_finalstats_only"]:
-            self.dsA.erase()
+        if self.dsA is not None:
+            if self.retainCompleteDataset:
+                self.dsA.resizeTo(iii)
+                self.dsA.saveTo(self.resultsdir)
+                #save the maze of the last time step so we can reuse it for the path plots
+                with open(os.path.join(self.resultsdir, constants.finalmaze_filename), "w") as finalmaze:
+                    np.save(finalmaze, myMaze.data)
+            else:
+                self.dsA.erase()
         
         saved_constants = utils.getResultsFilepath(constants.resultspath, self.const["name"], constants.saved_constants_filename)
         statutils.saveConst(self.const, saved_constants)
-        
-        if not self.const["save_finalstats_only"]:
-            #save the maze of the last time step so we can reuse it for the path plots
-            with open(os.path.join(self.resultsdir, constants.finalmaze_filename), "w") as finalmaze:
-                np.save(finalmaze, myMaze.data)
-        
+               
         utils.savetimestamp(self.resultsdir)
         utils.remove_logging_sim(logging_handler)
     
