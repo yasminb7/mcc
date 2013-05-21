@@ -6,39 +6,44 @@
 Welcome to mcc's documentation!
 ===============================
 
+:abbr:`mcc (migrating cancer cells)` is an arbitrary name for some code that lets you run simulations implementing a particular model of migrating cancer cells. What you are looking at is the documentation for that code. It is intended to help you:
+
+* get an overview over what there is,
+* get started setting up simulations, running them and analyzing the results, and
+* understand what the code does and how you can modify it to your liking.
+
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
+   install
+   setupsim
+   run
+   analyseresults
+   creategraphics
+   otherthings
+   codedoc
+
 .. automodule:: main
-   :members:
 
 .. automodule:: statistics
 
 .. automodule:: graphics
-   :members:
 
 .. automodule:: mcclib.classSimulation
-   :members:
 
 .. automodule:: mcclib.classDataset
-   :members:
 
 .. automodule:: mcclib.classMaze
-   :members:
 
 .. automodule:: mcclib.classMesenchymal
-   :members:
 
 .. automodule:: mcclib.constants
-   :members:
 
 .. automodule:: mcclib.statutils
-   :members:
 
 .. automodule:: mcclib.utils
-   :members:
 
 
 Indices and tables

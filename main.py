@@ -10,6 +10,7 @@ from mcclib.utils import info, error
 items = list()
 
 def getConstlist():
+    """Get the list of ``const`` that describes all the simulations to be run."""
     simfiles = getSimfiles(constants.simdir)
     consttocheck = [(filename, utils.readConst(constants.simdir, filename)) for filename in simfiles]
     constlist = []

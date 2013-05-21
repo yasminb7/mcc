@@ -35,6 +35,7 @@ def normsq(v):
     return np.sum(v*v)
     
 def setup_logging_base():
+    """Sets up the base of the logging facility."""
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
@@ -47,6 +48,7 @@ def setup_logging_base():
     return ch
 
 def setup_logging_sim(logfilepath):
+    """Set up a logger specific to a simulation."""
     logger = logging.getLogger()
     
     formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s - %(message)s', datefmt='%y-%m-%d %H:%M:%S')
@@ -58,6 +60,7 @@ def setup_logging_sim(logfilepath):
     return fh
 
 def remove_logging_sim(fh):
+    """Remove a logger for a simulation."""
     logger = logging.getLogger()
     logger.removeHandler(fh)
 
@@ -256,7 +259,8 @@ def applyFilter(constlist, name, valuelist):
     return r
 
 def retainCompleteDataset(const):
-    return ( const["simulations_with_complete_dataset"] <= const["repetitions"] + 1 )
+    """Returns a boolean variable indicating if the complete simulation data should be kept or only ``finalstats``."""
+    return ( const["repetitions"] <= const["simulations_with_complete_dataset"] - 1 )
 
 def getResultsFilepath(*pathelements):
     """Given one or several folders and possibly a filename return the complete path."""
@@ -318,6 +322,7 @@ def deleteFile(path):
         os.remove(path)
 
 def concentration(i, j, gradientcenter):
+    """Calculate a spherical concentration field around a given ``gradientcenter``."""
     c = gradientcenter
     field = (i-c[0]) * (i-c[0]) + (j-c[1]) * (j-c[1])
     return -1.0 * field

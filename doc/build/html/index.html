@@ -25,7 +25,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="mcc 0.9 documentation" href="#" /> 
+    <link rel="top" title="mcc 0.9 documentation" href="#" />
+    <link rel="next" title="Installation" href="install.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,6 +38,9 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             accesskey="N">next</a> |</li>
         <li><a href="#">mcc 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,257 +52,40 @@
             
   <div class="section" id="welcome-to-mcc-s-documentation">
 <h1>Welcome to mcc&#8217;s documentation!<a class="headerlink" href="#welcome-to-mcc-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p><abbr title="migrating cancer cells">mcc</abbr> is an arbitrary name for some code that lets you run simulations implementing a particular model of migrating cancer cells. What you are looking at is the documentation for that code. It is intended to help you:</p>
+<ul class="simple">
+<li>get an overview over what there is,</li>
+<li>get started setting up simulations, running them and analyzing the results, and</li>
+<li>understand what the code does and how you can modify it to your liking.</li>
+</ul>
 <p>Contents:</p>
 <div class="toctree-wrapper compound">
-<ul class="simple">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setupsim.html">Set up the simulation you want</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run.html">How to run simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyseresults.html">Analyse the results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="creategraphics.html">Visualize trajectories and movement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="otherthings.html">Other scripts you can run</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="code/checkSimfile.html">checkSimfile Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code/ds2csv.html">ds2csv Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code/png2npy.html">png2npy Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code/renewtimestamps.html">renewtimestamps Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code/runFinalstatsOnly.html">runFinalstatsOnly Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code/runSingleSim.html">runSingleSim Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="codedoc.html">Documentation of the code</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="code/main.html">main Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code/statistics.html">statistics Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code/graphics.html">graphics Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code/sim.html">sim Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code/mcclib.html">mcclib Package</a></li>
+</ul>
+</li>
 </ul>
 </div>
-<span class="target" id="module-main"></span><span class="target" id="module-statistics"></span><span class="target" id="module-graphics"></span><span class="target" id="module-mcclib.classSimulation"></span><span class="target" id="module-mcclib.classDataset"></span><dl class="function">
-<dt id="mcclib.classDataset.load">
-<tt class="descclassname">mcclib.classDataset.</tt><tt class="descname">load</tt><big>(</big><em>arrays</em>, <em>path</em>, <em>fileprefix</em>, <em>dt</em>, <em>readOnly=True</em><big>)</big><a class="headerlink" href="#mcclib.classDataset.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads a <em>dataset</em> with the specified <em>array</em> configuration from path, using a certain <em>fileprefix</em>.</p>
-</dd></dl>
-
-<span class="target" id="module-mcclib.classMaze"></span><dl class="function">
-<dt id="mcclib.classMaze.arrayIndexFromPos">
-<tt class="descclassname">mcclib.classMaze.</tt><tt class="descname">arrayIndexFromPos</tt><big>(</big><em>pos</em>, <em>density</em><big>)</big><a class="headerlink" href="#mcclib.classMaze.arrayIndexFromPos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the array index corresponding to pos as a tuple.
-pos should be a numpy array.</p>
-</dd></dl>
-
-<span class="target" id="module-mcclib.classMesenchymal"></span><dl class="class">
-<dt id="mcclib.classMesenchymal.Mesenchymal">
-<em class="property">class </em><tt class="descclassname">mcclib.classMesenchymal.</tt><tt class="descname">Mesenchymal</tt><a class="headerlink" href="#mcclib.classMesenchymal.Mesenchymal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Represents an agent that can use his energy to degrade walls..</p>
-</dd></dl>
-
-<span class="target" id="module-mcclib.constants"></span><span class="target" id="module-mcclib.statutils"></span><dl class="function">
-<dt id="mcclib.statutils.avgEnergyForAgent">
-<tt class="descclassname">mcclib.statutils.</tt><tt class="descname">avgEnergyForAgent</tt><big>(</big><em>energies</em>, <em>states</em><big>)</big><a class="headerlink" href="#mcclib.statutils.avgEnergyForAgent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the average energy over time for a single agent.
-The only states that are taken into account are MOVING and ORIENTING.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.statutils.avg_vel">
-<tt class="descclassname">mcclib.statutils.</tt><tt class="descname">avg_vel</tt><big>(</big><em>velocities</em><big>)</big><a class="headerlink" href="#mcclib.statutils.avg_vel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns velocity averaged over agents AND time</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.statutils.clearStatistics">
-<tt class="descclassname">mcclib.statutils.</tt><tt class="descname">clearStatistics</tt><big>(</big><em>folder</em><big>)</big><a class="headerlink" href="#mcclib.statutils.clearStatistics" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove some files created by statistics.py in a given folder.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.statutils.dicAsText">
-<tt class="descclassname">mcclib.statutils.</tt><tt class="descname">dicAsText</tt><big>(</big><em>dic</em><big>)</big><a class="headerlink" href="#mcclib.statutils.dicAsText" title="Permalink to this definition">¶</a></dt>
-<dd><p>Take a given Python dictionary and return it as a string.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.statutils.doCombinations">
-<tt class="descclassname">mcclib.statutils.</tt><tt class="descname">doCombinations</tt><big>(</big><em>stats</em>, <em>varname</em>, <em>data</em>, <em>amoeboids</em>, <em>mesenchymals</em>, <em>successful</em>, <em>function=&lt;function mean at 0x28cf1b8&gt;</em>, <em>axis=None</em><big>)</big><a class="headerlink" href="#mcclib.statutils.doCombinations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply a given function to all elements of a given array, and do so for all desired combinations.
-The combinations are for example &#8220;all agents that are amoeboid and were successful.
-Note that some of these results may make little sense because too few agents fit the criteria.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.statutils.finalstats">
-<tt class="descclassname">mcclib.statutils.</tt><tt class="descname">finalstats</tt><big>(</big><em>ds</em>, <em>goal</em>, <em>success_radius</em><big>)</big><a class="headerlink" href="#mcclib.statutils.finalstats" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate some of the statistics that we&#8217;re interested in at the end of a simulation.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.statutils.getDistances">
-<tt class="descclassname">mcclib.statutils.</tt><tt class="descname">getDistances</tt><big>(</big><em>positions</em>, <em>goal</em><big>)</big><a class="headerlink" href="#mcclib.statutils.getDistances" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return an array containing the distances of all agents from the goal.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.statutils.getSuccessrates">
-<tt class="descclassname">mcclib.statutils.</tt><tt class="descname">getSuccessrates</tt><big>(</big><em>dist</em>, <em>success_radius</em><big>)</big><a class="headerlink" href="#mcclib.statutils.getSuccessrates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns success rates averaged over agents (axis=1) but not averaged over time.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.statutils.savefinalstats">
-<tt class="descclassname">mcclib.statutils.</tt><tt class="descname">savefinalstats</tt><big>(</big><em>picklepath</em>, <em>textpath</em>, <em>const</em>, <em>dataset</em><big>)</big><a class="headerlink" href="#mcclib.statutils.savefinalstats" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the finalstats and save them once as a pickle file and once as a text file.</p>
-</dd></dl>
-
-<span class="target" id="module-mcclib.utils"></span><dl class="function">
-<dt id="mcclib.utils.applyFilter">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">applyFilter</tt><big>(</big><em>constlist</em>, <em>name</em>, <em>valuelist</em><big>)</big><a class="headerlink" href="#mcclib.utils.applyFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a list of const variables, return another list containing only the ones fulfilling
-a given criteria, namely the parameter name has to have one of the values in valuelist.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.copyAnimScript">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">copyAnimScript</tt><big>(</big><em>destination</em><big>)</big><a class="headerlink" href="#mcclib.utils.copyAnimScript" title="Permalink to this definition">¶</a></dt>
-<dd><p>For ease of use copy shell script that creates video right into the results folder.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.debug">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">debug</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#mcclib.utils.debug" title="Permalink to this definition">¶</a></dt>
-<dd><p>Log a string or several at DEBUG level.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.ensure_dir">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">ensure_dir</tt><big>(</big><em>f</em><big>)</big><a class="headerlink" href="#mcclib.utils.ensure_dir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make sure that the directory f exists by creating it if necessary.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.error">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">error</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#mcclib.utils.error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Log a string or several at ERROR level.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.exec_silent_command">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">exec_silent_command</tt><big>(</big><em>command</em><big>)</big><a class="headerlink" href="#mcclib.utils.exec_silent_command" title="Permalink to this definition">¶</a></dt>
-<dd><p>Execute a given command, suppressing all output.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.getDirTimestamp">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">getDirTimestamp</tt><big>(</big><em>directory</em><big>)</big><a class="headerlink" href="#mcclib.utils.getDirTimestamp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the timestamp of a given simulation.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.getFolders">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">getFolders</tt><big>(</big><em>searchpath</em>, <em>pattern</em><big>)</big><a class="headerlink" href="#mcclib.utils.getFolders" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of all the folders matching pattern.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.getGradient">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">getGradient</tt><big>(</big><em>a</em><big>)</big><a class="headerlink" href="#mcclib.utils.getGradient" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the gradient as given by the NumPy gradient function.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.getOriginalGradient">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">getOriginalGradient</tt><big>(</big><em>mazefilename</em>, <em>maze=None</em><big>)</big><a class="headerlink" href="#mcclib.utils.getOriginalGradient" title="Permalink to this definition">¶</a></dt>
-<dd><p>At the beginning of the simulation, read the gradient for a maze from a file
-(or, if the file doesn&#8217;t exist, create it and save the gradient in it).</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.getResultsDir">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">getResultsDir</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#mcclib.utils.getResultsDir" title="Permalink to this definition">¶</a></dt>
-<dd><p>From a given simfile, create a name for a folder in results that is obtained by removing the file ending.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.getResultsFilepath">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">getResultsFilepath</tt><big>(</big><em>*pathelements</em><big>)</big><a class="headerlink" href="#mcclib.utils.getResultsFilepath" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given one or several folders and possibly a filename return the complete path.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.getSimfiles">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">getSimfiles</tt><big>(</big><em>simdir</em><big>)</big><a class="headerlink" href="#mcclib.utils.getSimfiles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all valid simfiles in simdir.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.info">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">info</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#mcclib.utils.info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Log a string or several at INFO level.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.loadImage">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">loadImage</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#mcclib.utils.loadImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load an image (for a maze) from a given path and do some transformations on it.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.makeFolderEmpty">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">makeFolderEmpty</tt><big>(</big><em>folder</em><big>)</big><a class="headerlink" href="#mcclib.utils.makeFolderEmpty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove all the files in a folder.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.natsort">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">natsort</tt><big>(</big><em>list_</em>, <em>separator='_'</em>, <em>lastisint=False</em><big>)</big><a class="headerlink" href="#mcclib.utils.natsort" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function not used as of now.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.norm">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">norm</tt><big>(</big><em>v</em><big>)</big><a class="headerlink" href="#mcclib.utils.norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the Euclidean norm of a two-dimensional vector.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.normsq">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">normsq</tt><big>(</big><em>v</em><big>)</big><a class="headerlink" href="#mcclib.utils.normsq" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the squared norm.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.readConst">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">readConst</tt><big>(</big><em>directory</em>, <em>simfile</em><big>)</big><a class="headerlink" href="#mcclib.utils.readConst" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the parameter settings containted in the variable const in a file in the folder sim/.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.removeFilesByEnding">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">removeFilesByEnding</tt><big>(</big><em>path</em>, <em>ending</em><big>)</big><a class="headerlink" href="#mcclib.utils.removeFilesByEnding" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete all files in a folder that have a given ending.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.savetimestamp">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">savetimestamp</tt><big>(</big><em>folder</em><big>)</big><a class="headerlink" href="#mcclib.utils.savetimestamp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save the timestamp for a given results folder.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.scaleToMax">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">scaleToMax</tt><big>(</big><em>newmax</em>, <em>arr</em><big>)</big><a class="headerlink" href="#mcclib.utils.scaleToMax" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make sure the maximum value of all the pixel in an array is newmax.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.unravel">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">unravel</tt><big>(</big><em>const</em><big>)</big><a class="headerlink" href="#mcclib.utils.unravel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unravels a given const file along a certain axis, creating as many const variables
-as can be obtained by the parameter settings in the file.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.unravel_fixedaxis">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">unravel_fixedaxis</tt><big>(</big><em>const</em>, <em>axis</em>, <em>exclude=None</em><big>)</big><a class="headerlink" href="#mcclib.utils.unravel_fixedaxis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unravels a given const file along a certain axis.
-Returns a list of lists:
-- the outer list containing a tuple consisting of the inner list and an appropriate name (for files, folders)
-- the inner list containing the const dictionaries arranged as given by &#8220;axis&#8221;.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.validSimfile">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">validSimfile</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#mcclib.utils.validSimfile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that a given file is a valid simfile. Ignore if it starts with _ or is in the ignore list.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="mcclib.utils.verifySimulationNecessary">
-<tt class="descclassname">mcclib.utils.</tt><tt class="descname">verifySimulationNecessary</tt><big>(</big><em>constfilename</em>, <em>resultsfolder</em><big>)</big><a class="headerlink" href="#mcclib.utils.verifySimulationNecessary" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the simulation if there are no results corresponding to the sim file or
-if the sim file is newer than the results.</p>
-</dd></dl>
-
-</div>
+<span class="target" id="module-main"></span><span class="target" id="module-statistics"></span><span class="target" id="module-graphics"></span><span class="target" id="module-mcclib.classSimulation"></span><span class="target" id="module-mcclib.classDataset"></span><span class="target" id="module-mcclib.classMaze"></span><span class="target" id="module-mcclib.classMesenchymal"></span><span class="target" id="module-mcclib.constants"></span><span class="target" id="module-mcclib.statutils"></span><span class="target" id="module-mcclib.utils"></span></div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
@@ -322,6 +109,9 @@ if the sim file is newer than the results.</p>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
+  <h4>Next topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="next chapter">Installation</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/index.txt"
@@ -353,6 +143,9 @@ if the sim file is newer than the results.</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             >next</a> |</li>
         <li><a href="#">mcc 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>

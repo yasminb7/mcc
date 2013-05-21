@@ -10,7 +10,7 @@ def hist(values, bins=10, limits=None):
     return hist
 
 def avg_vel(velocities):
-    """Returns velocity averaged over agents AND time"""
+    """Returns velocity averaged over agents *and* time"""
     if velocities.size != 0:
         velocities = np.sqrt( np.sum(velocities*velocities, axis=2) )
         return np.mean(velocities)

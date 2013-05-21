@@ -14,6 +14,7 @@ import constants
 class Simulation:
     
     def __init__(self, const, noDelete=False):
+        """Constructs the ``Simulation`` object according to ``const`` and creates an empty directory for the results."""
         self.const = const
         
         self.path = os.getcwd() + "/"
@@ -33,10 +34,14 @@ class Simulation:
         
         if noDelete==False:
             self.dsA = Dataset(Dataset.AMOEBOID, const["max_time"], const["dt"], self.N, constants.DIM, self.resultsdir, fileprefix=None)
-            info("Created dataset of size %s" % self.dsA.getHumanReadableSize())
+            if self.retainCompleteDataset:
+                info("Created dataset of size %s" % self.dsA.getHumanReadableSize())
+            else:
+                info("Created temporary dataset of size %s" % self.dsA.getHumanReadableSize())
     
     #@profile
     def run(self):
+        """Actually runs the simulation and saves the results according to ``const``."""
         logfilepath = utils.getResultsFilepath(self.resultsdir, "logfile.txt")
         logging_handler = utils.setup_logging_sim(logfilepath)
             
@@ -371,6 +376,7 @@ class Simulation:
         utils.remove_logging_sim(logging_handler)
     
     def saveFinalGradient(self, myMaze):
+        """Use this if you're interested in an image of what the maze looks like at the end of the simulation."""
         from PIL import Image
         imgdata = myMaze.getGradImageSquared()
         imgdata = utils.scaleToMax(255.0, imgdata.T)
@@ -389,17 +395,20 @@ class Simulation:
         plotting.plot([range(len(mazepoints))] , y, folder=self.resultsdir, savefile="mazeline_%d.png" % number)
     
     def analyse(self):
+        """Saves the ``finalstats`` a pickle file and a text file in the results folder."""
         picklepath = utils.getResultsFilepath(self.resultsdir, constants.finalstats_pickle)
         textpath = utils.getResultsFilepath(self.resultsdir, constants.finalstats_text)
         statutils.savefinalstats(picklepath, textpath, self.const, self.dsA)
     
     def cleanUp(self):
+        """Cleans up the simulation and removes its directory. Should only be used if something went wrong."""
         if self.dsA is not None:
             self.dsA.erase()
         shutil.rmtree(self.resultsdir)
         utils.info("Cleaned up results directory.")
 
 def prepareSim(const):
+    """Sets up a single simulation to be run directly (i.e., without resorting to :py:mod: main.py)."""
     utils.setup_logging_base() 
     #run the simulation
     mySim = Simulation(const)
@@ -415,6 +424,7 @@ def prepareSim(const):
     graphics.writeFrames(const, output_func=functions)
     
 if __name__ == "__main__":
+    """Runs a single simulation without going via :py:mod main.py."""
     simfile = constants.currentsim
     #TODO: should add unravel here
     const = utils.readConst(constants.simdir, simfile)

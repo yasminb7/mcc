@@ -42,7 +42,7 @@ const = {
 "name" : "with-without-i_pM%s_q%s_i%s_r%s", #name of folder including %s for variables to be replaced according to "factors"
 "factors" : ["percentage", "q", "enable_interaction", "repetitions"],
 "handle_repetitions_with" : "mean",
-"repetitions" : range(10),
+"repetitions" : range(20),
 "max_time" : 2500.0,
 "dt" : 0.1,
 "N_amoeboid" : 1,
@@ -104,5 +104,5 @@ const = {
 "create_path_plot" : True,
 "create_video_directly" : False,
 
-"save_finalstats_only" : True,
+"simulations_with_complete_dataset" : 1,
 }
