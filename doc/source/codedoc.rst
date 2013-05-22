@@ -30,3 +30,5 @@ Documentation of the code
 
 .. automodule:: mcclib.utils
 
+.. automodule:: sim
+

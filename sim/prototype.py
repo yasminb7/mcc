@@ -1,8 +1,4 @@
-'''
-Created on 09.10.2012
-
-@author: frederic
-'''
+"""This is an example of how you can describe simulations you want ``mcc`` to run."""
 import numpy as np
 import string
 
@@ -29,11 +25,12 @@ def getConst(vartuple, exclude=None):
     newconst["name"] = newname
     return newconst
 
-#parameters that control the simulation in general
+
 const = {
-#name of the function that returns const in the right form
+"""parameters that control the simulation in general"""
 "get" : getConst,
-#name of folder including %s for variables to be replaced according to "factors"
+"""name of the function that returns const in the right form"""
+"""name of folder including %s for variables to be replaced according to ``factors``"""
 "name" : "prototype_pM%s_q%s_r%s",
 #Which of the variables in const should be interpreted as a range of values to simulate?
 "factors" : ["percentage", "q", "repetitions"],
@@ -121,5 +118,5 @@ const = {
 "create_path_plot" : True,
 "create_video_directly" : False,
 
-"save_finalstats_only" : False,
+"simulations_with_complete_dataset" : 1,
 }

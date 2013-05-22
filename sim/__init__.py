@@ -1,8 +1,6 @@
-'''
-Created on 09.10.2012
-
-@author: frederic
-'''
+"""
+This file contains some common definitions that are needed by other files in the :py:mod:`sim` package.
+"""
 import string
 
 def enum(**enums):

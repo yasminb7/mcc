@@ -48,7 +48,7 @@ def myFilter(data, mysigma=sigma):
 
 class Maze(object):
     
-    def __init__(self, filename, fieldlimits, border):
+    def __init__(self, filename, fieldlimits, border, useWeave):
         self.original = graphutils.loadImage(filename)
         self.original = utils.scaleToMax(wall, self.original)
         self.data = myFilter(self.original)
@@ -66,6 +66,11 @@ class Maze(object):
         
         self.minidx = 0
         self.maxidx = self.data.shape[0]-1
+        
+        if useWeave:
+            self.getGradients = self.getGradientsCpp
+        else:
+            self.getGradients = self.getGradientsPython 
         
     #@profile
     def degrade(self, pos, bite, energy, density, dt):

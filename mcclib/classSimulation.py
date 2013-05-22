@@ -44,7 +44,8 @@ class Simulation:
         """Actually runs the simulation and saves the results according to ``const``."""
         logfilepath = utils.getResultsFilepath(self.resultsdir, "logfile.txt")
         logging_handler = utils.setup_logging_sim(logfilepath)
-            
+
+        useWeave = constants.useWeave          
         t_start = datetime.datetime.now()
         DIM = constants.DIM
         N = self.N
@@ -61,7 +62,7 @@ class Simulation:
         
         #prepare landscape
         mazepath = os.path.join(self.path, self.const["maze"])
-        myMaze = Maze(mazepath, self.const["fieldlimits"], self.const["border"])
+        myMaze = Maze(mazepath, self.const["fieldlimits"], self.const["border"], useWeave=constants.useWeave)
         maze = myMaze.data
         density = densityArray(maze.shape, self.const["fieldlimits"])
         #prepare gradient
@@ -189,30 +190,36 @@ class Simulation:
                 np.fill_diagonal(inAlignmentRadius, False)
                 doRepulse = inRepulsionRadius
                 doAlign = np.logical_and(~inRepulsionRadius, inAlignmentRadius) #@UnusedVariable
-                code = """
-                #line 186 "classSimulation.py"
-                int nInteract;
-                double meanX, meanY;
-                for (int i=0; i < N; i++) {
-                    nInteract = 0;
-                    meanX = 0.0;
-                    meanY = 0.0;
-                    for (int j=0; j < N; j++) {
-                        if (doAlign(i, j) == 1) {
-                            nInteract++;
-                            meanX += directions(j,0);
-                            meanY += directions(j,1);
+                if useWeave:
+                    code = """
+                    #line 186 "classSimulation.py"
+                    int nInteract;
+                    double meanX, meanY;
+                    for (int i=0; i < N; i++) {
+                        nInteract = 0;
+                        meanX = 0.0;
+                        meanY = 0.0;
+                        for (int j=0; j < N; j++) {
+                            if (doAlign(i, j) == 1) {
+                                nInteract++;
+                                meanX += directions(j,0);
+                                meanY += directions(j,1);
+                            }
                         }
+                        if (nInteract != 0) {;
+                            meanX /= nInteract;
+                            meanY /= nInteract;
+                            directions(i,0) = _w*directions(i,0) + w*meanX;
+                            directions(i,1) = _w*directions(i,1) + w*meanY;
+                        }        
                     }
-                    if (nInteract != 0) {;
-                        meanX /= nInteract;
-                        meanY /= nInteract;
-                        directions(i,0) = _w*directions(i,0) + w*meanX;
-                        directions(i,1) = _w*directions(i,1) + w*meanY;
-                    }        
-                }
-                """
-                weave.inline(code, ["N", "doAlign", "directions", "_w", "w"], type_converters=converters.blitz)
+                    """
+                    weave.inline(code, ["N", "doAlign", "directions", "_w", "w"], type_converters=converters.blitz)
+                else:
+                    for i in xrange(N):
+                        if doAlign[i].any():
+                            means = np.mean( directions[doAlign[i]], axis=0)
+                            directions[i] = _w*directions[i] + w*means
                 dir_norms = np.sqrt( directions[:,0]*directions[:,0] + directions[:,1]*directions[:,1] )
                 dir_norms[dir_norms==0.0] = 1.0
                 directions = directions/dir_norms[:, np.newaxis]
@@ -227,8 +234,7 @@ class Simulation:
 
             posidx = np.array(density * positions[iii-1], dtype=np.int0)
             np.clip(posidx, myMaze.minidx, myMaze.maxidx, out=posidx)
-            #wgrad = myMaze.getGradientsPython(posidx)
-            wgrad = myMaze.getGradientsCpp(posidx)
+            wgrad = myMaze.getGradients(posidx)
 
             evolve_orientation = statechanges < simtime 
             is_moving = states[iii-1]==sim.States.MOVING

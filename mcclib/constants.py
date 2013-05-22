@@ -1,5 +1,7 @@
 import string
 
+useWeave = True
+
 #standard values are
 wallconst = 100.0
 wallgradconst = 0.0
@@ -89,9 +91,9 @@ ignore = []
 #ignore.append("maze-easy-ar.py")
 #ignore.append("with-without-i.py")
 
-#currentsim = "with-without-i.py"
+currentsim = "with-without-i.py"
 #currentsim = "maze-easy-ar.py"
-currentsim = "maze-hard-ar.py"
+#currentsim = "maze-hard-ar.py"
 #currentsim = "prototype.py"
 #currentsim = "wexplore.py"
 #currentsim = "free-ci.py"

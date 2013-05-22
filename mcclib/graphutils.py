@@ -1,7 +1,8 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import os.path
 
-def loadImage(path):
+def loadImage_old(path):
     arr = None
     filename = path + ".npy"
     if os.path.exists(filename):
@@ -10,6 +11,16 @@ def loadImage(path):
     else:
         os.system("python png2npy.py %s" % path)
     return arr
+
+def loadImage(path):
+    """Load an image (for a maze) from a given path and do some transformations on it."""
+    data = plt.imread(path)
+    data = np.flipud(data)
+    data = np.swapaxes(data, 0, 1)
+    assert np.amax(data)<=1.0, "Array maximum should be 1.0"
+    assert np.amin(data)>=0.0, "Array minimum should be >=0.0"
+    data = np.ones_like(data) - data
+    return data
 
 #import matplotlib.cm as cm
 #import matplotlib.pyplot as plt
