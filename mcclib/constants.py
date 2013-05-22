@@ -24,8 +24,8 @@ framesdir = "frames/"
 logfilename = "sim.log"
 videoshellscript = "anim.sh"
 
-graphics_ending = ".png"
-#graphics_ending = ".tiff"
+#graphics_ending = ".png"
+graphics_ending = ".tiff"
 
 simpickle_filename = "simdata.pickle"
 finalstats_pickle = "finalstats.pickle"
@@ -89,8 +89,9 @@ ignore = []
 #ignore.append("maze-easy-ar.py")
 #ignore.append("with-without-i.py")
 
-currentsim = "with-without-i.py"
+#currentsim = "with-without-i.py"
 #currentsim = "maze-easy-ar.py"
+currentsim = "maze-hard-ar.py"
 #currentsim = "prototype.py"
 #currentsim = "wexplore.py"
 #currentsim = "free-ci.py"

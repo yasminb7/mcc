@@ -456,7 +456,9 @@ if __name__=="__main__":
     #plotCombinations(xaxis, lines, const, "avg_path_length", savedir, "avg_path_length", ylim=(0,2100))
     #plotCombinations(xaxis, lines, const, "avg_path_length_err", savedir, "avg_path_length_err", ylim=(0,None))
     if simfile!="with-without-i.py":
-        plotCombinations(xaxis, lines, const, "avg_ci", savedir, "avg_ci", ylim=(0.4,0.65))
+        plotCombinations(xaxis, lines, const, "avg_ci", savedir, "avg_ci", ylim=(0, None))
+        plotGlobal(xaxis, lines, const, "avg_ci_a_s", savedir, "avg_ci_a_s"+constants.graphics_ending, ylim=(0, None))
+        plotGlobal(xaxis, lines, const, "avg_ci_m_s", savedir, "avg_ci_m_s"+constants.graphics_ending, ylim=(0, None))
     if simfile=="free-ci.py":
         plotCombinations(xaxis, lines, const, "avg_ci", savedir, "avg_ci", ylim=(0, None))
     plotGlobal(xaxis, lines, const, "success_ratio", savedir, "success_ratio"+constants.graphics_ending, ylim=(0,1))

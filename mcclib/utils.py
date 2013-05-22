@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.weave as weave
 import math
 import logging, os.path, shutil, re, itertools, importlib, time, string
 from constants import confpackage, resourcespath, videoshellscript, ignore
@@ -326,3 +327,15 @@ def concentration(i, j, gradientcenter):
     c = gradientcenter
     field = (i-c[0]) * (i-c[0]) + (j-c[1]) * (j-c[1])
     return -1.0 * field
+
+def weaveWorks():
+    try:
+        a = 1
+        code = \
+        """
+        a++;
+        """
+        weave.inline(code, ["a"])
+        return True
+    except:
+        return False

@@ -17,6 +17,7 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     folder = "resources/" 
     #maze = "easy_1600.png"
+    maze = "hard_1600.png"
     #maze = "eat_15.png"  
-    maze = "maze_empty_1600.png"
+    #maze = "maze_empty_1600.png"
     convertImage(os.path.join(cwd, folder, maze))
