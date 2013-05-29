@@ -1,7 +1,7 @@
 - write README-style doc
 
 - make sure it compiles on Windows (at least with Visual C++ 2008 express)
-- make distribution with dlls or something
+(- make distribution with dlls or something)
 - put the entire thing on the harddisk
 
 - make sure the simulations in sim/ actually work

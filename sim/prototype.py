@@ -19,18 +19,17 @@ def getConst(vartuple, exclude=None):
         newconst[factors[i]] = vartuple[i]
     
     perc = vartuple[0]    
-    N_a = int(N*(1-perc))
+    N_a = int(round(N*(1-perc)))
     newconst["N_amoeboid"] = N_a
     newconst["N_mesenchymal"] = N - N_a
     newconst["name"] = newname
     return newconst
 
-
+#parameters that control the simulation in general
 const = {
-"""parameters that control the simulation in general"""
+#name of the function that returns const in the right form
 "get" : getConst,
-"""name of the function that returns const in the right form"""
-"""name of folder including %s for variables to be replaced according to ``factors``"""
+#name of folder including %s for variables to be replaced according to ``factors``
 "name" : "prototype_pM%s_q%s_r%s",
 #Which of the variables in const should be interpreted as a range of values to simulate?
 "factors" : ["percentage", "q", "repetitions"],

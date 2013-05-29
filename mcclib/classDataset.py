@@ -8,6 +8,7 @@ import cPickle
 ending = ".npy"
 
 class ArrayFile(object):
+    """Handles information regarding arrays and how to store them on disk."""
     def __init__(self, name, dim, dtype, filename=None, fileprefix="A", onDisk=False):
         self.name = name
         self.dim = dim
@@ -16,6 +17,7 @@ class ArrayFile(object):
         self.onDisk = onDisk
     
     def getFilename(self):
+        """Returns the filename for the particular array."""
         if self.fileprefix is not None:
             filename = self.fileprefix + "_" + self.name + ending
         else:
@@ -23,9 +25,9 @@ class ArrayFile(object):
         return filename
 
 class Dataset(object):
-    
-    is_amoeboid = 0
-    is_mesenchymal = 1
+    """Provides help in creating, saving, and reloading (if necessary) the dataset belonging to a simulation."""
+    is_amoeboid = constants.TYPE_AMOEBOID
+    is_mesenchymal = constants.TYPE_MESENCHYMAL
     
     AMOEBOID = {"times" : ArrayFile("times", "NNN", np.float_),
                 "types" : ArrayFile("types", "N_agents", np.int_),
@@ -40,9 +42,9 @@ class Dataset(object):
               "direction_angles" : ArrayFile("direction_angles", "N_agents", np.float_)}
 
     def __init__(self, arrays, max_time, dt, N_agents, N_dim, path, doAllocate=True, fileprefix=None):
-        '''
-        Constructor
-        '''
+        """Constructs a new dataset for the given parameters.
+        
+        If `doAllocate` is *False* then nothing will be written to disk."""
         self.dt = dt
         self.arrays = arrays
         self.NNN = int(max_time / dt)
@@ -66,9 +68,11 @@ class Dataset(object):
                 setattr(self, name, np.empty(self.__getattribute__(val.dim), dtype=val.dtype))
     
     def getTotalSize(self):
+        """Returns the total size of the dataset (in bytes)."""
         return self.getSize(False)+self.getSize(True)
     
     def getSize(self, onDisk):
+        """Returns the size of the arrays in memory if `onDisk` is *False* or on disk if `onDisk` is *True*."""
         totalbytes = 0
         for name, val in self.arrays.iteritems():
             if val.onDisk==False:
@@ -77,11 +81,13 @@ class Dataset(object):
         return totalbytes
                 
     def getHumanReadableSize(self):
+        """Returns the total size of the dataset (in megabytes)."""
         size = self.getTotalSize()
         bytesInMB = 1024*1024
         return "%s MB" % int(size/bytesInMB) 
     
     def resizeTo(self, iii):
+        """Obsolete. If the simulation stops too early, resize all the arrays to `iii` timesteps."""
         if iii==self.NNN:
             return
         self.NNN = iii
@@ -92,6 +98,7 @@ class Dataset(object):
             self.__getattribute__(name).resize(self.__getattribute__(val.dim), refcheck=False)
     
     def saveTo(self, path):
+        """Save the dataset to `path`."""
         for name, val in self.arrays.iteritems():
             arr = self.__getattribute__(name)
             if type(arr) == np.memmap:
@@ -105,6 +112,7 @@ class Dataset(object):
                 np.save(filepath, arr)
     
     def erase(self):
+        """Erase the dataset."""
         mmapfiles = []
         for name in self.arrays:
             arr = self.__getattribute__(name)
@@ -119,7 +127,9 @@ class Dataset(object):
 #            self.__delattr__(name)
 
 def load(arrays, path, fileprefix, dt, readOnly=True):
-    """Loads a *dataset* with the specified *array* configuration from path, using a certain *fileprefix*."""
+    """Loads and returns a *dataset* with the specified *array* configuration from path, using a certain *fileprefix*.
+    
+    Returns `None` in case of failure."""
     try:
         loaded_arrays = dict()
         for name, val in arrays.iteritems():

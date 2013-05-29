@@ -35,7 +35,7 @@ def main(name):
 def create_path_plot(myconst, path, savedir, dataset, step, finalmaze=None):
     dsA = dataset
     mazepath = os.path.join(path, myconst["maze"])
-    myMaze = Maze(mazepath, myconst["fieldlimits"], myconst["border"])
+    myMaze = Maze(mazepath, myconst["fieldlimits"], myconst["border"], useWeave=constants.useWeave)
     Mesenchymal.classInit(myconst, basepath=path)    
     field = myconst["fieldlimits"]
     dt = myconst["dt"]
@@ -77,7 +77,7 @@ def create_plots_ds(myconst, path, resultspath, dataset, step, finalmaze=None):
         return None
     dsA = dataset
     mazepath = os.path.join(path, myconst["maze"])
-    myMaze = Maze(mazepath, myconst["fieldlimits"], myconst["border"])
+    myMaze = Maze(mazepath, myconst["fieldlimits"], myconst["border"], useWeave=constants.useWeave)
     Mesenchymal.classInit(myconst, basepath=path)    
     field = myconst["fieldlimits"]
     dt = myconst["dt"]

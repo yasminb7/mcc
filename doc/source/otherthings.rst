@@ -6,6 +6,6 @@ Other scripts you can run
    code/checkSimfile
    code/ds2csv
    code/png2npy
-   code/renewtimestamps
+   code/renewTimestamps
    code/runFinalstatsOnly
    code/runSingleSim.rst

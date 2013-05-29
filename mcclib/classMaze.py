@@ -12,12 +12,6 @@ wall = constants.wallconst
 borderwall = 1.01*wall
 nowall = 0.0
 
-class PositionError(Exception):
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
-
 def gaussian1D(mu, sigma, x):
     print x
     sigmasq = sigma*sigma
@@ -74,6 +68,9 @@ class Maze(object):
         
     #@profile
     def degrade(self, pos, bite, energy, density, dt):
+        """Degrades the area around `pos` according to the pattern given by `bite`.
+        
+        This method is one of the biggest bottlenecks in the simulation currently."""
         Ax = 0
         Ay = 0
         Bx = self.data.shape[0]-1

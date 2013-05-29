@@ -224,6 +224,15 @@ def plotGlobal(xaxis, lines, const, statvar, savedir, filename, disableVarInLege
                 csvfile.writerow(line["xs"])
                 csvfile.writerow(line["ys"])
                 csvfile.writerow(line["yerrs"])
+
+    if statvar in ["avg_ci", "avg_ci_a", "avg_ci_a_s", "avg_ci_a_us"]:
+        with open(os.path.join(savedir, '%s.csv' % statvar), 'wb') as _file:
+            csvfile = csv.writer(_file, dialect=csv.excel)
+            for line in mylines:
+                csvfile.writerow([line["label"]])
+                csvfile.writerow(line["xs"])
+                csvfile.writerow(line["ys"])
+                csvfile.writerow(line["yerrs"])    
         
     plotting.errorbars(myxaxes, myyaxes, y_bars=myerrors, legend=mylegend, legendTextOnly=legendTextOnly, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename, **plotargs)
 

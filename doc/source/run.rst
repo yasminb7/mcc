@@ -10,6 +10,6 @@ For each of the descriptions it generates a list of all necessary simulations an
 If for one of these simulations generated, there is already a result directory containing a valid timestamp (i.e., a file with a name like 08-22-52), and the timestamp file is newer than the modification date of the simulation description in *sim/*, then the program assumes that the simulation has been run for the relevant parameters and no rerun is needed. It therefore skips that particular simulation.
 
 On the other hand this means that if you modify your simulation description in *sim/* then **all** the simulations described by it will be rerun, whether you intended that or not. The solution is to renew the timestamps by calling
-:command:`$python renewtimestamps.py`
+:command:`$python renewTimestamps.py`
 with the correct ``currentsim`` setting in :py:mod:`constants`.
 Once you've done this, you can launch ``main.py`` and it will run only the simulations for which the results don't exist yet.

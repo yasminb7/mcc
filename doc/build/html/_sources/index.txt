@@ -10,13 +10,14 @@ Welcome to mcc's documentation!
 
 * get an overview over what there is,
 * get started setting up simulations, running them and analyzing the results, and
-* understand what the code does and how you can modify it to your liking.
+* understand what the code does and how you can modify it to suit you needs.
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
+   overview
    install
    setupsim
    run

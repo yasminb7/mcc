@@ -57,7 +57,7 @@ def avgEnergyForAgent(energies, states):
 
 def doCombinations(stats, varname, data, amoeboids, mesenchymals, successful, function=np.mean, axis=None):
     """Apply a given function to all elements of a given array, and do so for all desired combinations.
-    The combinations are for example "all agents that are amoeboid and were successful.
+    The combinations are for example "all agents that are amoeboid and were successful."
     Note that some of these results may make little sense because too few agents fit the criteria.
     """
     a_s = np.logical_and(amoeboids, successful)
@@ -114,13 +114,14 @@ def finalstats(ds, goal, success_radius):
     stats = doCombinations(stats, "avg_en", energies, amoeboids, mesenchymals, successful, axis=1)
     
     displacement = ds.positions[-1] - ds.positions[0]
-    straightPath = goal-ds.positions[0]
+    straightPath = goal - ds.positions[0]
     straightPath_n = np.sqrt( np.sum(straightPath*straightPath, axis=1))
     straightPath_u = np.zeros_like(straightPath)
     for i in np.nonzero(straightPath_n):
         straightPath_u[i] = straightPath[i] / (straightPath_n)[i][:,np.newaxis]
     #implement the dot product between straightPath_u and displacement
-    ci = np.sum(straightPath_u*displacement/pathlengths[:,np.newaxis], axis=1)
+    ci = np.sum( straightPath_u*displacement, axis=1)/pathlengths
+
     stats = doCombinations(stats, "avg_ci", ci, amoeboids, mesenchymals, successful)
     
     return stats

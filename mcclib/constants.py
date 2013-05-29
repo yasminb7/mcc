@@ -6,8 +6,8 @@ useWeave = True
 wallconst = 100.0
 wallgradconst = 0.0
 
-TYPE_MESENCHYMAL = 1
-TYPE_AMOEBOID = 2
+TYPE_MESENCHYMAL = 0
+TYPE_AMOEBOID = 1
 safety_factor = 1.2
 
 DIM = 2
@@ -91,10 +91,10 @@ ignore = []
 #ignore.append("maze-easy-ar.py")
 #ignore.append("with-without-i.py")
 
-currentsim = "with-without-i.py"
+#currentsim = "with-without-i.py"
 #currentsim = "maze-easy-ar.py"
 #currentsim = "maze-hard-ar.py"
-#currentsim = "prototype.py"
+currentsim = "prototype.py"
 #currentsim = "wexplore.py"
 #currentsim = "free-ci.py"
 #currentsim = "varying-w.py"
