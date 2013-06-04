@@ -18,10 +18,19 @@ def avg_vel(velocities):
         return None
 
 def getDistances(positions, goal):
-    """Return an array containing the distances of all agents from the goal."""
+    """Return an array containing the distances of all agents from the goal.
+    Whenever possible prefer getDistancesSq() to this.
+    """
     last_axis = len(positions.shape)-1
     dist_v = positions-goal 
     dist = np.sqrt( np.sum(dist_v*dist_v, axis=last_axis) )
+    return dist
+
+def getDistancesSq(positions, goal):
+    """Return an array containing the square distances of all agents from the goal."""
+    last_axis = len(positions.shape)-1
+    dist_v = positions-goal 
+    dist = np.sum(dist_v*dist_v, axis=last_axis)
     return dist
 
 def getSuccessrates(dist, success_radius):
@@ -30,22 +39,6 @@ def getSuccessrates(dist, success_radius):
     succeeded = np.zeros_like(dist)
     succeeded[dist < success_radius] = 1.0
     return np.mean(succeeded, axis=last_axis)
-
-def getAvgTimeToTarget(dist, success_radius, dt):
-    migrating = dist >= success_radius
-    succeeded = migrating[-1]==False
-    if succeeded.any():
-        return None
-    times = []
-    for idxA in succeeded.nonzero()[0]:
-        t = getTimeToTarget(migrating[:,idxA], dt)
-        times.append(t)
-    times = np.fromiter(times)
-    return np.mean(times)
-
-def getTimeToTarget(migrating, dt):
-    timesteps = np.count_nonzero(migrating)
-    return timesteps/dt
 
 def avgEnergyForAgent(energies, states):
     """Returns the average energy over time for a single agent.
@@ -57,7 +50,7 @@ def avgEnergyForAgent(energies, states):
 
 def doCombinations(stats, varname, data, amoeboids, mesenchymals, successful, function=np.mean, axis=None):
     """Apply a given function to all elements of a given array, and do so for all desired combinations.
-    The combinations are for example "all agents that are amoeboid and were successful."
+    The combinations are for example "all agents that are amoeboid and were successful.
     Note that some of these results may make little sense because too few agents fit the criteria.
     """
     a_s = np.logical_and(amoeboids, successful)

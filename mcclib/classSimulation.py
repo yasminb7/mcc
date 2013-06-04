@@ -137,7 +137,8 @@ class Simulation:
         gamma_m = self.const["gamma_m"]
         r = self.const["r"]
         one_over_m = 1/self.const["mass"]
-        success_radius = self.const["success_radius"]
+        #success_radius = self.const["success_radius"]
+        success_radius_sq = self.const["success_radius"]**2
         delta = self.const["delta"]
         compass_noise_a = self.const["compass_noise_a"]
         compass_noise_m = self.const["compass_noise_m"]
@@ -162,6 +163,11 @@ class Simulation:
         
         dragFactor = np.empty((N,))
         F_repulsion = np.zeros((N,2))
+        
+        lastPositions = np.array(positions[0])
+        lastVelocities = np.array(velocities[0])
+        currentPositions = np.array(positions[0])
+        currentVelocities = np.array(velocities[0])
 
         while do_continue:
             if simtime-lasttime>update_progress:
@@ -171,13 +177,18 @@ class Simulation:
             states[iii] = states[iii-1]     
             E = energies[iii-1]
             times[iii] = simtime
+            
+            #Create custom variables for the last timestemp's values of positions[] and velocities[] arrays.
+            #This is done because positions and velocities are memmaps which are slower in handling.
+            lastPositions = currentPositions
+            lastVelocities = currentVelocities
 
             F_repulsion[:] = 0.0
             if enable_interaction:
                 #calculate distances between agents
                 #we create an array containing in N times the array containing the agents' positions
                 #and we substract from that array its transpose (of some sort)
-                pos_v = np.repeat([positions[iii-1]], N, axis=0)
+                pos_v = np.repeat([lastPositions], N, axis=0)
                 pos_h = pos_v.swapaxes(0,1)
                 pos_difference = pos_v-pos_h
                 d_squared = np.sum(pos_difference*pos_difference, axis=2)
@@ -200,21 +211,22 @@ class Simulation:
                         meanX = 0.0;
                         meanY = 0.0;
                         for (int j=0; j < N; j++) {
-                            if (doAlign(i, j) == 1) {
+                            if (DOALIGN2(i, j) == 1) {
                                 nInteract++;
-                                meanX += directions(j,0);
-                                meanY += directions(j,1);
+                                meanX += DIRECTIONS2(j,0);
+                                meanY += DIRECTIONS2(j,1);
                             }
                         }
-                        if (nInteract != 0) {;
+                        if (nInteract != 0) {
                             meanX /= nInteract;
                             meanY /= nInteract;
-                            directions(i,0) = _w*directions(i,0) + w*meanX;
-                            directions(i,1) = _w*directions(i,1) + w*meanY;
+                            DIRECTIONS2(i,0) = _w*DIRECTIONS2(i,0) + w*meanX;
+                            DIRECTIONS2(i,1) = _w*DIRECTIONS2(i,1) + w*meanY;
                         }        
                     }
                     """
-                    weave.inline(code, ["N", "doAlign", "directions", "_w", "w"], type_converters=converters.blitz)
+                    #weave.inline(code, ["N", "doAlign", "directions", "_w", "w"], type_converters=converters.blitz)
+                    weave.inline(code, ["N", "doAlign", "directions", "_w", "w"])
                 else:
                     for i in xrange(N):
                         if doAlign[i].any():
@@ -232,7 +244,7 @@ class Simulation:
                     F_rep[i,j] = r_coupling * pos_difference[i,j,:] / d_squared[i,j,np.newaxis]
                 F_repulsion = np.sum(F_rep, axis=0)
 
-            posidx = np.array(density * positions[iii-1], dtype=np.int0)
+            posidx = np.array(density * lastPositions, dtype=np.int0)
             np.clip(posidx, myMaze.minidx, myMaze.maxidx, out=posidx)
             wgrad = myMaze.getGradients(posidx)
 
@@ -268,25 +280,25 @@ class Simulation:
             dragFactor[isAmoeboid] = - gamma_a
             dragFactor[isMesenchymal] = - gamma_m
             
-            F_drag = dragFactor[:,np.newaxis] * velocities[iii-1]
+            F_drag = dragFactor[:,np.newaxis] * lastVelocities
             
             F_stoch = r * np.random.standard_normal(size=F_propulsion.shape)
             
             F_total = F_propulsion + F_drag + F_stoch + F_repulsion
             
             #Check if new position is allowed, otherwise move back 
-            ta = positions[iii-1,:,0]<fieldlimits[0]+margin
-            tb = positions[iii-1,:,0]>fieldlimits[1]-margin
-            tc = positions[iii-1,:,1]<fieldlimits[2]+margin
-            td = positions[iii-1,:,1]>fieldlimits[3]-margin
+            ta = lastPositions[:,0]<fieldlimits[0]+margin
+            tb = lastPositions[:,0]>fieldlimits[1]-margin
+            tc = lastPositions[:,1]<fieldlimits[2]+margin
+            td = lastPositions[:,1]>fieldlimits[3]-margin
             outsidePlayingField = np.logical_or(ta, tb)
             outsidePlayingField = np.logical_or(outsidePlayingField, tc)
             outsidePlayingField = np.logical_or(outsidePlayingField, td)
             
-            nda = positions[iii-1,:,0]<fieldlimits[0]+nodegradationlimit
-            ndb = positions[iii-1,:,0]>fieldlimits[1]-nodegradationlimit
-            ndc = positions[iii-1,:,1]<fieldlimits[2]+nodegradationlimit
-            ndd = positions[iii-1,:,1]>fieldlimits[3]-nodegradationlimit
+            nda = lastPositions[:,0]<fieldlimits[0]+nodegradationlimit
+            ndb = lastPositions[:,0]>fieldlimits[1]-nodegradationlimit
+            ndc = lastPositions[:,1]<fieldlimits[2]+nodegradationlimit
+            ndd = lastPositions[:,1]>fieldlimits[3]-nodegradationlimit
             noDegradation = np.logical_or(nda, ndb)
             noDegradation = np.logical_or(noDegradation, ndc)
             noDegradation = np.logical_or(noDegradation, ndd)            
@@ -306,20 +318,20 @@ class Simulation:
                     dotF[doAdjust] /= wallnorm[doAdjust]
                     F_total[doAdjust] -=  dotF[doAdjust][:,np.newaxis] * wgrad[doAdjust]
 
-            velocities[iii] = velocities[iii-1] + one_over_m * dt * F_total
+            currentVelocities = lastVelocities + one_over_m * dt * F_total
             
             if collidingWithWall.any():
                 dotv = np.zeros((self.N))
-                dotv[collidingWithWall] = np.sum(velocities[iii][collidingWithWall] * wgrad[collidingWithWall], axis=1)
+                dotv[collidingWithWall] = np.sum(currentVelocities[collidingWithWall] * wgrad[collidingWithWall], axis=1)
                 doAdjust = dotv<0
                 if doAdjust.any():
                     dotv[doAdjust] /= wallnorm[doAdjust]
-                    velocities[iii][doAdjust] -= dotv[doAdjust][:,np.newaxis] * wgrad[doAdjust]
+                    currentVelocities[doAdjust] -= dotv[doAdjust][:,np.newaxis] * wgrad[doAdjust]
 
-            positions[iii] = positions[iii-1] + velocities[iii] * dt
+            currentPositions = lastPositions + currentVelocities * dt
             
             #TODO: next line don't let the ones outside the playing field degrade
-            posidx = np.array(density * positions[iii-1], dtype=np.int0)
+            posidx = np.array(density * lastPositions, dtype=np.int0)
             np.clip(posidx, myMaze.minidx, myMaze.maxidx, out=posidx)
             ECM = maze[posidx[:,0],posidx[:,1]]
             #TODO remove hardcoded value here
@@ -329,7 +341,7 @@ class Simulation:
             isDegrading = np.logical_and(isDegrading, ~noDegradation)
 
             #if an agent is degrading now then he should be degrading during the next 'degrading_bias' steps
-            vel = velocities[iii][:]
+            vel = currentVelocities
             v = np.sqrt(np.sum(vel*vel, axis=1))
 
             for i in isDegrading.nonzero()[0]:
@@ -340,7 +352,7 @@ class Simulation:
             
             kappa = np.logical_or(isDegrading, eating[iii])
             
-            for pos, energy in zip(positions[iii][eating[iii]], E[eating[iii]]):
+            for pos, energy in zip(currentPositions[eating[iii]], E[eating[iii]]):
                 myMaze.degrade(pos, Mesenchymal.eat, energy, density, dt)
             
             needs_update = isDegrading
@@ -352,8 +364,12 @@ class Simulation:
             energies[iii] = E + (q - delta * E - theta * eta * v * E - degradation * E) * dt
             energies[iii][ energies[iii]<0.0 ] = 0.0
             
-            distances = statutils.getDistances(positions[iii], goal)
-            states[iii][distances < success_radius] = sim.States.CLOSE
+            distances_sq = statutils.getDistancesSq(currentPositions, goal)
+            states[iii][distances_sq < success_radius_sq] = sim.States.CLOSE
+            
+            #Save positions and velocities in arrays that are going to be written to disk later
+            positions[iii] = currentPositions
+            velocities[iii] = currentVelocities
             
             simtime += dt
             iii += 1
@@ -383,7 +399,7 @@ class Simulation:
     
     def saveFinalGradient(self, myMaze):
         """Use this if you're interested in an image of what the maze looks like at the end of the simulation."""
-        from PIL import Image
+        import Image
         imgdata = myMaze.getGradImageSquared()
         imgdata = utils.scaleToMax(255.0, imgdata.T)
         imgdata = np.flipud(imgdata)

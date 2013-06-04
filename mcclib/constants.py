@@ -1,13 +1,18 @@
 import string
+import numpy as np
 
 useWeave = True
+#compiler = "msvc"
+
+#Avoid changing this if you can. If you do change it, be aware that it can make the *.npy files from previous simulations unusable.
+floattype = np.float_
 
 #standard values are
 wallconst = 100.0
 wallgradconst = 0.0
 
-TYPE_MESENCHYMAL = 0
-TYPE_AMOEBOID = 1
+TYPE_MESENCHYMAL = 1
+TYPE_AMOEBOID = 2
 safety_factor = 1.2
 
 DIM = 2

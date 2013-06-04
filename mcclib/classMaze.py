@@ -19,7 +19,7 @@ def gaussian1D(mu, sigma, x):
     #return 1.0/math.sqrt(2*np.pi*sigmasq) * math.exp((-x**2)/(2*sigmasq))
     
 
-def gaussianArray(arrayLength, sigma, datatype=np.float_):
+def gaussianArray(arrayLength, sigma, datatype=constants.floattype):
     if arrayLength%2==0:
         arrayLength += 1
     a = np.fromfunction(lambda x: gaussian1D(arrayLength/2+1, sigma, x), (arrayLength,), dtype=datatype)
@@ -107,18 +107,17 @@ class Maze(object):
         validgrad = self.validgrad #@UnusedVariable
         data = self.data #@UnusedVariable
         data_grad = self.data_grad #@UnusedVariable
-        grads = np.empty_like(posidx, dtype=np.float_)
+        grads = np.empty_like(posidx, dtype=constants.floattype)
         mywin = np.zeros((2,3,3)) #@UnusedVariable
         code_grad = \
         """
         #line 112 "classMaze.py"
-        for (uint ai=0; ai<Nposidx[0]; ai++)
+        for (int ai=0; ai<Nposidx[0]; ai++)
         {
             int px = POSIDX2(ai,0);
             int py = POSIDX2(ai,1);
             //int valid = VALIDGRAD2(px, py);
-            if (VALIDGRAD2(px, py)!=0)
-            {
+            if (VALIDGRAD2(px, py)!=0) {
                 GRADS2(ai, 0) = DATA_GRAD3(0, px, py);
                 GRADS2(ai, 1) = DATA_GRAD3(1, px, py);
             }
@@ -154,7 +153,7 @@ class Maze(object):
         validgrad = self.validgrad
         data = self.data
         data_grad = self.data_grad
-        grads = np.empty_like(posidx, dtype=np.float_)
+        grads = np.empty_like(posidx, dtype=constants.floattype)
         for i, pos in enumerate(posidx):
             posx, posy = pos
             if validgrad[posx, posy]:

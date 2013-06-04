@@ -29,17 +29,17 @@ class Dataset(object):
     is_amoeboid = constants.TYPE_AMOEBOID
     is_mesenchymal = constants.TYPE_MESENCHYMAL
     
-    AMOEBOID = {"times" : ArrayFile("times", "NNN", np.float_),
+    AMOEBOID = {"times" : ArrayFile("times", "NNN", constants.floattype),
                 "types" : ArrayFile("types", "N_agents", np.int_),
-              "positions" : ArrayFile("positions", "shapexDim", np.float_, onDisk=True),
-              "velocities" : ArrayFile("velocities", "shapexDim", np.float_, onDisk=True),
-              "energies" : ArrayFile("energies", "shapex1", np.float_),
+              "positions" : ArrayFile("positions", "shapexDim", constants.floattype, onDisk=True),
+              "velocities" : ArrayFile("velocities", "shapexDim", constants.floattype, onDisk=True),
+              "energies" : ArrayFile("energies", "shapex1", constants.floattype),
               "states" : ArrayFile("states", "shapex1", np.character),
-              "statechanges" : ArrayFile("statechanges", "N_agents", np.float_),
-              "periods" : ArrayFile("periods", "N_agents", np.float_),
-              "delays" : ArrayFile("delays", "N_agents", np.float_),
+              "statechanges" : ArrayFile("statechanges", "N_agents", constants.floattype),
+              "periods" : ArrayFile("periods", "N_agents", constants.floattype),
+              "delays" : ArrayFile("delays", "N_agents", constants.floattype),
               "eating" : ArrayFile("eating", "shapex1", np.bool_),
-              "direction_angles" : ArrayFile("direction_angles", "N_agents", np.float_)}
+              "direction_angles" : ArrayFile("direction_angles", "N_agents", constants.floattype)}
 
     def __init__(self, arrays, max_time, dt, N_agents, N_dim, path, doAllocate=True, fileprefix=None):
         """Constructs a new dataset for the given parameters.
