@@ -21,4 +21,3 @@ If you save all simulation data for each repetition, you will be filling your ha
 On the other hand, if you don't save the entire simulation dataset for any of the simulations, it will be impossible to reconstruct i.e. plots of trajectories.
 To solve this dilemma, you can specify that a certain number of repetitions (usually 1) will save the complete dataset, while the rest will merely save the `finalstats`.
 
-

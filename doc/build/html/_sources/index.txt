@@ -12,7 +12,14 @@ Welcome to mcc's documentation!
 * get started setting up simulations, running them and analyzing the results, and
 * understand what the code does and how you can modify it to suit you needs.
 
-Contents:
+About the documentation
+-----------------------
+
+This documentation is intended to give you some familiarity with the way the project is built.
+In order to understand what the actual code means, I expect some familiarity with Python and NumPy. Their websites contain quite useful documentation.
+
+Contents
+========
 
 .. toctree::
    :maxdepth: 2
