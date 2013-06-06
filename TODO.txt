@@ -2,7 +2,3 @@
 
 - make sure the simulations in sim/ actually work
 - write checker for prototype
-- check interaction distances. Is there something wrong?
-- more experiments with interaction
-
-- continue documenting functions
