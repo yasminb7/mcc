@@ -1,9 +1,7 @@
-- write README-style doc
-- Infos zur Installation von C++ Compiler unter Windows
+- put the entire thing on the harddisk
+
 - code in classSimulation.run() besser kommentieren
 - fix image problem in Windows
-
-- put the entire thing on the harddisk
 
 - make sure the simulations in sim/ actually work
 - write checker for prototype
@@ -11,4 +9,3 @@
 - more experiments with interaction
 
 - continue documenting functions
-- run more repetitions

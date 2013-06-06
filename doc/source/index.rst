@@ -16,7 +16,7 @@ About the documentation
 -----------------------
 
 This documentation is intended to give you some familiarity with the way the project is built.
-In order to understand what the actual code means, I expect some familiarity with Python and NumPy. Their websites contain quite useful documentation.
+In order to understand what the actual code means, I expect you to be somewhat familiar with Python and NumPy. Their websites contain quite useful documentation.
 
 Contents
 ========

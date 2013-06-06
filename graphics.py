@@ -22,7 +22,7 @@ def main(name):
     
     funcs = [
              create_path_plot,
-             create_plots_ds
+             create_video
              ]
     if len(constlist)==0:
         utils.info("No simulations fit the filter criteria given.")
@@ -71,7 +71,7 @@ def create_path_plot(myconst, path, savedir, dataset, step, finalmaze=None):
     plt.savefig(filename, format="png")
     plt.close()
 
-def create_plots_ds(myconst, path, resultspath, dataset, step, finalmaze=None):
+def create_video(myconst, path, resultspath, dataset, step, finalmaze=None):
     if dataset is None:
         utils.info("dataset is None. Are you sure all the simulation data was saved? Check the relevant file in \"sim/\" for \"save\_finalstats\_only\"")
         return None
@@ -130,7 +130,7 @@ def plotFrame(plt, ax, dsA, maze, t, field, savedir, k):
     filename = os.path.join(savedir, 'frame_'+ string.zfill(str(k),5) +".png")
     plt.savefig(filename, format="png")
 
-def writeFrames(myconst, output_func=[create_plots_ds]):
+def writeFrames(myconst, output_func=[create_video]):
     path = os.getcwd() + "/"
     resultsdir = os.path.join(path, constants.resultspath, myconst["name"])
     if os.path.exists(resultsdir)==False:
@@ -140,6 +140,9 @@ def writeFrames(myconst, output_func=[create_plots_ds]):
     logfilename = os.path.join(savedir, "logfile_create_video.txt")
     logging_filehandler = utils.setup_logging_sim(logfilename)
     dsA = classDataset.load(Dataset.AMOEBOID, savedir, dt=myconst["dt"], fileprefix="A")
+    if dsA is None:
+        utils.error("Could not open dataset. Exiting.")
+        return
     simfps = 1/myconst["dt"]
     vidfps = myconst["fps"]
     step = int(simfps/vidfps)
@@ -152,7 +155,7 @@ def writeFrames(myconst, output_func=[create_plots_ds]):
     utils.ensure_dir(framesdir)
     utils.removeFilesByEnding(framesdir, ".png")
     for f in output_func:
-        f(myconst, path, savedir, dsA, step, finalmaze=myfinalmaze)
+        f(myconst, path, savedir, dsA, step, finalmaze=None)
     os.chdir(path)
     utils.info("Done.")
     utils.remove_logging_sim(logging_filehandler)

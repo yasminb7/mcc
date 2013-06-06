@@ -148,7 +148,6 @@ def load(arrays, path, fileprefix, dt, readOnly=True):
         ds = Dataset(arrays, sample_arr.shape[0], dt, sample_arr.shape[1], constants.DIM, path, doAllocate=False, fileprefix=fileprefix)
         for name, val in arrays.iteritems():
             ds.__setattr__(name, loaded_arrays[name])
-    except IOError, ex:
-        print ex
+    except IOError:
         return None
     return ds

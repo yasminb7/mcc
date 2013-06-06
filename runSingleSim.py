@@ -11,7 +11,7 @@ def prepareSim(const):
     mySim.analyse()
     functions = []
     if const["create_video_directly"]:
-        functions.append(graphics.create_plots_ds)
+        functions.append(graphics.create_video)
     if const["create_path_plot"]:
         functions.append(graphics.create_path_plot)
     graphics.writeFrames(const, output_func=functions)
