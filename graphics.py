@@ -151,7 +151,10 @@ def writeFrames(myconst, output_func=[create_video]):
         step = 1
     framesdir = os.path.join(savedir, constants.framesdir)
     with open(os.path.join(savedir, constants.finalmaze_filename), "rb") as finalmazefile:
-        myfinalmaze = np.load(finalmazefile)
+        try:
+            myfinalmaze = np.load(finalmazefile)
+        except:
+            myfinalmaze = None
     utils.ensure_dir(framesdir)
     utils.removeFilesByEnding(framesdir, ".png")
     for f in output_func:

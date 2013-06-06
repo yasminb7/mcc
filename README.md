@@ -1,4 +1,4 @@
 mcc
 ===
 
-Very simple simulation code for agents navigating a maze.
+Simple simulation of so-called Brownian agents navigating a maze.

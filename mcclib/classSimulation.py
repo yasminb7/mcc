@@ -45,6 +45,7 @@ class Simulation:
         logfilepath = utils.getResultsFilepath(self.resultsdir, "logfile.txt")
         logging_handler = utils.setup_logging_sim(logfilepath)
 
+        #Define variables to be used later in the function.
         useWeave = constants.useWeave          
         t_start = datetime.datetime.now()
         DIM = constants.DIM
@@ -60,19 +61,20 @@ class Simulation:
         
         info("Simulation started with %s agents" % N)
         
-        #prepare landscape
+        #Prepare landscape
         mazepath = os.path.join(self.path, self.const["maze"])
         myMaze = Maze(mazepath, self.const["fieldlimits"], self.const["border"], useWeave=constants.useWeave)
         maze = myMaze.data
+        #Create the density array that contains the number of pixels per distance unit for each dimension.
         density = densityArray(maze.shape, self.const["fieldlimits"])
-        #prepare gradient
+        #Prepare gradient
         goal_px = np.array(density * goal, dtype=np.int_)
         concentrationfield = np.fromfunction(lambda x, y: utils.concentration(x, y, goal_px), (maze.shape))        
         #or null field
         #concentrationfield = np.ones((x_max, y_max))
         cgrad = utils.getGradient(concentrationfield)
         
-        #initialize agents
+        #Initialize agents
         self.dsA.types = np.array(N_mesenchymal*[Dataset.is_mesenchymal]+N_amoeboid*[Dataset.is_amoeboid])
         isMesenchymal = self.dsA.types==Dataset.is_mesenchymal
         isAmoeboid = self.dsA.types==Dataset.is_amoeboid
@@ -91,11 +93,13 @@ class Simulation:
         for agentIndex in range(N_mesenchymal+N_amoeboid):
             tryToPlace = True
             nAttempts = 0
+            #Place them randomly within a certain area
             while tryToPlace:
                 initX = np.random.normal(initial_position[0], stray)
                 initY = np.random.normal(initial_position[1], stray)
                 posidx = np.array(density * np.array([initX, initY]), dtype=np.int0)
                 np.clip(posidx, myMaze.minidx, myMaze.maxidx, out=posidx)
+                #If they happen to be placed inside the ECM, move them to another random position
                 onECM = (maze[posidx[0],posidx[1]] > 0.5 * constants.wallconst)
                 if not onECM:
                     self.dsA.positions[0,agentIndex] = np.array([initX, initY])
@@ -125,7 +129,6 @@ class Simulation:
         fieldlimits = self.const["fieldlimits"]
         iii = 1
         enable_interaction = self.const["enable_interaction"]
-        #notDiag = ~np.eye(N, dtype=np.bool_)
         r_coupling = self.const["repulsion_coupling"]
         w = self.const["w"] * dt
         _w = (1-w) * dt
@@ -159,7 +162,6 @@ class Simulation:
         delays = self.dsA.delays
         times = self.dsA.times
         direction_angles = self.dsA.direction_angles
-        has_had_update = np.zeros(direction_angles.shape, dtype=np.int_)
         
         dragFactor = np.empty((N,))
         F_repulsion = np.zeros((N,2))
@@ -169,11 +171,14 @@ class Simulation:
         currentPositions = np.array(positions[0])
         currentVelocities = np.array(velocities[0])
 
-        while do_continue:
+        #Start the main loop
+        for iii in xrange(1, NNN):
+            #Update the user about progress if needed
             if simtime-lasttime>update_progress:
                 info("Time %0.2f out of maximum %s" % (simtime,max_time))
                 lasttime = simtime
             
+            #Update some variables for state, energy and time
             states[iii] = states[iii-1]     
             E = energies[iii-1]
             times[iii] = simtime
@@ -183,6 +188,7 @@ class Simulation:
             lastPositions = currentPositions
             lastVelocities = currentVelocities
 
+            #set repulsion force to zero, to be modified if enable_interaction==True
             F_repulsion[:] = 0.0
             if enable_interaction:
                 #calculate distances between agents
@@ -193,6 +199,7 @@ class Simulation:
                 pos_difference = pos_v-pos_h
                 d_squared = np.sum(pos_difference*pos_difference, axis=2)
                 
+                #check which agents are within a limit radius of repulsive interaction of each other
                 inRepulsionRadius = d_squared < 4*interaction_radius*interaction_radius
                 #do not let agents interact with themselves (i.e. the diagonal has to be False)
                 np.fill_diagonal(inRepulsionRadius, False)
@@ -232,33 +239,39 @@ class Simulation:
                         if doAlign[i].any():
                             means = np.mean( directions[doAlign[i]], axis=0)
                             directions[i] = _w*directions[i] + w*means
+                #Now that the direction vectors of the agents have been updated, normalize them again
                 dir_norms = np.sqrt( directions[:,0]*directions[:,0] + directions[:,1]*directions[:,1] )
                 dir_norms[dir_norms==0.0] = 1.0
                 directions = directions/dir_norms[:, np.newaxis]
-                #directions[:,0] = directions[:,0]/dir_norms
-                #directions[:,1] = directions[:,1]/dir_norms
 
+                #Calculate the repulsiton interaction
                 F_rep = np.zeros_like(pos_difference)
                 interactionIndices = np.nonzero(doRepulse)
                 for i, j in zip(interactionIndices[0], interactionIndices[1]):
                     F_rep[i,j] = r_coupling * pos_difference[i,j,:] / d_squared[i,j,np.newaxis]
                 F_repulsion = np.sum(F_rep, axis=0)
 
+            #Get the gradients that are needed (i.e. the gradients at the agents' positions)
             posidx = np.array(density * lastPositions, dtype=np.int0)
             np.clip(posidx, myMaze.minidx, myMaze.maxidx, out=posidx)
             wgrad = myMaze.getGradients(posidx)
 
+            #Evolve the chemotactic steps (orientation and locomotion) where necessary
             evolve_orientation = statechanges < simtime 
             is_moving = states[iii-1]==sim.States.MOVING
             is_orienting = states[iii-1]==sim.States.ORIENTING
+            
+            #theta is used in the energy equation. It's 1 if the agent is moving because only then does it spend energy on movement.
             theta = np.zeros(self.N)
             theta[is_moving] = 1.0
             
+            #Those that need to switch state and are moving, they need to switch to orienting
             switch_to_orienting = np.logical_and(evolve_orientation, is_moving)
             if switch_to_orienting.any():
                 states[iii][switch_to_orienting] = sim.States.ORIENTING
                 statechanges[switch_to_orienting] = simtime + delays[switch_to_orienting]
 
+            #And the other way around
             switch_to_moving = np.logical_and(evolve_orientation, is_orienting)
             if switch_to_moving.any():
                 states[iii][switch_to_moving] = sim.States.MOVING
@@ -274,14 +287,16 @@ class Simulation:
                 directions[switch_to_moving, 0] = np.cos(direction_angles[switch_to_moving])
                 directions[switch_to_moving, 1] = np.sin(direction_angles[switch_to_moving])
             
+            #Calculate the amount of rpopulsion
             propelFactor = eta * E * theta
             F_propulsion = propelFactor[:,np.newaxis] * directions
-             
+            
+            #Calculate the amount of drag
             dragFactor[isAmoeboid] = - gamma_a
             dragFactor[isMesenchymal] = - gamma_m
-            
             F_drag = dragFactor[:,np.newaxis] * lastVelocities
             
+            #Calculate the stochastic force if needed (rarely used because it doesn't add much to the simulation)
             F_stoch = r * np.random.standard_normal(size=F_propulsion.shape)
             
             F_total = F_propulsion + F_drag + F_stoch + F_repulsion
@@ -295,6 +310,8 @@ class Simulation:
             outsidePlayingField = np.logical_or(outsidePlayingField, tc)
             outsidePlayingField = np.logical_or(outsidePlayingField, td)
             
+            #Check if the agents are far enough from the border to degrade the ECM
+            #We don't want them to eat the ECM at the border and then create problems when they move outside our "playing field"
             nda = lastPositions[:,0]<fieldlimits[0]+nodegradationlimit
             ndb = lastPositions[:,0]>fieldlimits[1]-nodegradationlimit
             ndc = lastPositions[:,1]<fieldlimits[2]+nodegradationlimit
@@ -306,10 +323,15 @@ class Simulation:
             wallnorm = np.sum(wgrad * wgrad, axis=1)
             touchingECM = (wallnorm != 0.0)
 
+            #Check which agents are colliding with the wall and react accordingly
+            #Amoeboids collide, mesenchymals degrade
+            #We'll deal with amoeboids first.
             collidingWithWall = np.logical_and(touchingECM, isAmoeboid)
             collidingWithWall = np.logical_or(collidingWithWall, outsidePlayingField)
             collidingWithWall = np.logical_or(collidingWithWall, np.logical_and(isMesenchymal, noDegradation))
 
+            #Exert a force that makes them slide along the wall
+            #I'm not quite sure why the next 20 lines have to be in that order, but it works.
             if collidingWithWall.any():
                 dotF = np.zeros((self.N))
                 dotF[collidingWithWall] = np.sum(F_total[collidingWithWall] * wgrad[collidingWithWall], axis=1)
@@ -318,6 +340,7 @@ class Simulation:
                     dotF[doAdjust] /= wallnorm[doAdjust]
                     F_total[doAdjust] -=  dotF[doAdjust][:,np.newaxis] * wgrad[doAdjust]
 
+            # v(t+dt) = v(t) + dt/m * F(t)
             currentVelocities = lastVelocities + one_over_m * dt * F_total
             
             if collidingWithWall.any():
@@ -328,22 +351,33 @@ class Simulation:
                     dotv[doAdjust] /= wallnorm[doAdjust]
                     currentVelocities[doAdjust] -= dotv[doAdjust][:,np.newaxis] * wgrad[doAdjust]
 
+            #x(t+dt) = x(t) + dt * v(t)
             currentPositions = lastPositions + currentVelocities * dt
             
-            #TODO: next line don't let the ones outside the playing field degrade
+            #Now deal with mesenchymals that have to degrade
             posidx = np.array(density * lastPositions, dtype=np.int0)
+            #make sure the positions indexes are not outside the ECM array indices
             np.clip(posidx, myMaze.minidx, myMaze.maxidx, out=posidx)
+            #Let ECM contain the values of the ECM at each agent's position
             ECM = maze[posidx[:,0],posidx[:,1]]
-            #TODO remove hardcoded value here
+
+            #Determine who's in contact with the ECM and who should degrade
             inOriginalECM = ECM > 0.7 * constants.wallconst
             inContactWithECM = np.logical_or(touchingECM, inOriginalECM)
             isDegrading = np.logical_and(isMesenchymal, inContactWithECM)
             isDegrading = np.logical_and(isDegrading, ~noDegradation)
 
-            #if an agent is degrading now then he should be degrading during the next 'degrading_bias' steps
-            vel = currentVelocities
-            v = np.sqrt(np.sum(vel*vel, axis=1))
-
+            #Calculate scalar velocities
+            v = np.sqrt(np.sum(currentVelocities*currentVelocities, axis=1))
+            
+            #if an agent is degrading now then he should be degrading during a certain number of steps
+            #the problem is that an agent is described as a point but degrades the ECM with a "footprint" of a sphere
+            #therefore if he degrades the ECM in this step, he will not be considered in contact with it during the next step
+            #he would therefore only spend energy every X steps which is unrealistic
+            #so we extend the values of the eating array by hand
+            #this is kind of a hack and not entirely accurate, but it doesn't matter in the big picture
+            #the eating array is the one that describes if the agent is spending energy on degradation or not
+            #probably a better solution for all of this would be to let the agent degrade if he's within a certain radius of the ECM
             for i in isDegrading.nonzero()[0]:
                 #degradation_radius has to be in distance units, not pixels!
                 bias = int(degradation_radius/(v[i]*dt * density[0] )) if v[i] > 0 else 0
@@ -354,16 +388,17 @@ class Simulation:
             
             for pos, energy in zip(currentPositions[eating[iii]], E[eating[iii]]):
                 myMaze.degrade(pos, Mesenchymal.eat, energy, density, dt)
-            
-            needs_update = isDegrading
-            has_had_update[needs_update] = iii
 
             degradation[:] = 0.0
             degradation[kappa] = Mesenchymal.degrad_rate
             
+            #Update energies
             energies[iii] = E + (q - delta * E - theta * eta * v * E - degradation * E) * dt
+            #Don't let energies become negative
             energies[iii][ energies[iii]<0.0 ] = 0.0
             
+            #Check which agents are close enough to the goal to be considered successful
+            #We'll ignore them for the rest of the simulation
             distances_sq = statutils.getDistancesSq(currentPositions, goal)
             states[iii][distances_sq < success_radius_sq] = sim.States.CLOSE
             
@@ -372,10 +407,7 @@ class Simulation:
             velocities[iii] = currentVelocities
             
             simtime += dt
-            iii += 1
-            do_continue = iii<NNN
 
-        self.iii = iii-1
         self.simtime = simtime
         t_stop = datetime.datetime.now()
         info( "Simulation ended ")
@@ -383,9 +415,10 @@ class Simulation:
         
         if self.dsA is not None:
             if self.retainCompleteDataset:
-                self.dsA.resizeTo(iii)
+                #self.dsA.resizeTo(iii+1)
                 self.dsA.saveTo(self.resultsdir)
                 #save the maze of the last time step so we can reuse it for the path plots
+                #the finalmaze is currently not used, the maze is simply reconstructed for the plots
                 with open(os.path.join(self.resultsdir, constants.finalmaze_filename), "w") as finalmaze:
                     np.save(finalmaze, myMaze.data)
             else:

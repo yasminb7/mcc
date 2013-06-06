@@ -1,7 +1,6 @@
 - put the entire thing on the harddisk
 
 - code in classSimulation.run() besser kommentieren
-- fix image problem in Windows
 
 - make sure the simulations in sim/ actually work
 - write checker for prototype
