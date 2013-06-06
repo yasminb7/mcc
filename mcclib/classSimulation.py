@@ -210,7 +210,6 @@ class Simulation:
                 doAlign = np.logical_and(~inRepulsionRadius, inAlignmentRadius) #@UnusedVariable
                 if useWeave:
                     code = """
-                    #line 186 "classSimulation.py"
                     int nInteract;
                     double meanX, meanY;
                     for (int i=0; i < N; i++) {
