@@ -31,13 +31,17 @@ framesdir = "frames/"
 logfilename = "sim.log"
 videoshellscript = "anim.sh"
 
-#graphics_ending = ".png"
-graphics_ending = ".tiff"
+graphics_ending = ".png"
+#graphics_ending = ".tiff"
 
 simpickle_filename = "simdata.pickle"
 finalstats_pickle = "finalstats.pickle"
 finalstats_text = "finalstats.txt"
 saved_constants_filename = "constants.txt"
+individual_CI_filename = "individualCI.csv"
+individual_ttt_filename = "individualTTT.csv"
+individual_success_filename = "individualSuccess.csv"
+
 avg_en_vel_filename = "avg_en_vel" + graphics_ending
 avg_dist_filename = "avg_dist_from_goal" + graphics_ending
 succ_rate_filename = "success_rate" + graphics_ending
@@ -97,9 +101,9 @@ ignore = []
 #ignore.append("with-without-i.py")
 
 #currentsim = "with-without-i.py"
-#currentsim = "maze-easy-ar.py"
+currentsim = "maze-easy-ar.py"
 #currentsim = "maze-hard-ar.py"
-currentsim = "prototype.py"
+#currentsim = "prototype.py"
 #currentsim = "wexplore.py"
 #currentsim = "free-ci.py"
 #currentsim = "varying-w.py"

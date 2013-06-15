@@ -2,3 +2,5 @@
 
 - make sure the simulations in sim/ actually work
 - write checker for prototype
+
+- write overview for program and data

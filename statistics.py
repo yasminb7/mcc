@@ -44,7 +44,9 @@ def singleStats(filename, doFinalStats=False):
     unraveled = utils.unravel(const)
     #If you have a sim-file causing a large number of simulations, but you want to
     #create statistics for only a few of them, you can use utils.applyFilter() as in this example:
-    #unraveled = utils.applyFilter(unraveled, "repetitions", [0])
+#    unraveled = utils.applyFilter(unraveled, "percentage", [0.0])
+#    unraveled = utils.applyFilter(unraveled, "q", [0.4])
+#    unraveled = utils.applyFilter(unraveled, "repetitions", [0])
     
     for results in unraveled:
         print "singleStats for %s" % results["name"]
@@ -75,25 +77,25 @@ def singleStats(filename, doFinalStats=False):
             typechar = 'm' if ds.types[i]==ds.is_mesenchymal else 'a' 
             plotting.plotlines_vert_subplot([ds.times[:N]], [ds.energies[:N,i]], [ds.times[:N]], [v[:N]], xlabel="Time", ylabel="Energy", xlabel2="Time", ylabel2="Velocity", ylimits=myylimits, folder=resultsfolder, savefile="energy_%s%s%s" % (i, typechar, constants.graphics_ending))
 
-        #get average energy
+#        #get average energy
         consider = sp.logical_or(ds.states==sim.States.MOVING, ds.states==sim.States.ORIENTING)
-        energies = sp.ma.array(ds.energies, mask=~consider)
-        avg_energy_m = sp.mean(energies[:,mesenchymals], axis=1) if mesenchymals.any() else None
-        avg_energy_a = sp.mean(energies[:,amoeboids], axis=1) if amoeboids.any() else None
+#        energies = sp.ma.array(ds.energies, mask=~consider)
+#        avg_energy_m = sp.mean(energies[:,mesenchymals], axis=1) if mesenchymals.any() else None
+#        avg_energy_a = sp.mean(energies[:,amoeboids], axis=1) if amoeboids.any() else None
         #get avg velocities
         vel = ds.velocities
         v = sp.sqrt(sp.sum(vel*vel, axis=2))
         v_masked = sp.ma.array(v, mask=~consider)
-        avg_vel_m = sp.mean(v_masked[:,mesenchymals], axis=1) if mesenchymals.any else None
-        avg_vel_a = sp.mean(v_masked[:,amoeboids], axis=1) if amoeboids.any() else None
-        #plot the stuff on two separate axes
-        y_axes = [avg_energy_a, avg_energy_m]
-        y_axes2 = [avg_vel_a, avg_vel_m]
-        mylegend = ["amoeboid", "mesenchymal"]
-        mylegend2 = mylegend
-        y_axes, mylegend = remove_None(y_axes, mylegend)
-        y_axes2, mylegend2 = remove_None(y_axes2, mylegend2)
-        plotting.plotlines_vert_subplot(len(y_axes)*[ds.times], y_axes, len(y_axes2)*[ds.times], y_axes2, xlabel="Time", ylabel="Average energy", xlabel2="Time", ylabel2="Average velocity", legend=mylegend,legend2=mylegend2, folder=resultsfolder, savefile=constants.avg_en_vel_filename)
+#        avg_vel_m = sp.mean(v_masked[:,mesenchymals], axis=1) if mesenchymals.any else None
+#        avg_vel_a = sp.mean(v_masked[:,amoeboids], axis=1) if amoeboids.any() else None
+#        #plot the stuff on two separate axes
+#        y_axes = [avg_energy_a, avg_energy_m]
+#        y_axes2 = [avg_vel_a, avg_vel_m]
+#        mylegend = ["amoeboid", "mesenchymal"]
+#        mylegend2 = mylegend
+#        y_axes, mylegend = remove_None(y_axes, mylegend)
+#        y_axes2, mylegend2 = remove_None(y_axes2, mylegend2)
+#        plotting.plotlines_vert_subplot(len(y_axes)*[ds.times], y_axes, len(y_axes2)*[ds.times], y_axes2, xlabel="Time", ylabel="Average energy", xlabel2="Time", ylabel2="Average velocity", legend=mylegend,legend2=mylegend2, folder=resultsfolder, savefile=constants.avg_en_vel_filename)
         
         goal = sp.array(results["gradientcenter"])
         dist = statutils.getDistances(ds.positions, goal)
@@ -121,11 +123,11 @@ def singleStats(filename, doFinalStats=False):
         
         #create path length distribution
         pathlengths = sp.sum(v_masked*results["dt"], axis=0)
-        plotting.plot_histogram(pathlengths, nbins=20, xlabel="Path length", title="Path length distribution", folder=resultsfolder, savefile=constants.pathlengths_filename)
-        if mesenchymals.any():
-            plotting.plot_histogram(pathlengths[mesenchymals], nbins=20, xlabel="Path length", title="Path length distribution", folder=resultsfolder, savefile=constants.pathlengths_filename_m)
-        if amoeboids.any():
-            plotting.plot_histogram(pathlengths[amoeboids], nbins=20, xlabel="Path length", title="Path length distribution", folder=resultsfolder, savefile=constants.pathlengths_filename_a)
+#        plotting.plot_histogram(pathlengths, nbins=20, xlabel="Path length", title="Path length distribution", folder=resultsfolder, savefile=constants.pathlengths_filename)
+#        if mesenchymals.any():
+#            plotting.plot_histogram(pathlengths[mesenchymals], nbins=20, xlabel="Path length", title="Path length distribution", folder=resultsfolder, savefile=constants.pathlengths_filename_m)
+#        if amoeboids.any():
+#            plotting.plot_histogram(pathlengths[amoeboids], nbins=20, xlabel="Path length", title="Path length distribution", folder=resultsfolder, savefile=constants.pathlengths_filename_a)
         
         #calculate chemotactic index
         displacement = ds.positions[-1] - ds.positions[0]
@@ -136,16 +138,14 @@ def singleStats(filename, doFinalStats=False):
         straightPath_u = sp.zeros_like(straightPath)
         for i in sp.nonzero(straightPath_n):
             straightPath_u[i] = straightPath[i] / straightPath_n[i][:,sp.newaxis]
-        #minPathLengths = sp.sqrt( sp.sum( straightPath**2 , axis=1))
-        #ci = minPathLengths/pathlengths
-        #ci = sp.fromiter( [sp.sum( str*disp ) for str, disp in zip(straightPath_u, displacement)], dtype=sp.float64)
-        ci = sp.sum(straightPath_u*displacement/pathlengths[:,sp.newaxis], axis=1)
-        plotting.plot_histogram(ci, nbins=20, xlabel="Chemotactic index", title="CI distribution", folder=resultsfolder, savefile=constants.ci_filename, xlim=(0,None))
-        
-        if mesenchymals.any():
-            plotting.plot_histogram(ci[mesenchymals], nbins=20, xlabel="Chemotactic index", title="CI distribution (M)", folder=resultsfolder, savefile=constants.ci_filename_m, xlim=(0,None))
-        if amoeboids.any():
-            plotting.plot_histogram(ci[amoeboids], nbins=20, xlabel="Chemotactic index", title="CI distribution (A)", folder=resultsfolder, savefile=constants.ci_filename_a, xlim=(0,None))
+        #ci = sp.sum(straightPath_u*displacement/pathlengths[:,sp.newaxis], axis=1)
+        ci = sp.sum( straightPath_u*displacement, axis=1)/pathlengths
+#        plotting.plot_histogram(ci, nbins=20, xlabel="Chemotactic index", title="CI distribution", folder=resultsfolder, savefile=constants.ci_filename, xlim=(0,None))
+#        
+#        if mesenchymals.any():
+#            plotting.plot_histogram(ci[mesenchymals], nbins=20, xlabel="Chemotactic index", title="CI distribution (M)", folder=resultsfolder, savefile=constants.ci_filename_m, xlim=(0,None))
+#        if amoeboids.any():
+#            plotting.plot_histogram(ci[amoeboids], nbins=20, xlabel="Chemotactic index", title="CI distribution (A)", folder=resultsfolder, savefile=constants.ci_filename_a, xlim=(0,None))
         
         #plot stacked path length histograms
         Nbins = 20
@@ -170,6 +170,28 @@ def singleStats(filename, doFinalStats=False):
 #        speedPropulsing = analytics.equilSpeedPropulsing(results, results["q"])
 #        print "Speed while propulsing %s" % (speedPropulsing,)
 #        print "Ratio between the two %s" % (speedPropulsing/speedDegrading,)
+        distFromGoal = sp.array( goal - ds.positions )
+        distSq = sp.sum( distFromGoal*distFromGoal, axis=2)
+        hasArrived = distSq < 100**2
+        timeToTarget = []
+        for i in xrange(ds.N_agents):
+            iCount = sp.count_nonzero(hasArrived[:,i]==False) 
+            timeToTarget.append( (results["dt"] * iCount) if iCount != ds.NNN else "")
+        
+        indivCIpath = utils.getResultsFilepath(resultsfolder, constants.individual_CI_filename)
+        with open(indivCIpath, "w+") as _ciFile:
+            ciFile = csv.writer(_ciFile, dialect=csv.excel)
+            ciFile.writerow(ci)
+
+        tttpath = utils.getResultsFilepath(resultsfolder, constants.individual_ttt_filename)
+        with open(tttpath, "w+") as _ciFile:
+            ciFile = csv.writer(_ciFile, dialect=csv.excel)
+            ciFile.writerow(timeToTarget)
+        
+        successpath = utils.getResultsFilepath(resultsfolder, constants.individual_success_filename)
+        with open(successpath, "w+") as _ciFile:
+            ciFile = csv.writer(_ciFile, dialect=csv.excel)
+            ciFile.writerow(successful)
         
 
 def plotGlobal(xaxis, lines, const, statvar, savedir, filename, disableVarInLegend=False, legendTextOnly=True, **plotargs):
@@ -437,7 +459,7 @@ if __name__=="__main__":
     print "Creating statistics for %s" % simfile
     
     #create plots for individual simulations
-    #singleStats(simfile, doFinalStats=False)
+    singleStats(simfile, doFinalStats=False)
     
     #create plots containing data from the entire set of simulations described by currentsim
     cwd = os.getcwd()
