@@ -45,7 +45,7 @@ def singleStats(filename, doFinalStats=False):
     #If you have a sim-file causing a large number of simulations, but you want to
     #create statistics for only a few of them, you can use utils.applyFilter() as in this example:
 #    unraveled = utils.applyFilter(unraveled, "percentage", [0.0])
-#    unraveled = utils.applyFilter(unraveled, "q", [0.4])
+    unraveled = utils.applyFilter(unraveled, "q", [1.0])
 #    unraveled = utils.applyFilter(unraveled, "repetitions", [0])
     
     for results in unraveled:
@@ -163,7 +163,7 @@ def singleStats(filename, doFinalStats=False):
 #        scatter_vel = sp.mean( ds.velocities, axis=0 )
 #        plotting.scatter(scatter_vel[:,0], scatter_vel[:,1], amoeboids, mesenchymals, successful, folder=resultsfolder, savefile=constants.scattervel_filename)
         
-        plotting.scattercisr(ci, successful, amoeboids, mesenchymals, xlabel="CI", ylabel="success", folder=resultsfolder, savefile=constants.cisr_filename)
+        #plotting.scattercisr(ci, successful, amoeboids, mesenchymals, xlabel="CI", ylabel="success", folder=resultsfolder, savefile=constants.cisr_filename)
                 
 #        speedDegrading = analytics.equilSpeedDegrading(results, results["q"])
 #        print "Speed while degrading %s" % (speedDegrading,)
@@ -179,19 +179,13 @@ def singleStats(filename, doFinalStats=False):
             timeToTarget.append( (results["dt"] * iCount) if iCount != ds.NNN else "")
         
         indivCIpath = utils.getResultsFilepath(resultsfolder, constants.individual_CI_filename)
-        with open(indivCIpath, "w+") as _ciFile:
-            ciFile = csv.writer(_ciFile, dialect=csv.excel)
-            ciFile.writerow(ci)
+        statutils.writeCSVoneliner(indivCIpath, ci)
 
         tttpath = utils.getResultsFilepath(resultsfolder, constants.individual_ttt_filename)
-        with open(tttpath, "w+") as _ciFile:
-            ciFile = csv.writer(_ciFile, dialect=csv.excel)
-            ciFile.writerow(timeToTarget)
+        statutils.writeCSVoneliner(tttpath, timeToTarget)
         
         successpath = utils.getResultsFilepath(resultsfolder, constants.individual_success_filename)
-        with open(successpath, "w+") as _ciFile:
-            ciFile = csv.writer(_ciFile, dialect=csv.excel)
-            ciFile.writerow(successful)
+        statutils.writeCSVoneliner(successpath, successful)
         
 
 def plotGlobal(xaxis, lines, const, statvar, savedir, filename, disableVarInLegend=False, legendTextOnly=True, **plotargs):

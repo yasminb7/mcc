@@ -1,5 +1,5 @@
 import numpy as np
-import cPickle, os
+import cPickle, os, csv
 import utils
 import constants
 import sim
@@ -133,6 +133,12 @@ def savefinalstats(picklepath, textpath, const, dataset):
         cPickle.dump(stats, statfilepickle)
     with open(textpath, "w") as statfiletext:
         statfiletext.write(dicAsText(stats))
+
+def writeCSVoneliner(path, line):
+    """Writes a the list `line` into the file given py `path`""" 
+    with open(path, "w+") as _ciFile:
+        ciFile = csv.writer(_ciFile, dialect=csv.excel)
+        ciFile.writerow(line)
 
 def saveConst(const, filename):
     with open(filename, "w") as constfile:

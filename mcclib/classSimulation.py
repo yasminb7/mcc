@@ -458,7 +458,10 @@ class Simulation:
         """Cleans up the simulation and removes its directory. Should only be used if something went wrong."""
         if self.dsA is not None:
             self.dsA.erase()
-        shutil.rmtree(self.resultsdir)
+        try:
+            shutil.rmtree(self.resultsdir)
+        except OSError:
+            utils.error("There was some problem cleaning up a directiry, but you can safely ignore this message.")
         utils.info("Cleaned up results directory.")
 
 def prepareSim(const):

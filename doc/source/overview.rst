@@ -1,7 +1,8 @@
 Overview
 ========
 
-So what does ``mcc`` do for you?
+What does ``mcc`` do for you?
+-----------------------------
 
 It lets you describe a bunch of simulations you want to run by creating a file with a certain structure in the `sim/` folder.
 Assume you have a parameter `q` and a parameter `w` that you want to vary in order to see their combined effect.
@@ -20,4 +21,14 @@ Usually you will want to run a particular simulation repeatedly so you can avera
 If you save all simulation data for each repetition, you will be filling your harddisk with useless data.
 On the other hand, if you don't save the entire simulation dataset for any of the simulations, it will be impossible to reconstruct i.e. plots of trajectories.
 To solve this dilemma, you can specify that a certain number of repetitions (usually 1) will save the complete dataset, while the rest will merely save the `finalstats`.
+
+What's all that data that came with the `mcc` code?
+---------------------------------------------------
+
+The data that's included is there either
+
+* because we've used it to produce my thesis (which should also be among the files you got)
+* or because it's data we were currently working on when I handed over the project.
+
+In the case of data used in my thesis, *TODO* points you to the *sim*-files that were used to produce each relevant figure in my thesis.
 
