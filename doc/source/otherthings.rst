@@ -1,11 +1,11 @@
 Other scripts you can run
 =========================
 
+*TODO*: Explain which script is useful in which situation.
+
 .. toctree::
 
    code/checkSimfile
    code/ds2csv
-   code/png2npy
    code/renewTimestamps
-   code/runFinalstatsOnly
-   code/runSingleSim.rst
+   code/runSingleSim

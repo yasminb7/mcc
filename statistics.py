@@ -1,5 +1,6 @@
-#TODO: remove const from arguments of functions that deal with pickles only
-
+"""
+*TODO*: describe this
+"""
 import os, csv, itertools, random
 
 import numpy as sp

@@ -1,6 +1,12 @@
-- put the entire thing on the harddisk
+- more sims for interactions
+
+- finish documentation for code and how to use it
+- finish documentation for data and how to access it
 
 - make sure the simulations in sim/ actually work
 - write checker for prototype
 
-- write overview for program and data
+- put the entire thing on the harddisk
+
+- explain how repetitions=0 works
+- explain fps and video speed

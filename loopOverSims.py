@@ -9,9 +9,11 @@ for currentsim in sims:
     constlist = utils.unravel(const)
     constlist = utils.applyFilter(constlist, "q", [1.0])
     cwd = os.getcwd()
+    basefolder = "temp"
     print "%s folders" % len(constlist)
     outfilename = const["name"] + ".csv"
-    with open(outfilename, "wb") as _csvOut:
+    path = os.path.join(basefolder, outfilename)
+    with open(path, "wb") as _csvOut:
         csvOut = csv.writer(_csvOut, dialect=csv.excel)
         csvOut.writerow(["% mesenchymals", "repetition", "agent", "type", "successful", "time to target", "CI"])
         myData = dict()

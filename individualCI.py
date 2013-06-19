@@ -102,7 +102,10 @@ if __name__=="__main__":
     N_agents = 50
     for folder, pM in folders:
         foldername = string.replace(folder, "_r%d", "")
-        with open("%s_ci.csv" % foldername, "w+") as ciFile_:
+        basefolder = "temp"
+        filename = "%s_ci.csv" % foldername 
+        path = os.path.join(basefolder, filename)
+        with open(path, "w+") as ciFile_:
             ciFile = csv.writer(ciFile_, dialect=csv.excel)
             title1 = ["Repetition #", "Agent #", "Type", "Successful", "Time to target", "CI"]
             #agentDescriptions1 = [ 4*["%d" % i] for i in range(0, N_agents)]

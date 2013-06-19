@@ -1,3 +1,9 @@
+"""
+Defines constants used in the entire project.
+
+In particular, defines a constant :py:const:`currentsim` that refers to the sim-file to be used by :py:mod:`statistics` and :py:mod:`graphics`.
+"""
+
 import string
 import numpy as np
 
@@ -101,9 +107,10 @@ ignore = []
 #ignore.append("with-without-i.py")
 
 #currentsim = "with-without-i.py"
-currentsim = "maze-easy-ar.py"
+#currentsim = "maze-easy-ar.py"
 #currentsim = "maze-hard-ar.py"
-#currentsim = "prototype.py"
+currentsim = "prototype.py"
+#currentsim = "prototype-single.py"
 #currentsim = "wexplore.py"
 #currentsim = "free-ci.py"
 #currentsim = "varying-w.py"

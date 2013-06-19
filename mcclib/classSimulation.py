@@ -465,7 +465,7 @@ class Simulation:
         utils.info("Cleaned up results directory.")
 
 def prepareSim(const):
-    """Sets up a single simulation to be run directly (i.e., without resorting to :py:mod: main.py)."""
+    """Sets up a single simulation to be run directly (i.e., without resorting to :py:mod:`main`)."""
     utils.setup_logging_base() 
     #run the simulation
     mySim = Simulation(const)

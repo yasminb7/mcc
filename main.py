@@ -1,3 +1,15 @@
+"""
+Runs all the simulations specified in the folder ``sim/``.
+
+More specifically it:
+
+* loads all Python files in the folder ``sim/``, ignoring the ones that either start with an underscore ``_`` or are contained in the list `ignore` in ``mcclib/constants.py``;
+* from these files, it creates all possible simulations (:ref:`sim-parameters`);
+* it runs every simulation (if one fails it will simply go to the next one).
+
+The simulation results are stored in the folder ``results/``, in subfolders that depend on the configurations loaded from ``sim/``.
+"""
+
 import sys, os, traceback
 #import graphics
 import mcclib.utils as utils
@@ -24,9 +36,8 @@ def getConstlist():
                 constlist.append(c)
     return constlist
 
-def prepareSim():
+def prepareSim(constlist):
     utils.setup_logging_base()
-    constlist = getConstlist()
     
     info("Running total of %s simulations" % len(constlist))
     count = 0
@@ -62,4 +73,5 @@ def prepareSim():
 #        graphics.writeFrames(const, output_func=functions)
     
 if __name__ == "__main__":
-    prepareSim()
+    constlist = getConstlist()
+    prepareSim(constlist)

@@ -1,3 +1,5 @@
+.. _run:
+
 How to run simulations
 ======================
 

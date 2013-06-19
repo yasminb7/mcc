@@ -1,3 +1,5 @@
+.. _sim-parameters:
+
 sim Package
 ===========
 

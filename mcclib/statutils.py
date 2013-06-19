@@ -1,3 +1,7 @@
+"""
+Utility functions useful for :py:mod:`statistics`.
+"""
+
 import numpy as np
 import cPickle, os, csv
 import utils
@@ -50,7 +54,7 @@ def avgEnergyForAgent(energies, states):
 
 def doCombinations(stats, varname, data, amoeboids, mesenchymals, successful, function=np.mean, axis=None):
     """Apply a given function to all elements of a given array, and do so for all desired combinations.
-    The combinations are for example "all agents that are amoeboid and were successful.
+    The combinations are for example "all agents that are amoeboid and were successful", which would be denoted by `_a_s`.
     Note that some of these results may make little sense because too few agents fit the criteria.
     """
     a_s = np.logical_and(amoeboids, successful)

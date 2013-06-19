@@ -33,25 +33,17 @@ Contents
    otherthings
    codedoc
 
-.. automodule:: main
-
-.. automodule:: statistics
-
-.. automodule:: graphics
-
-.. automodule:: mcclib.classSimulation
-
-.. automodule:: mcclib.classDataset
-
-.. automodule:: mcclib.classMaze
-
-.. automodule:: mcclib.classMesenchymal
-
-.. automodule:: mcclib.constants
-
-.. automodule:: mcclib.statutils
-
-.. automodule:: mcclib.utils
+.. comment
+   .. automodule:: main
+   .. automodule:: statistics
+   .. automodule:: graphics
+   .. automodule:: mcclib.classSimulation
+   .. automodule:: mcclib.classDataset
+   .. automodule:: mcclib.classMaze
+   .. automodule:: mcclib.classMesenchymal
+   .. automodule:: mcclib.constants
+   .. automodule:: mcclib.statutils
+   .. automodule:: mccl
 
 
 Indices and tables

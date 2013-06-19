@@ -1,3 +1,7 @@
+"""
+Contains various plotting functions, mostly used inside of ``statistics.py``.
+"""
+
 import numpy as np
 import string
 from os.path import join

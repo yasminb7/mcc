@@ -3,7 +3,6 @@ import numpy as np
 import scipy.weave as weave
 #from scipy.ndimage.filters import gaussian_filter
 import utils
-import graphutils
 import constants
 
 DIMiter = xrange(constants.DIM)
@@ -43,7 +42,7 @@ def myFilter(data, mysigma=sigma):
 class Maze(object):
     
     def __init__(self, filename, fieldlimits, border, useWeave):
-        self.original = graphutils.loadImage(filename)
+        self.original = utils.loadImage(filename)
         self.original = utils.scaleToMax(wall, self.original)
         self.data = myFilter(self.original)
         assert len(self.data.shape)==2, "Maze data is not two-dimensional: %s. Are you sure it is grayscale and contains one layer and one canal only?" % str(self.data.shape)

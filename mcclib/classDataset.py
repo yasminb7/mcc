@@ -1,3 +1,9 @@
+"""
+Contains functions relating to the :py:class:`Dataset` used for a particular simulation.
+
+The class :py:class:`Dataset` contains a method :py:meth:`Dataset.saveTo` that is used to save the data to a folder. 
+Also contains a function :py:meth:`load` that returns a :py:class:`Dataset` that was stored in a folder.
+"""
 import numpy as np
 import os
 import constants

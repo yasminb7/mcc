@@ -1,7 +1,6 @@
 import numpy as sp
 import math
 import mcclib.utils as utils
-import mcclib.graphutils as graphutils
 import mcclib.constants as constants
 
 def estimateAvgEnergy(const, ECMDensity, N_a, N_m):
@@ -56,6 +55,6 @@ if __name__=="__main__":
     constlist = utils.applyFilter(constlist, "repetitions", [0])
     for const in constlist:
         mazepath = const["maze"]
-        maze = graphutils.loadImage(mazepath)
+        maze = utils.loadImage(mazepath)
         ECMdensity = getECMDensity(maze)
         print "%s:\t ECM density is %s" % (const["name"], ECMdensity)

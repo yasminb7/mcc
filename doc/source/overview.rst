@@ -30,5 +30,31 @@ The data that's included is there either
 * because we've used it to produce my thesis (which should also be among the files you got)
 * or because it's data we were currently working on when I handed over the project.
 
-In the case of data used in my thesis, *TODO* points you to the *sim*-files that were used to produce each relevant figure in my thesis.
+In the case of data used in my thesis, :ref:`figure-to-sim` points you to the *sim*-files that were used to produce each relevant figure in my thesis.
+
+
+.. _figure-to-sim:
+
+How do the figures in the thesis correspond to the data you received?
+---------------------------------------------------------------------
+
+* Figure 4 represents the *success rate* plot produced from ``maze-easy.py``, which, when run with
+
+>>> python main.py
+>>> python statistics.py
+
+produces the plots in ``results/maze-easy/``. The data is saved in the folders with names like ``results/maze-easy-pM0.2_q1.0_r2/``.
+
+* Figures 5 and 6 are the same as figure 4 for ``maze-medium.py`` and ``maze-hard.py``, respectively.
+
+* Figure 7 represents the trajectory plot from the simulation whose data is stored in ``results/maze-align-easy_pM0.3_q0.6_r0``.
+
+* Figures 8, 9 and 10 are the same as figures 4, 5 and 6 except for added alignment interaction. The simulation parameters are given in ``maze-align-easy.py``, ``maze-align-medium.py`` and ``maze-align-hard.py``. The produced data follows the same pattern: ``results/maze-align-easy-pM*.*_q*.*_r*/`` and so on.
+
+* Figures 11, 12, 13 are from the sim-files ``densities-1.py``, ``densities-2.py`` and ``densities-3.py``. It's very unlikely that you'll ever need these results again, so I didn't include them in the data. If you do need them you can just rerun the simulations, it shouldn't take more than a few hours.
+
+* Figures 14 and 15 were generated using ``densities-all.py``. The data is in the folders following the same pattern for names.
+
+
+Notice that the file ``statistics.py`` has evolved over time and may not produce exactly the same plots anymore. Plots that have become less important have had the relevant code commented out.
 

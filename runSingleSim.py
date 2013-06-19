@@ -1,21 +1,20 @@
-from mcclib import utils
-import graphics
-from mcclib.classSimulation import Simulation
+"""
+Runs simulations in a similar way like ``main.py`` but more aggressive:
+It creates all possible simulations given by the variable `simfile` and runs them, no questions asked.
 
-def prepareSim(const):
-    utils.setup_logging_base() 
-    #run the simulation
-    mySim = Simulation(const)
-    mySim.run()
-    #run analysis algorithms
-    mySim.analyse()
-    functions = []
-    if const["create_video_directly"]:
-        functions.append(graphics.create_video)
-    if const["create_path_plot"]:
-        functions.append(graphics.create_path_plot)
-    graphics.writeFrames(const, output_func=functions)
+More specifically, unlike ``main.py``, it:
+* bypasses timestamp checks and
+* runs only a specific sim-file given (instead of all files in ``sim/``). 
+"""
+
+from mcclib import utils, constants
+from main import prepareSim
     
 if __name__ == "__main__":
-    simfile = "test-mesenchymal.py"
-    prepareSim()
+    simfile = "_free-ci.py"
+    constFromFile = utils.readConst(constants.simdir, simfile)
+    if constFromFile is not None:
+        constlist = utils.unravel(constFromFile)
+        prepareSim(constlist)
+    else:
+        print "Could not load file %s" % simfile

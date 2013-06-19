@@ -1,6 +1,11 @@
+"""
+Contains useful functions (logging, running external commands, loading sim-files etc.).
+"""
+
 import numpy as np
 import scipy.weave as weave
 import math
+import matplotlib.pyplot as plt
 import logging, os.path, shutil, re, itertools, importlib, time, string
 from constants import confpackage, resourcespath, videoshellscript, ignore
 import subprocess
@@ -70,7 +75,10 @@ def readConst(directory, simfile):
     #TODO: improve how the name is found (had better be outside of this function)
     name = simfile[:-3]
     m = confpackage + name
-    mod = importlib.import_module(m, package=None)
+    try:
+        mod = importlib.import_module(m, package=None)
+    except:
+        return None
     const = mod.const
     return const
 
@@ -273,6 +281,16 @@ def ensure_dir(f):
     d = os.path.dirname(f)
     if not os.path.exists(d):
         os.makedirs(d)
+
+def loadImage(path):
+    """Load an image (for a maze) from a given path and do some transformations on it."""
+    data = plt.imread(path)
+    data = np.flipud(data)
+    data = np.swapaxes(data, 0, 1)
+    assert np.amax(data)<=1.0, "Array maximum should be 1.0"
+    assert np.amin(data)>=0.0, "Array minimum should be >=0.0"
+    data = np.ones_like(data) - data
+    return data
 
 def getGradient(a):
     """Return the gradient as given by the NumPy gradient function."""
