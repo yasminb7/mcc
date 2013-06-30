@@ -1,5 +1,5 @@
-renewTimestamps Module
-======================
+renewTimestamps.py
+==================
 
 As explained in :ref:`run`, ``main.py`` determines which simulations to run by comparing the modification date of a sim-file with the timestamps of all the folders in ``results/`` that the sim-file generates.
 

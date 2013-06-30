@@ -10,37 +10,14 @@ sigma = 0.6
 wall = constants.wallconst
 borderwall = 1.01*wall
 nowall = 0.0
-
-def gaussian1D(mu, sigma, x):
-    print x
-    sigmasq = sigma*sigma
-    return sigmasq
-    #return 1.0/math.sqrt(2*np.pi*sigmasq) * math.exp((-x**2)/(2*sigmasq))
-    
-
-def gaussianArray(arrayLength, sigma, datatype=constants.floattype):
-    if arrayLength%2==0:
-        arrayLength += 1
-    a = np.fromfunction(lambda x: gaussian1D(arrayLength/2+1, sigma, x), (arrayLength,), dtype=datatype)
-    return a
-
-def gaussianBlur2D(image, sigma):
-    blurred = np.zeros_like(image)
-    gauss = gaussianArray(int(4*sigma), sigma)
-    for i, row in enumerate(blurred):
-        blurred[i] = np.convolve(gauss, row, mode='same')
-    for j, col in enumerate(blurred.T):
-        blurred.T[j] = np.convolve(gauss, col, mode='same')
-    return blurred
-    
     
 def myFilter(data, mysigma=sigma):
+    """Applies a filter to the maze after it has been degraded by agents. This helps prevent strange effects because of discontinuities."""
     #return gaussian_filter(data, mysigma)
-    #return gaussianBlur2D(data, mysigma)
     return data
 
 class Maze(object):
-    
+    """Represents a maze and provides helper methods like :py:meth:`degrade` or :py:meth:`getGradientsCpp` (or its Python version :py:meth:`getGradientsPython`).""" 
     def __init__(self, filename, fieldlimits, border, useWeave):
         self.original = utils.loadImage(filename)
         self.original = utils.scaleToMax(wall, self.original)

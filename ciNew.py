@@ -23,7 +23,7 @@ def main(folder, pM, ciFile):
     print out
     csvout = [folder]
     #ciFile.write(out)
-    ds = load(Dataset.AMOEBOID, path, "A_", 0.1, readOnly=True)
+    ds = load(Dataset.ARRAYS, path, "A_", 0.1, readOnly=True)
     traj_a = np.array(ds.positions)
     
     N_mesenchymal = int(round(pM*ds.N_agents, 0))

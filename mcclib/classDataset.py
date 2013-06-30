@@ -35,7 +35,8 @@ class Dataset(object):
     is_amoeboid = constants.TYPE_AMOEBOID
     is_mesenchymal = constants.TYPE_MESENCHYMAL
     
-    AMOEBOID = {"times" : ArrayFile("times", "NNN", constants.floattype),
+    """`ARRAYS` is a description of all the arrays a :py:class:`Dataset` contains."""
+    ARRAYS = {"times" : ArrayFile("times", "NNN", constants.floattype),
                 "types" : ArrayFile("types", "N_agents", np.int_),
               "positions" : ArrayFile("positions", "shapexDim", constants.floattype, onDisk=True),
               "velocities" : ArrayFile("velocities", "shapexDim", constants.floattype, onDisk=True),

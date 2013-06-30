@@ -1,8 +1,8 @@
 Overview
 ========
 
-What does ``mcc`` do for you?
------------------------------
+What does it do for you?
+------------------------
 
 It lets you describe a bunch of simulations you want to run by creating a file with a certain structure in the `sim/` folder.
 Assume you have a parameter `q` and a parameter `w` that you want to vary in order to see their combined effect.

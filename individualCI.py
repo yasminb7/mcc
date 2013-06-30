@@ -19,7 +19,7 @@ def getLine(folder, pM):
     resultsbase = constants.resultspath
     path = os.path.join(resultsbase, folder)
 
-    ds = load(Dataset.AMOEBOID, path, "A_", 0.1, readOnly=True)
+    ds = load(Dataset.ARRAYS, path, "A_", 0.1, readOnly=True)
     traj_a = np.array(ds.positions)
     
     consider = np.logical_or(ds.states==sim.States.MOVING, ds.states==sim.States.ORIENTING)

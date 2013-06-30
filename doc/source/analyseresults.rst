@@ -1,6 +1,8 @@
 Analyse the results
 ===================
 
+.. _dataset-arrays:
+
 What exactly do the results contain?
 ------------------------------------
 
@@ -112,11 +114,14 @@ You may need to adapt :py:mod:`statistics` depending on what you have in mind wi
 Alternative: Get results in a CSV format
 ----------------------------------------
 
-If you prefer to do further analysis with other types of software (MATLAB, Excel etc.), you can use the script provided called [...].
-*TODO*: write script and explain it
+If you prefer to do further analysis with other types of software (MATLAB, Excel etc.), you can use the provided script :doc:`code/ds2csv`.
 
 Alternative: Load simulation data for further use in a Python program
 ---------------------------------------------------------------------
 
-*TODO*: write script and explain it
+The script :doc:`code/exploreDataset` provides a simple skeleton to
+
+* explore your own ideas with NumPy on realistic data
+* try out NumPy functions work
+* find extrema or average values etc. in suspicious datasets
 

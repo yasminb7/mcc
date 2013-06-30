@@ -1,5 +1,17 @@
 """
-*TODO*: describe this
+Provides various functions for plotting interesting statistics after simulations.
+
+Plots concerning only one simulation are created in :py:func:`singleStats`.
+In contrast to that, :py:func:`plotGlobal` creates plots requiring data from many values,
+e.g. for percentages of mesenchymals from 0.0, 0.1, ... to 1.0.
+
+It can be called directly using
+
+>>> python statistics.py
+
+with (as always) the sim-file specified in :py:attr:`.constants.currentsim`.
+
+This is a file to work with, **you will need to make modifications** to it in order to get exactly what you want.
 """
 import os, csv, itertools, random
 
@@ -53,7 +65,7 @@ def singleStats(filename, doFinalStats=False):
         print "singleStats for %s" % results["name"]
         _resultspath = constants.resultspath[0:-1]
         resultsfolder = os.path.join(root, _resultspath, results["name"])
-        ds = classDataset.load(Dataset.AMOEBOID, resultsfolder, fileprefix="A", dt=results["dt"])
+        ds = classDataset.load(Dataset.ARRAYS, resultsfolder, fileprefix="A", dt=results["dt"])
         if ds is None:
             print "%s does not have a dataset, or could not load it.\nAborting.\n" % results["name"]
             return None
@@ -190,6 +202,9 @@ def singleStats(filename, doFinalStats=False):
         
 
 def plotGlobal(xaxis, lines, const, statvar, savedir, filename, disableVarInLegend=False, legendTextOnly=True, **plotargs):
+    """
+    Plot `statvar` against `xaxis` for (possibly) several `lines` (e.g. several levels of energy intake `q`).
+    """
     print "Plotting %s" % (statvar,)
     mylines = []
     possiblePlot = xaxis in const["factors"]
@@ -254,7 +269,8 @@ def plotGlobal(xaxis, lines, const, statvar, savedir, filename, disableVarInLege
     plotting.errorbars(myxaxes, myyaxes, y_bars=myerrors, legend=mylegend, legendTextOnly=legendTextOnly, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename, **plotargs)
 
 def plotGlobal2factors(xaxis, lines, const, statvar, savedir, filename, disableVarInLegend=False, legendTextOnly=True, **plotargs):
-    """Same as plotGlobal, but here lines is a list. We will take the cartesian product
+    """
+    Same as plotGlobal, but here lines is a list. We will take the cartesian product
     of the factors in the list and plot a line for each combination.
     """
     #If I can't access lines as a list, there's nothing to do.
@@ -310,6 +326,10 @@ def plotGlobal2factors(xaxis, lines, const, statvar, savedir, filename, disableV
     plotting.errorbars(myxaxes, myyaxes, y_bars=myerrors, legend=mylegend, legendTextOnly=legendTextOnly, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename, **plotargs)
     
 def plotFitness(xaxis, lines, const, savedir, filename, suffix=None):
+    """
+    Like :py:func:`plotGlobal`, but creates a plot of fitness where fitness is
+    defined as success rate times average energy.
+    """
     mylines = []
     assert xaxis in const["factors"] and lines in const["factors"]
     
@@ -380,7 +400,10 @@ def plotFitness2factors(xaxis, lines, const, savedir, filename, disableVarInLege
     plotting.errorbars(myxaxes, myyaxes, legend=mylegend, legendTextOnly=True, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename)
     
 def plotFitness2(xaxis, lines, const, savedir, filename, suffix=None):
-    """Success ratio times avg energy of those who where successful"""
+    """
+    Like :py:func:`plotGlobal`, but creates a plot of fitness where fitness is
+    defined as success rate times average energy, **but** *only for successful agents*.
+    """
     mylines = []
     assert xaxis in const["factors"] and lines in const["factors"]
     
@@ -395,7 +418,7 @@ def plotFitness2(xaxis, lines, const, savedir, filename, suffix=None):
             values = []
             for c in myconst:
                 datapath = os.path.join(constants.resultspath, c["name"])
-                ds = classDataset.load(Dataset.AMOEBOID, datapath, dt=c["dt"], fileprefix="A")
+                ds = classDataset.load(Dataset.ARRAYS, datapath, dt=c["dt"], fileprefix="A")
                 dist = statutils.getDistances(ds.positions, c["gradientcenter"])
                 amoeboids = ds.types==Dataset.is_amoeboid
                 mesenchymal = ds.types==Dataset.is_mesenchymal
@@ -426,6 +449,11 @@ def plotFitness2(xaxis, lines, const, savedir, filename, suffix=None):
     plotting.errorbars(myxaxes, myyaxes, legend=mylegend, xlabel=myxlabel, ylabel=myylabel, folder=savedir, savefile=filename)
 
 def getFinalstats(constlist, statvar):
+    """
+    Returns a certain value from the so-called *finalstats* for a list of simulations.
+    If the *const* variable has `handle_repetitions_with` set to *mean* or *median*, it applies
+    that function and returns its result.
+    """
     statistics = sp.zeros(len(constlist))
     for i, c in enumerate(constlist):
         f = c["name"]
@@ -443,13 +471,22 @@ def getFinalstats(constlist, statvar):
     return value, error
 
 def plotCombinations(xaxis, lines, const, statvar, savedir, filename, suffixes=None, **plotargs):
+    """
+    For certain combinations of criteria, like "amoeboid *AND* successful", calls :py:func:`plotGlobal` for each
+    of these combinations to create the appropriate plots.
+    """
     if suffixes is None:
         #suffixes = ["", "_m", "_a", "_m_s", "_m_us", "_a_s", "_a_us"]
         suffixes = ["", "_m", "_a"]
     for suff in suffixes:
         plotGlobal(xaxis, lines, const, statvar+suff, savedir, filename+suff+constants.graphics_ending, **plotargs)
   
-if __name__=="__main__":
+def main():
+    """
+    What :py:func:`main` does depends greatly on the particular sim-file, as you can see by inspecting its code.
+    It's a bit of a mess, but there was no incentive so far to clean it up.
+    You'll have to modify :py:func:`main` and (probably other functions) according to your needs. 
+    """
     simfile = constants.currentsim
     print "Creating statistics for %s" % simfile
     
@@ -526,3 +563,6 @@ if __name__=="__main__":
     
     print "Done."
 
+
+if __name__=="__main__":
+    main()

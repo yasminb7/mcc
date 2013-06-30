@@ -7,6 +7,10 @@ mcclib Package
 .. automodule:: mcclib.classDataset
     :members:
 
+.. py:attribute:: mcclib.classDataset.Dataset.ARRAYS
+
+   Contains a description of the arrays that each :py:class:`Dataset` contains.
+
 :mod:`classMaze` Module
 -----------------------
 
@@ -24,6 +28,7 @@ mcclib Package
 
 .. automodule:: mcclib.classSimulation
     :members:
+.. automethod:: mcclib.classSimulation.Simulation.__init__
 
 :mod:`constants` Module
 -----------------------

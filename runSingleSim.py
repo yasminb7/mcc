@@ -1,5 +1,5 @@
 """
-Runs simulations in a similar way like ``main.py`` but more aggressive:
+Runs simulations in a way similar to ``main.py``, but more aggressive:
 It creates all possible simulations given by the variable `simfile` and runs them, no questions asked.
 
 More specifically, unlike ``main.py``, it:

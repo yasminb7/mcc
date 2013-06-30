@@ -27,7 +27,7 @@ for currentsim in sims:
             
             path = os.path.join(constants.resultspath, c["name"])
             rep = c["repetitions"]
-            ds = load(Dataset.AMOEBOID, path, fileprefix="A_", dt=0.1, readOnly=True)
+            ds = load(Dataset.ARRAYS, path, fileprefix="A_", dt=0.1, readOnly=True)
             assert ds is not None
             TYPE_AMOEBOID = 0 if rep<=9 else 2
             TYPE_MESENCHYMAL = 1 if rep<=9 else 1

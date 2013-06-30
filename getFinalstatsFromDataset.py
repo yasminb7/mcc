@@ -27,7 +27,7 @@ def prepareSim():
     
     try:
         mySim = Simulation(const, noDelete=True)
-        ds = classDataset.load(Dataset.AMOEBOID, mySim.resultsdir, fileprefix="A", dt=const["dt"])
+        ds = classDataset.load(Dataset.ARRAYS, mySim.resultsdir, fileprefix="A", dt=const["dt"])
         setattr(mySim, "dsA", ds)
         finalstats = statutils.finalstats(ds, (800,800), 100)
         print finalstats

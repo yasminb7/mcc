@@ -10,7 +10,7 @@ def main(folder):
     resultsbase = constants.resultspath
     path = os.path.join(resultsbase, folder)
     
-    ds = load(Dataset.AMOEBOID, path, "A_", 0.1, readOnly=True)
+    ds = load(Dataset.ARRAYS, path, "A_", 0.1, readOnly=True)
     
     savedir = "/home/frederic/Desktop/send/"
     pathtocsv = os.path.join(savedir, '%s-positions.csv' % folder)

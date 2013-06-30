@@ -1,7 +1,5 @@
-ds2csv Module
-=============
-
-*TODO*: describe this
+ds2csv.py
+=========
 
 .. automodule:: ds2csv
     :members:

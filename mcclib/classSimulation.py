@@ -1,7 +1,6 @@
 import os, datetime, shutil
 import numpy as np
 import scipy.weave as weave
-import scipy.weave.converters as converters
 from classMesenchymal import Mesenchymal
 from classMaze import Maze, densityArray
 from classDataset import Dataset
@@ -12,6 +11,7 @@ from utils import info
 import constants
 
 class Simulation:
+    """This class represents one particular simulation that can be run using :py:func:`run`."""
     
     def __init__(self, const, noDelete=False):
         """Constructs the ``Simulation`` object according to ``const`` and creates an empty directory for the results."""
@@ -33,7 +33,7 @@ class Simulation:
         self.retainCompleteDataset = utils.retainCompleteDataset(const)
         
         if noDelete==False:
-            self.dsA = Dataset(Dataset.AMOEBOID, const["max_time"], const["dt"], self.N, constants.DIM, self.resultsdir, fileprefix=None)
+            self.dsA = Dataset(Dataset.ARRAYS, const["max_time"], const["dt"], self.N, constants.DIM, self.resultsdir, fileprefix=None)
             if self.retainCompleteDataset:
                 info("Created dataset of size %s" % self.dsA.getHumanReadableSize())
             else:
@@ -208,6 +208,8 @@ class Simulation:
                 np.fill_diagonal(inAlignmentRadius, False)
                 doRepulse = inRepulsionRadius
                 doAlign = np.logical_and(~inRepulsionRadius, inAlignmentRadius) #@UnusedVariable
+                #calculate the alignment interaction
+                #useWeave is the variable that describes if we should use C/C++ or not
                 if useWeave:
                     code = """
                     int nInteract;
@@ -231,7 +233,6 @@ class Simulation:
                         }        
                     }
                     """
-                    #weave.inline(code, ["N", "doAlign", "directions", "_w", "w"], type_converters=converters.blitz)
                     weave.inline(code, ["N", "doAlign", "directions", "_w", "w"])
                 else:
                     for i in xrange(N):
@@ -243,7 +244,7 @@ class Simulation:
                 dir_norms[dir_norms==0.0] = 1.0
                 directions = directions/dir_norms[:, np.newaxis]
 
-                #Calculate the repulsiton interaction
+                #Calculate the repulsion interaction
                 F_rep = np.zeros_like(pos_difference)
                 interactionIndices = np.nonzero(doRepulse)
                 for i, j in zip(interactionIndices[0], interactionIndices[1]):
@@ -286,7 +287,7 @@ class Simulation:
                 directions[switch_to_moving, 0] = np.cos(direction_angles[switch_to_moving])
                 directions[switch_to_moving, 1] = np.sin(direction_angles[switch_to_moving])
             
-            #Calculate the amount of rpopulsion
+            #Calculate the amount of propulsion
             propelFactor = eta * E * theta
             F_propulsion = propelFactor[:,np.newaxis] * directions
             
@@ -317,7 +318,7 @@ class Simulation:
             ndd = lastPositions[:,1]>fieldlimits[3]-nodegradationlimit
             noDegradation = np.logical_or(nda, ndb)
             noDegradation = np.logical_or(noDegradation, ndc)
-            noDegradation = np.logical_or(noDegradation, ndd)            
+            noDegradation = np.logical_or(noDegradation, ndd)
             
             wallnorm = np.sum(wgrad * wgrad, axis=1)
             touchingECM = (wallnorm != 0.0)

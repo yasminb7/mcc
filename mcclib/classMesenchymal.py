@@ -3,7 +3,9 @@ import constants, utils
 
 class Mesenchymal():
     '''
-    Represents an agent that can use his energy to degrade walls..
+    Holds a few variables and a method that have to do with mesenchymals.
+    Does **not** in any way represent a mesenchymal agent.
+    It's contents could very well be put directly in :py:class:`.Simulation`. 
     '''
     
     classInitialized = False

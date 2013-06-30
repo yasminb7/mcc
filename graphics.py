@@ -1,3 +1,15 @@
+"""
+Contains the functions to create trajectories plots and videos of given simulations.
+Can be run directly by calling
+
+>>> python graphics.py
+
+with the desired simulation set in :py:data:`.constants.currentsim`.
+If you don't want the graphical output for *all* of these simulations, you can *filter*
+them by setting conditions with :py:func:`.utils.applyFilter` as shown in the source of :py:func:`main`.
+"""
+
+
 import os, string
 import numpy as np
 import matplotlib.lines as lines
@@ -18,7 +30,7 @@ def main(name):
     
     #If you have a sim-file causing a large number of simulations, but you want to
     #create graphics for only a few of them, you can use utils.applyFilter() as in this example:
-    constlist = utils.applyFilter(constlist, "r", [0])
+    #constlist = utils.applyFilter(constlist, "r", [0])
     
     funcs = [
              create_path_plot,
@@ -139,7 +151,7 @@ def writeFrames(myconst, output_func=[create_video]):
     savedir = os.path.join(path, resultsdir)
     logfilename = os.path.join(savedir, "logfile_create_video.txt")
     logging_filehandler = utils.setup_logging_sim(logfilename)
-    dsA = classDataset.load(Dataset.AMOEBOID, savedir, dt=myconst["dt"], fileprefix="A")
+    dsA = classDataset.load(Dataset.ARRAYS, savedir, dt=myconst["dt"], fileprefix="A")
     if dsA is None:
         utils.error("Could not open dataset. Exiting.")
         return
