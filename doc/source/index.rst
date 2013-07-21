@@ -18,6 +18,8 @@ About the documentation
 This documentation is intended to give you some familiarity with the way the project is built.
 In order to understand what the actual code means, I expect you to be somewhat familiar with Python and NumPy. Their websites contain quite useful documentation.
 
+ **Note:** You can find the thesis and an illustration of what the code can produce in the folder `thesis`.
+
 Contents
 ========
 

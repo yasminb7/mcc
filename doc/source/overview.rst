@@ -1,6 +1,8 @@
 Overview
 ========
 
+ **Note:** Most of the files in the folder `sim/` are from the work during my thesis. After it, I worked mainly on `maze-easy-ar.py`, so this file is probably where you'll want to start.
+
 What does it do for you?
 ------------------------
 
