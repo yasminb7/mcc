@@ -13,4 +13,4 @@ print
 print "Python: %s " % platform.python_version()
 print "NumPy: %s " % numpy.__version__
 print "SciPy: %s " % scipy.__version__
-print "Matplitlib: %s" % matplotlib.__version__
+print "Matplotlib: %s" % matplotlib.__version__
