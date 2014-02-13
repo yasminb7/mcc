@@ -10,7 +10,7 @@ them by setting conditions with :py:func:`.utils.applyFilter` as shown in the so
 """
 
 
-import os, string
+import os, string, sys
 import numpy as np
 import matplotlib.lines as lines
 import matplotlib.cm as cm
@@ -26,6 +26,10 @@ def main(name):
     utils.setup_logging_base() 
     
     const = utils.readConst(constants.simdir, name)
+    if const is None:
+        utils.info("Could not read %s, are you sure it exists?" % (name,) )
+        utils.info("Exiting.")
+        sys.exit(1)
     constlist = utils.unravel(const)
     
     #If you have a sim-file causing a large number of simulations, but you want to
@@ -34,7 +38,7 @@ def main(name):
     
     funcs = [
              create_path_plot,
-             create_video
+#             create_video
              ]
     if len(constlist)==0:
         utils.info("No simulations fit the filter criteria given.")
@@ -42,6 +46,7 @@ def main(name):
         if not utils.retainCompleteDataset(myconst):
             utils.info("Cannot create graphics because the simulation %s did not retain the complete dataset. Check (sim/%s)." % (name, name) )
         else:
+            utils.info("Creating graphics for %s" % (myconst["name"],) )
             writeFrames(myconst, output_func=funcs)
 
 def create_path_plot(myconst, path, savedir, dataset, step, finalmaze=None):
