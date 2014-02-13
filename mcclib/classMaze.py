@@ -11,17 +11,18 @@ wall = constants.wallconst
 borderwall = 1.01*wall
 nowall = 0.0
     
-def myFilter(data, mysigma=sigma):
-    """Applies a filter to the maze after it has been degraded by agents. This helps prevent strange effects because of discontinuities."""
-    #return gaussian_filter(data, mysigma)
-    return data
+#def myFilter(data, mysigma=sigma):
+#    """Applies a filter to the maze after it has been degraded by agents. This helps prevent strange effects because of discontinuities."""
+#    #return gaussian_filter(data, mysigma)
+#    return data
 
 class Maze(object):
     """Represents a maze and provides helper methods like :py:meth:`degrade` or :py:meth:`getGradientsCpp` (or its Python version :py:meth:`getGradientsPython`).""" 
     def __init__(self, filename, fieldlimits, border, useWeave):
         self.original = utils.loadImage(filename)
         self.original = utils.scaleToMax(wall, self.original)
-        self.data = myFilter(self.original)
+        #Note that because self.data is an image it has a member called shape that contains its dimensions.
+        self.data = self.original #myFilter(self.original)
         assert len(self.data.shape)==2, "Maze data is not two-dimensional: %s. Are you sure it is grayscale and contains one layer and one canal only?" % str(self.data.shape)
         self.data_grad = utils.getOriginalGradient(filename, maze=-self.data)
         self.border = border
@@ -189,10 +190,10 @@ class Maze(object):
                 idx2 =  np.s_[:, a[0]:b[0], a[1]:b[1]]
                 
                 if needGradient:
-                    temp_data = -myFilter(self.data[idx], sigma)
+                    temp_data = -self.data[idx] #-myFilter(self.data[idx], sigma)
                     self.data_grad[idx2] = np.array( np.gradient( temp_data ))
                 else:
-                    self.data[idx] = myFilter(self.data[idx], sigma)
+                    pass #self.data[idx] = myFilter(self.data[idx], sigma)
     
     def myClip(self, pt, Ax, Ay, Bx, By):
         x = min( max(pt[0], Ax) , Bx)
@@ -213,7 +214,7 @@ class Maze(object):
         return ((xmin, ymin), (xmax, ymax))
     
     def updateAll(self):
-        temp_data = myFilter(self.data)
+        temp_data = self.data #myFilter(self.data)
         newgrad = utils.getGradient(-temp_data)
         self.data_grad[0] = newgrad[0]
         self.data_grad[1] = newgrad[1]
